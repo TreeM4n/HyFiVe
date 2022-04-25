@@ -9,8 +9,12 @@
                 minZoom: 4
             }).addTo(map);
 
+        // every n th element is drawn
+        var mult = 10;
+        // time difference before skip line draw
+        var distanceinminutes = 2
 
-
+        var diff = 0;
         // Read markers data from data.csv
         $.get('./data/data.csv', function (csvString) {
 
@@ -21,7 +25,7 @@
             // For each row, columns `Latitude`, `Longitude`, and `Time` are required
             for (var i in data) {
                 var row = data[i];
-                if (i % 10 == 0){
+                if (i % mult == 1){
                 //for markers instead of lines
                 /*
                 var marker = L.marker([row.Latitude, row.Longitude], {
@@ -30,14 +34,19 @@
 
                 marker.addTo(map);
                 */
+                
+                
                
                 if (i>9){
+                diff = Math.abs(new Date(row.Time.replace(/-/g,'/')) - new Date(data[i-mult].Time.replace(/-/g,'/')));
+                console.log(diff + " " + i);
+                if (diff < 60000 * distanceinminutes){
                 var pointA = new L.LatLng(row.Latitude, row.Longitude);
-                var pointB = new L.LatLng(data[i-10].Latitude,data[i-10].Longitude);
+                var pointB = new L.LatLng(data[i-mult].Latitude,data[i-mult].Longitude);
                 var pointList = [pointA, pointB];
                 var line = new L.Polyline(pointList).bindPopup(row.Time);
                 line.addTo(map);
-                
+                }
                 }
                 }
                 //console.log(data[i])
