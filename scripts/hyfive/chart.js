@@ -16,8 +16,8 @@ d3.csv("./data/data.csv",
 
   // When reading the csv, I must format variables:
   function(d){
-     
-    return { Time : d.Time, MS5837Temperature : d.MS5837Temperature }
+    // formats : https://github.com/d3/d3-time-format
+    return { Time : d3.timeParse("%Y-%m-%d %H:%M:%S") (d.Time), MS5837Temperature : d.MS5837Temperature }
   }).then(
 
   // Now I can use this dataset:
@@ -37,7 +37,7 @@ d3.csv("./data/data.csv",
       .range([ height, 0 ]);
     svg.append("g")
       .call(d3.axisLeft(y));
-
+      console.log(data)
     // Add the line
     svg.append("path")
       .datum(data)
