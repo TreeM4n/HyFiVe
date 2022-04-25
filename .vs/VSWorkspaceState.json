@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\maps",
+    "\\scripts",
+    "\\scripts\\hyfive"
   ],
-  "SelectedNode": "\\C:\\xampp\\htdocs\\website",
+  "SelectedNode": "\\index.html",
   "PreviewInSolutionExplorer": false
 }
