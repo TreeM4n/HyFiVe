@@ -39,7 +39,7 @@
                
                 if (i>9){
                 diff = Math.abs(new Date(row.Time.replace(/-/g,'/')) - new Date(data[i-mult].Time.replace(/-/g,'/')));
-                console.log(diff + " " + i);
+                //console.log(diff + " " + i);
                 if (diff < 60000 * distanceinminutes){
                 var pointA = new L.LatLng(row.Latitude, row.Longitude);
                 var pointB = new L.LatLng(data[i-mult].Latitude,data[i-mult].Longitude);
