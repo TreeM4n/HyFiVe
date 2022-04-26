@@ -17,7 +17,7 @@ d3.csv("./data/data.csv",
   // When reading the csv, I must format variables:
   function(d){
     // formats : https://github.com/d3/d3-time-format
-    return { Time : d3.timeParse("%Y-%m-%d %H:%M:%S") (d.Time), MS5837Temperature : d.MS5837Temperature }
+    return { Time : d3.timeParse("%Y-%m-%d %H:%M:%S") (d.Time), TSYTemperatrue : d.TSYTemperatrue }
   }).then(
 
   // Now I can use this dataset:
@@ -30,14 +30,29 @@ d3.csv("./data/data.csv",
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x));
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height - 6)
+    .text("Time");
+      
 
     // Add Y axis
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, function(d) { return +d.MS5837Temperature; })])
+      .domain([0, d3.max(data, function(d) { return +d.TSYTemperatrue; })])
       .range([ height, 0 ]);
     svg.append("g")
       .call(d3.axisLeft(y));
-      console.log(data)
+    svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", 6)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Temperature");
+      
+      //console.log(data)
     // Add the line
     svg.append("path")
       .datum(data)
@@ -46,7 +61,7 @@ d3.csv("./data/data.csv",
       .attr("stroke-width", 1.5)
       .attr("d", d3.line()
         .x(function(d) { return x(d.Time) })
-        .y(function(d) { return y(d.MS5837Temperature) })
+        .y(function(d) { return y(d.TSYTemperatrue) })
         )
 
 })
