@@ -10,7 +10,7 @@
             }).addTo(map);
 
         // every n th element is drawn
-        var mult = 10;
+        var mult = 2;
         // time difference before skip line draw
         var distanceinminutes = 2
 
