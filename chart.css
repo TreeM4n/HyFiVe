@@ -33,3 +33,24 @@
             flex: 50%;
             padding: 5px;
         }
+
+        .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.axisSteelBlue text{
+  fill: steelblue;
+}
+
+.axisRed text{
+  fill: red;
+}
+
+.axisGreen text{
+  fill: green;
+}
+.axisOrange text{
+  fill: #FF8C00;
+}
