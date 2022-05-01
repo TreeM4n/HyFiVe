@@ -134,6 +134,7 @@ d3.csv("./data/data.csv").then(function(data) {
       d.MS5837Press = +d.MS5837Press;
       d.Conducitvity = +d.Conducitvity;
   });
+  
 
   // Scale the range of the data
   x.domain(d3.extent(data, function(d) { return d.Time; }));
@@ -141,6 +142,9 @@ d3.csv("./data/data.csv").then(function(data) {
   y1.domain([0, d3.max(data, function(d) {return Math.max(d.Oxygen); })]);  //blau
   y2.domain([0, d3.max(data, function(d) {return Math.max(d.MS5837Press); })]); //schwarz
   y3.domain([0, d3.max(data, function(d) {return Math.max(d.Conducitvity); })]); //grün
+
+
+  
 
   //------------------------------------create lines 
   
@@ -171,7 +175,31 @@ d3.csv("./data/data.csv").then(function(data) {
       .attr("class", "line")
       .style("stroke", "orange")
       .attr("d", valueline4);
-    console.log(data.Conducitvity)
+    //console.log(data.Conducitvity)
+
+  //------------------------------------legend
+  //number variables
+  legendSpace = width/4;
+
+    svg.append("text")
+          .attr("x", (legendSpace/2)+legendSpace)  // space legend
+          .attr("y", height + (margin.bottom/2)+ 5)
+          .attr("class", "legend")    // style the legend
+          .style("fill","orange")
+          .on("click", function(){
+              // Determine if current line is visible 
+              var active   = d.active ? false : true,
+              newOpacity = active ? 0 : 1; 
+              console.log("true");
+              // Hide or show the elements based on the ID
+              d3.select(d.Oxygen)
+                  .transition().duration(100) 
+                  .style("opacity", newOpacity); 
+              // Update whether or not the elements are active
+              d.active = active;
+              })  
+          .text("Oxygen"); 
+  //----------------------------------add axis
   // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
