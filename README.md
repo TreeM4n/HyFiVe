@@ -18,6 +18,9 @@ https://bl.ocks.org/d3noob/08af723fe615c08f9536f656b55755b4  legende\
 http://www.d3noob.org/2014/07/d3js-multi-line-graph-with-automatic.html \
 https://bl.ocks.org/d3noob/0a22a5e45bf5feddb93a15905a7240a8	multiaxes\
 
+#Library for ez graph
+https://nvd3.org/livecode/index.html#codemirrorNav \
+
 #HTML
 
 https://www.w3schools.com/howto/howto_js_topnav.asp \
