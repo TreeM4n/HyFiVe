@@ -23,6 +23,10 @@ https://bl.ocks.org/d3noob/0a22a5e45bf5feddb93a15905a7240a8	multiaxes\
 #Library for ez graph
 https://nvd3.org/livecode/index.html#codemirrorNav \
 
+#Leaflet
+
+https://stackoverflow.com/questions/21710530/leaflet-panto-or-setview-function \
+
 #HTML
 
 https://www.w3schools.com/howto/howto_js_topnav.asp \
