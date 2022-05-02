@@ -139,7 +139,7 @@ d3.csv("./data/data.csv").then(function(data) {
   legendSpace = width/5;
 
     svg.append("text")
-          .attr("x", (legendSpace/2)+0*legendSpace)  // space legend
+          .attr("x", (legendSpace/2)+0*legendSpace-10)  // space legend
           .attr("y", height + (margin.bottom/2)+ 20)
           .attr("class", "legend")    // style the legend
           .style("fill","red")
