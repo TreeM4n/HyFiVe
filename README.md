@@ -16,6 +16,7 @@ http://www.d3noob.org/2013/01/using-multiple-axes-for-d3js-graph.html \
 http://www.d3noob.org/2015/02/raspberry-pi-multiple-temperature_5.html \
 https://bl.ocks.org/d3noob/08af723fe615c08f9536f656b55755b4  legende\
 http://www.d3noob.org/2014/07/d3js-multi-line-graph-with-automatic.html \
+http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html \
 http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html!!!! \
 https://bl.ocks.org/d3noob/0a22a5e45bf5feddb93a15905a7240a8	multiaxes\
 
