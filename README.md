@@ -21,7 +21,7 @@ http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html \
 http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html!!!! \
 https://bl.ocks.org/d3noob/0a22a5e45bf5feddb93a15905a7240a8	multiaxes\
 
-#Library for ez graph
+#Library graph
 https://nvd3.org/livecode/index.html#codemirrorNav \
 
 #smooth animation
@@ -31,9 +31,12 @@ https://d3-graph-gallery.com/line \
 https://www.influxdata.com/blog/visualizing-your-time-series-data-from-influxdb-with-rickshaw/ \
 
 #php for data query
-https://github.com/influxdata/influxdb-client-php#queries \
 https://localcoder.org/how-to-pull-data-from-mysql-database-and-visualize-with-d3-js \
 https://www.slashdb.com/2018/02/15/howto-d3js/ \
+https://stackoverflow.com/questions/4885737/pass-a-php-array-to-a-javascript-function \
+https://github.com/influxdata/influxdb-php \
+https://influxdata.github.io/influxdb-client-php/ \
+
 
 
 #multiple grap 
