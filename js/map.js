@@ -1,5 +1,8 @@
+    //export not supported by internet explorer
+    export function drawMap(Lat,Lng,Zoom,Data)
+        {
         // initialize the map
-        var map = L.map('map').setView([54.548698,10.769660], 10);
+        var map = L.map('map').setView([Lat,Lng], Zoom);
 
         // load a tile layer
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
@@ -53,3 +56,4 @@
             }
 
         });
+    }
