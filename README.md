@@ -36,6 +36,7 @@ https://www.slashdb.com/2018/02/15/howto-d3js/ \
 https://stackoverflow.com/questions/4885737/pass-a-php-array-to-a-javascript-function \
 https://github.com/influxdata/influxdb-php \
 https://influxdata.github.io/influxdb-client-php/ \
+https://github.com/influxdata/influxdb-client-php#queries
 
 
 
