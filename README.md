@@ -37,6 +37,7 @@ https://stackoverflow.com/questions/4885737/pass-a-php-array-to-a-javascript-fun
 https://github.com/influxdata/influxdb-php \
 https://influxdata.github.io/influxdb-client-php/ \
 https://github.com/influxdata/influxdb-client-php#queries
+https://thisinterestsme.com/json-data-javascript-php/
 
 
 

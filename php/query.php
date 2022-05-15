@@ -58,8 +58,23 @@ $result = $queryApi->queryRaw(
                                  and r[\"_field\"] == \"temperature\"
                                  and r[\"location\"] == \"Sydney\")"
 );
+header('Content-type:application/json;charset=utf-8');
+$jsonStr = json_encode( $result, JSON_PRETTY_PRINT ) ;
+
+//Encode the data as a JSON string
+
 
 printf("\n\n-------------------------- Query Raw ----------------------------\n\n");
 printf($result);
+
+$registration = $_POST['registration'];
+$name= $_POST['name'];
+$email= $_POST['email'];
+
+if ($registration == "success"){
+    // some action goes here under php
+    echo json_encode(array("abc"=>'successfuly registered'));
+}    
+
 
 $client->close();
