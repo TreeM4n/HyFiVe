@@ -45,6 +45,7 @@ foreach ($tables as $table) {
 header('Content-type:application/json;charset=utf-8');
 echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
 
+$client->close();
  } catch (\Throwable $e) {
     echo $e->getMessage();
     exit;
@@ -61,4 +62,3 @@ if ($registration == "success"){
 }    
 
 
-//$client->close();
