@@ -21,7 +21,7 @@ d3.csv("./data/data2.csv").then( function(data) {
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform",
-            `translate(${margin.left},${margin.top})`);
+            `translate(${ margin.left },${margin.top})`);
 
   // Add X axis --> it is a date format
   const x = d3.scaleLinear()
@@ -95,15 +95,18 @@ d3.csv("./data/data2.csv").then( function(data) {
     function updateChart(event,d) {
 
       // What are the selected boundaries?
-      extent = event.selection
+      extent = event.selection;
       //console.log(extent);
       // If no selection, back to initial coordinate. Otherwise, update X axis domain
       if(!extent){
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-        x.domain([4,8])
+        x.domain([])
+        
+        
       }else{
         x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
         line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+        
       }
 
       // Update axis and line position
@@ -115,7 +118,8 @@ d3.csv("./data/data2.csv").then( function(data) {
           .attr("d", d3.line()
             .x(function(d) { return x(d.year); })
             .y(function(d) { return y(+d.n); })
-            (d[1])
+            
+            
           )
     }
 
@@ -129,7 +133,8 @@ d3.csv("./data/data2.csv").then( function(data) {
         .attr("d", d3.line()
           .x(function(d) { return x(d.year); })
           .y(function(d) { return y(+d.n); })
-          (d[1])
+         
+          
       )
     });  
 })

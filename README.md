@@ -26,6 +26,7 @@ https://nvd3.org/livecode/index.html#codemirrorNav \
 
 #smooth animation
 https://d3-graph-gallery.com/line \
+https://www.robinwieruch.de/d3-angular-small-multiples-brushing/ \
 
 #influxdb viz 
 https://www.influxdata.com/blog/visualizing-your-time-series-data-from-influxdb-with-rickshaw/ \
@@ -38,6 +39,7 @@ https://github.com/influxdata/influxdb-php \
 https://influxdata.github.io/influxdb-client-php/ \
 https://github.com/influxdata/influxdb-client-php#queries
 https://thisinterestsme.com/json-data-javascript-php/
+https://github.com/influxdata/influxdb-client-php/blob/master/examples/InfluxDB_18_Example.php \
 
 
 

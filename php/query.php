@@ -1,71 +1,55 @@
 <?php
-// example query
 /**
- * Shows how to query data into `string`
+ * Shows how to use forward compatibility APIs from InfluxDB 1.8.
  */
-
-require __DIR__ . '/../vendor/autoload.php';
+ try {
+require __DIR__ . '/vendor/autoload.php';
 
 use InfluxDB2\Client;
 use InfluxDB2\Point;
 
-$org = 'my-org';
-$bucket = 'my-bucket';
-$token = 'my-token';
+$username = 'admin';
+$password = 'hyfive0815';
 
-//
-// Creating client
-//
+$database = 'hyfive';
+$retentionPolicy = 'autogen';
+
+$bucket = "$database/$retentionPolicy";
+echo json_encode(array("abc"=>'successfuly registered'));
 $client = new Client([
-    "url" => "http://localhost:8086",
-    "token" => $token,
+    "url" => "10.11.180.23:8086",
+    "token" => "$username:$password",
     "bucket" => $bucket,
-    "org" => $org,
+    "org" => "-",
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
-
-//
-// Write test data into InfluxDB
-//
-$writeApi = $client->createWriteApi();
-$pointArray = [];
-
-$dateNow = new DateTime('NOW');
-for ($i = 1; $i <= 10; $i++) {
-    $point = Point::measurement("weather")
-        ->addTag("location", "Sydney")
-        ->addField("temperature", rand(15, 30))
-        ->time($dateNow->getTimestamp());
-    $pointArray[] = $point;
-    $dateNow->sub(new DateInterval('P1D'));
-}
-
-$writeApi->write($pointArray);
-$writeApi->close();
-
-//
-// Get query client
-//
+/*
+SELECT time, TSYTemperatrue, MS5837Temperature,
+MS5837Press, Conducitvity FROM cabin
+WHERE time >= '2022-04-07T07:38:00Z' 
+and time < '2022-04-07T09:38:00Z'
+*/
 $queryApi = $client->createQueryApi();
+$query = "from(bucket: \"{$bucket}\") \
+|> range(start:' + 2022-04-07T07:38:00Z + ', stop: ' + 2022-04-07T09:38:00Z + ' )";
+$tables = $queryApi->query($query);
 
-//
-// Synchronously executes query and return result as unprocessed String
-//
-$result = $queryApi->queryRaw(
-    "from(bucket: \"my-bucket\")
-                |> range(start: 0)
-                |> filter(fn: (r) => r[\"_measurement\"] == \"weather\"
-                                 and r[\"_field\"] == \"temperature\"
-                                 and r[\"location\"] == \"Sydney\")"
-);
+foreach ($tables as $table) {
+    foreach ($table->records as $record) {
+        $time = $record->getTime();
+        $measurement = $record->getMeasurement();
+        $value = $record->getValue();
+        print "$time $measurement is $value\n";
+    }
+}
 header('Content-type:application/json;charset=utf-8');
-$jsonStr = json_encode( $result, JSON_PRETTY_PRINT ) ;
+echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
 
+ } catch (\Throwable $e) {
+    echo $e->getMessage();
+    exit;
+}
 //Encode the data as a JSON string
-
-
-printf("\n\n-------------------------- Query Raw ----------------------------\n\n");
-printf($result);
 
 $registration = $_POST['registration'];
 $name= $_POST['name'];
@@ -77,4 +61,4 @@ if ($registration == "success"){
 }    
 
 
-$client->close();
+//$client->close();
