@@ -3,12 +3,22 @@ const margin = {top: 30, right: 0, bottom: 30, left: 50},
     width = 210 - margin.left - margin.right,
     height = 210 - margin.top - margin.bottom;
 
+// parse the date / time
+var parseTime = d3.timeParse("%Y");
+
 //Read the data
 d3.csv("./data/data2.csv").then( function(data) {
 
+  // format the data
+  data.forEach(function(d) {
+      d.year = parseTime(d.year);
+ 
+
+  });
+
   // group the data: I want to draw one line per group
   const sumstat = d3.group(data, d => d.name) // nest function allows to group the calculation per level of a factor
-
+  
 
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
@@ -24,13 +34,13 @@ d3.csv("./data/data2.csv").then( function(data) {
             `translate(${ margin.left },${margin.top})`);
 
   // Add X axis --> it is a date format
-  const x = d3.scaleLinear()
+  const x = d3.scaleTime()
     .domain(d3.extent(data, function(d) { return d.year; }))
     .range([ 0, width ]);
   xAxis = svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(3));
+    .call(d3.axisBottom(x).ticks(4));
 
   //Add Y axis
   const y = d3.scaleLinear()
@@ -100,41 +110,49 @@ d3.csv("./data/data2.csv").then( function(data) {
       // If no selection, back to initial coordinate. Otherwise, update X axis domain
       if(!extent){
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-        x.domain([])
+        //x.domain(d3.extent(data, function(d) { return d.year; }))
+        x.range([ 0, width ]);
         
         
       }else{
+          
         x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+        //x.domain(d3.extent(data, function(d) { return d.year; }))
         line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
         
       }
 
       // Update axis and line position
       xAxis.transition().duration(1000).call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
       line
           .select('.line')
           .transition()
           .duration(1000)
-          .attr("d", d3.line()
-            .x(function(d) { return x(d.year); })
-            .y(function(d) { return y(+d.n); })
+            .attr("d", function(d){
+             return d3.line()
+             .x(function(d) { return x(d.year); })
+             .y(function(d) { return y(+d.n); })
+             (d[1])
+     
             
-            
-          )
+            })
     }
 
     // If user double click, reinitialize the chart
     svg.on("dblclick",function(){
       x.domain(d3.extent(data, function(d) { return d.year; }))
       xAxis.transition().call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
       line
         .select('.line')
         .transition()
-        .attr("d", d3.line()
+      .attr("d", function(d){
+        return d3.line()
           .x(function(d) { return x(d.year); })
           .y(function(d) { return y(+d.n); })
-         
-          
-      )
+          (d[1])
+     
+      })
     });  
 })
