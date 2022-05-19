@@ -2,7 +2,7 @@
 /**
  * Shows how to use forward compatibility APIs from InfluxDB 1.8.
  */
- try {
+
 require __DIR__ . '/vendor/autoload.php';
 
 use InfluxDB2\Client;
@@ -45,11 +45,8 @@ foreach ($tables as $table) {
 header('Content-type:application/json;charset=utf-8');
 echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
 
-$client->close();
- } catch (\Throwable $e) {
-    echo $e->getMessage();
-    exit;
-}
+
+
 //Encode the data as a JSON string
 
 $registration = $_POST['registration'];
@@ -60,5 +57,6 @@ if ($registration == "success"){
     // some action goes here under php
     echo json_encode(array("abc"=>'successfuly registered'));
 }    
+$client->close();
 
-
+?>
