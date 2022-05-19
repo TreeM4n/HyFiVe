@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class DefaultApi
 {
-    const DEFAULT_TIMEOUT = 10;
+    const DEFAULT_TIMEOUT = 100;
     public $options;
     /** @var Client */
     public $http;

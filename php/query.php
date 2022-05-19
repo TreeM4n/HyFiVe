@@ -9,7 +9,7 @@ use InfluxDB2\Client;
 use InfluxDB2\Point;
 
 $username = 'admin';
-$password = 'hyfive0815';
+$password = 'password';
 
 $database = 'hyfive';
 $retentionPolicy = 'autogen';
@@ -17,7 +17,7 @@ $retentionPolicy = 'autogen';
 $bucket = "$database/$retentionPolicy";
 
 $client = new Client([
-    "url" => "10.11.180.23:8086",
+    "url" => "192.168.178.36:8086",
     "token" => "$username:$password",
     "bucket" => $bucket,
     "org" => "-",
@@ -30,10 +30,9 @@ WHERE time >= '2022-04-07T07:38:00Z'
 and time < '2022-04-07T09:38:00Z'
 */
 $queryApi = $client->createQueryApi();
-$query = "from(bucket: \"{$bucket}\") \
-|> range(start:' + 2022-04-07T07:38:00Z + ', stop: ' + 2022-04-07T09:38:00Z + ' )";
+$query = "from(bucket: \"{$bucket}\") |> range(start:-1h)";
 $tables = $queryApi->query($query);
-
+/*
 foreach ($tables as $table) {
     foreach ($table->records as $record) {
         $time = $record->getTime();
@@ -42,6 +41,7 @@ foreach ($tables as $table) {
         print "$time $measurement is $value\n";
     }
 }
+*/
 header('Content-type:application/json;charset=utf-8');
 echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
    
