@@ -69,7 +69,7 @@
     <a href="javascript:void(0)">Tiefenprofil</a>
     <a onclick="darkmode()"> Darkmode</a>
   </div>
-  <button onclick="queryExample()">JSON request</button>
+  <button onclick="create()">JSON request</button>
 
 
   <div class="row">
@@ -111,9 +111,9 @@
         url: "./php/query.php",    //the page containing php script
         type: "post",    //request type,
         dataType: 'json',
-        data: { registration: "success", name: "xyz", email: "abc@gmail.com" },
+        data: { },
         success: function (result) {
-          console.log(result.abc);
+          console.log("success");
         }
       });
     }

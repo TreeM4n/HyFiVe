@@ -15,7 +15,7 @@ $database = 'hyfive';
 $retentionPolicy = 'autogen';
 
 $bucket = "$database/$retentionPolicy";
-echo json_encode(array("abc"=>'successfuly registered'));
+
 $client = new Client([
     "url" => "10.11.180.23:8086",
     "token" => "$username:$password",
@@ -44,19 +44,7 @@ foreach ($tables as $table) {
 }
 header('Content-type:application/json;charset=utf-8');
 echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
-
-
-
-//Encode the data as a JSON string
-
-$registration = $_POST['registration'];
-$name= $_POST['name'];
-$email= $_POST['email'];
-
-if ($registration == "success"){
-    // some action goes here under php
-    echo json_encode(array("abc"=>'successfuly registered'));
-}    
+   
 $client->close();
 
 ?>
