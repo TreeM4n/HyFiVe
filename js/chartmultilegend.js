@@ -4,21 +4,53 @@ const margin = {top: 30, right: 0, bottom: 30, left: 50},
     height = 210 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%Y");
+//2022-05-12T07:28:47.000Z
+var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 
-//Read the data
-d3.csv("./data/data2.csv").then( function(data) {
+create();
+
+function create() {
+      $.ajax({
+        url: "./php/dummyquery.php",    //the page containing php script
+        type: "post",    //request type,
+        dataType: 'json',
+        data: { },
+        success: function result(result) {
+           
+          data = result;
+
+
 
   // format the data
+  var data_long = [];
   data.forEach(function(d) {
-      d.year = parseTime(d.year);
- 
+      //2022-05-12T07:28:47.000Z: delete Z and T and milliS
+    d.time = d.time.split("T")[0] +" "+ d.time.split("T")[1].split(".")[0]
+    //console.log(d.time)
+    d.time = parseTime(d.time);
+    d.TSYTemperatrue = +d.TSYTemperatrue;
+    d.Oxygen = +d.Oxygen;
+    d.MS5837Press = +d.MS5837Press;
+    d.Conducitvity = +d.Conducitvity;
+    //console.log(d.time)
+
+    for (prop in d) {
+      var y = prop,
+        value = d[prop];
+      data_long.push({
+        x: d.time,
+        y: y,    
+        value: +value
+      });
+     
+    }
+
 
   });
-
+   // console.log(data_long)
   // group the data: I want to draw one line per group
-  const sumstat = d3.group(data, d => d.name) // nest function allows to group the calculation per level of a factor
-  
+  const sumstat = d3.group(data_long, d => d.y) // nest function allows to group the calculation per level of a factor
+   console.log(sumstat)
 
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
@@ -35,7 +67,7 @@ d3.csv("./data/data2.csv").then( function(data) {
 
   // Add X axis --> it is a date format
   const x = d3.scaleTime()
-    .domain(d3.extent(data, function(d) { return d.year; }))
+    .domain(d3.extent(data, function(d) { return d.x; }))
     .range([ 0, width ]);
   xAxis = svg
     .append("g")
@@ -44,10 +76,11 @@ d3.csv("./data/data2.csv").then( function(data) {
 
   //Add Y axis
   const y = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.n; })])
+    .domain([d3.min(data, function(d) { return +d.value; }), d3.max(data, function(d) { return +d.value; })])
     .range([ height, 0 ]);
+
   yAxis = svg.append("g")
-    .call(d3.axisLeft(y).ticks(5));
+    .call(d3.axisLeft(y).ticks(4));
 
      // Add a clipPath: everything out of this area won't be drawn.
     const clip = svg.append("defs").append("svg:clipPath")
@@ -79,8 +112,8 @@ d3.csv("./data/data2.csv").then( function(data) {
       .attr("stroke-width", 1.9)
       .attr("d", function(d){
         return d3.line()
-          .x(function(d) { return x(d.year); })
-          .y(function(d) { return y(+d.n); })
+          .x(function(d) { return x(d.x); })
+          .y(function(d) { return y(+d.value); })
           (d[1])
       })
 
@@ -131,8 +164,8 @@ d3.csv("./data/data2.csv").then( function(data) {
           .duration(1000)
             .attr("d", function(d){
              return d3.line()
-             .x(function(d) { return x(d.year); })
-             .y(function(d) { return y(+d.n); })
+             .x(function(d) { return x(d.x); })
+             .y(function(d) { return y(+d.value); })
              (d[1])
      
             
@@ -141,7 +174,7 @@ d3.csv("./data/data2.csv").then( function(data) {
 
     // If user double click, reinitialize the chart
     svg.on("dblclick",function(){
-      x.domain(d3.extent(data, function(d) { return d.year; }))
+      x.domain(d3.extent(data, function(d) { return d.x; }))
       xAxis.transition().call(d3.axisBottom(x))
       xAxis.call(d3.axisBottom(x).ticks(4));
       line
@@ -149,10 +182,29 @@ d3.csv("./data/data2.csv").then( function(data) {
         .transition()
       .attr("d", function(d){
         return d3.line()
-          .x(function(d) { return x(d.year); })
-          .y(function(d) { return y(+d.n); })
+          .x(function(d) { return x(d.x); })
+          .y(function(d) { return y(+d.value); })
           (d[1])
      
       })
-    });  
+    }); 
+        }
+      });
+    }
+
+//Read the data
+d3.csv("./data/data2.csv").then( function(data) {
+
+  // format the data
+  data.forEach(function(d) {
+      d.year = parseTime(d.year);
+       
+
+  });
+
+  // group the data: I want to draw one line per group
+  const sumstat = d3.group(data, d => d.name) // nest function all
+  //ows to group the calculation per level of a factor
+
+  console.log(sumstat)
 })

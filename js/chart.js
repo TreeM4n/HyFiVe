@@ -1,227 +1,158 @@
 // set the dimensions and margins of the graph
-const margin = {top: 10, right: 30, bottom: 50, left: 60},
-    width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-const svg = d3.select("#my_dataviz")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+const margin = {top: 30, right: 0, bottom: 30, left: 50},
+    width = 210 - margin.left - margin.right,
+    height = 210 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
-// --------------------------------line scale
-// set the ranges
-var x = d3.scaleTime().range([0, width]);
-var y0 = d3.scaleLinear().range([height, 0]);
-var y1 = d3.scaleLinear().range([height, 0]);
-var y2 = d3.scaleLinear().range([height, 0]);
-var y3 = d3.scaleLinear().range([height, 0]);
+var parseTime = d3.timeParse("%Y");
 
-//---------------------------------line define
-// define the 1st line
-var valueline = d3.line()
-    .x(function(d) { return x(d.Time); })
-    .y(function(d) { return y0(d.TSYTemperatrue); });
-
-// define the 2nd line
-var valueline2 = d3.line()
-    .x(function(d) { return x(d.Time); })
-    .y(function(d) { return y1(d.Oxygen); });
-
-// define the 3nd line
-var valueline3 = d3.line()
-    .x(function(d) { return x(d.Time); })
-    .y(function(d) { return y2(d.MS5837Press); });
-
-// define the 4nd line
-var valueline4 = d3.line()
-    .x(function(d) { return x(d.Time); })
-    .y(function(d) { return y3(d.Conducitvity); });
-
-// Get the data
-d3.csv("./data/data.csv").then(function(data) {
+//Read the data
+d3.csv("./data/data2.csv").then( function(data) {
 
   // format the data
   data.forEach(function(d) {
-      d.Time = parseTime(d.Time);
-      d.TSYTemperatrue = +d.TSYTemperatrue;
-      d.Oxygen = +d.Oxygen;
-      d.MS5837Press = +d.MS5837Press;
-      d.Conducitvity = +d.Conducitvity;
+      d.year = parseTime(d.year);
+ 
+
   });
+
+  // group the data: I want to draw one line per group
+  const sumstat = d3.group(data, d => d.name) // nest function allows to group the calculation per level of a factor
   
 
-  // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.Time; }));
-  y0.domain([0, d3.max(data, function(d) {return Math.max(d.TSYTemperatrue);})]); //rot
-  y1.domain([0, d3.max(data, function(d) {return Math.max(d.Oxygen); })]);  //blau
-  y2.domain([0, d3.max(data, function(d) {return Math.max(d.MS5837Press); })]); //schwarz
-  y3.domain([0, d3.max(data, function(d) {return Math.max(d.Conducitvity); })]); //grün
 
+  // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
+  const svg = d3.select("#my_dataviz")
+    .selectAll("uniqueChart")
+    .data(sumstat)
+    .enter()
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            `translate(${ margin.left },${margin.top})`);
 
-  
+  // Add X axis --> it is a date format
+  const x = d3.scaleTime()
+    .domain(d3.extent(data, function(d) { return d.year; }))
+    .range([ 0, width ]);
+  xAxis = svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x).ticks(4));
 
-  //------------------------------------create lines 
-  
-  // Add the valueline path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "red")
-      .attr("d", valueline)
-      .attr("id", "TSYTemperatrue");
+  //Add Y axis
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return +d.n; })])
+    .range([ height, 0 ]);
+  yAxis = svg.append("g")
+    .call(d3.axisLeft(y).ticks(5));
 
-  // Add the valueline2 path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "blue")
-      .attr("id", "Oxygen")
-      .attr("d", valueline2);
+     // Add a clipPath: everything out of this area won't be drawn.
+    const clip = svg.append("defs").append("svg:clipPath")
+        .attr("id", "clip")
+        .append("svg:rect")
+        .attr("width", width )
+        .attr("height", height )
+        .attr("x", 0)
+        .attr("y", 0);
 
- // Add the valueline3 path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("id", "MS5837Press")
-      .style("stroke", "black")
-      .attr("d", valueline3);
+         // Add brushing
+    const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
+        .extent( [ [0,0], [width,height] ] )  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+        .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
 
- // Add the valueline4 path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("id", "Conducitvity")
-      .style("stroke", "green")
-      .attr("d", valueline4);
-    //console.log(data.Conducitvity)
+    // Create the line variable: where both the line and the brush take place
+    const line = svg.append('g')
+      .attr("clip-path", "url(#clip)")
+  // color palette
+  const color = d3.scaleOrdinal()
+    //.domain(allKeys)
+    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
-  //----------------------------------add axis
-  // Add the X Axis
-  svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-      
+  // Draw the line
+  line.append("path")
+  .attr("class","line")
+      .attr("fill", "none")
+      .attr("stroke", function(d){ return color(d[0]) })
+      .attr("stroke-width", 1.9)
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.year); })
+          .y(function(d) { return y(+d.n); })
+          (d[1])
+      })
 
-  // Add the Y0 Axis
-  svg.append("g")
-      .attr("class", "axisRed")
-      .call(d3.axisLeft(y0))
-      .attr("id", "TSYTemperatrueAxis");
+   // Add the brushing
+    line
+      .append("g")
+        .attr("class", "brush")
+        .call(brush);
 
-  // Add the Y1 Axis
-  svg.append("g")
-      .attr("class", "axisSteelBlue")
-      .attr("transform", "translate( " + width + ", 0 )")
-      .call(d3.axisRight(y1))
-      .attr("id", "OxygenAxis");
+    // A function that set idleTimeOut to null
+    let idleTimeout
+    function idled() { idleTimeout = null; }
+  // Add titles
+  svg
+    .append("text")
+    .attr("text-anchor", "start")
+    .attr("y", -5)
+    .attr("x", 0)
+    .text(function(d){ return(d[0])})
+    .style("fill", function(d){ return color(d[0]) })
+// A function that update the chart for given boundaries
+    function updateChart(event,d) {
 
-  // Add the Y2 Axis
-  svg.append("g")
-      .attr("class", "axisBlack")
-      .call(d3.axisRight(y2))
-      .attr("id", "MS5837PressAxis");
+      // What are the selected boundaries?
+      extent = event.selection;
+      //console.log(extent);
+      // If no selection, back to initial coordinate. Otherwise, update X axis domain
+      if(!extent){
+        if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+        //x.domain(d3.extent(data, function(d) { return d.year; }))
+        x.range([ 0, width ]);
+        
+        
+      }else{
+          
+        x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+        //x.domain(d3.extent(data, function(d) { return d.year; }))
+        line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+        
+      }
 
-  // Add the Y3 Axis
-  svg.append("g")
-      .attr("class", "axisGreen")
-      .attr("transform", "translate( " + width + ", 0 )")
-      .call(d3.axisLeft(y3))
-      .attr("id", "ConducitvityAxis");
+      // Update axis and line position
+      xAxis.transition().duration(1000).call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
+      line
+          .select('.line')
+          .transition()
+          .duration(1000)
+            .attr("d", function(d){
+             return d3.line()
+             .x(function(d) { return x(d.year); })
+             .y(function(d) { return y(+d.n); })
+             (d[1])
+     
+            
+            })
+    }
 
-  //------------------------------------ add legends with toggle
-  //number variables
-  
-  legendSpace = width/5;
-
-    svg.append("text")
-          .attr("x", (legendSpace/2)+0*legendSpace-10)  // space legend
-          .attr("y", height + (margin.bottom/2)+ 20)
-          .attr("class", "legend")    // style the legend
-          .style("fill","red")
-          .attr("id", "TTSYTemperatrueLabel")
-          .on("click", function(){
-              // Determine if current line is visible 
-              var active   = TSYTemperatrue.active ? false : true,
-              newOpacity = active ? 0.2 : 1; 
-              //console.log("true");
-              // Hide or show the elements based on the ID
-              d3.select("#TSYTemperatrue").style("opacity", newOpacity);
-              d3.select("#TSYTemperatrueAxis").style("opacity", newOpacity);
-              d3.select("#TTSYTemperatrueLabel").style("opacity", newOpacity);
-                  
-              // Update whether or not the elements are active
-              TSYTemperatrue.active = active;
-              })  
-          .text("Tempature"); 
-
-    svg.append("text")
-          .attr("x", (legendSpace/2)+1*legendSpace)  // space legend
-          .attr("y", height + (margin.bottom/2)+ 20)
-          .attr("class", "legend")    // style the legend
-          .style("fill","SteelBlue")
-          .attr("id", "OxygenLabel")
-          .on("click", function(){
-              // Determine if current line is visible 
-              var active   = Oxygen.active ? false : true,
-              newOpacity = active ? 0.2 : 1; 
-              //console.log("true");
-              // Hide or show the elements based on the ID
-              d3.select("#Oxygen").style("opacity", newOpacity);
-              d3.select("#OxygenAxis").style("opacity", newOpacity);
-              d3.select("#OxygenLabel").style("opacity", newOpacity);
-                  
-              // Update whether or not the elements are active
-              Oxygen.active = active;
-              })  
-          .text("Oxygen"); 
-
-    svg.append("text")
-          .attr("x", (legendSpace/2)+2*legendSpace)  // space legend
-          .attr("y", height + (margin.bottom/2)+ 20)
-          .attr("class", "legend")    // style the legend
-          .style("fill","black")
-          .attr("id", "MS5837PressLabel")
-          .on("click", function(){
-              // Determine if current line is visible 
-              var active   = MS5837Press.active ? false : true,
-              newOpacity = active ? 0.2 : 1; 
-              //console.log("true");
-              // Hide or show the elements based on the ID
-              d3.select("#MS5837Press").style("opacity", newOpacity);
-              d3.select("#MS5837PressAxis").style("opacity", newOpacity);
-              d3.select("#MS5837PressLabel").style("opacity", newOpacity);
-                  
-              // Update whether or not the elements are active
-              MS5837Press.active = active;
-              })  
-          .text("Pressure"); 
-
-    svg.append("text")
-          .attr("x", (legendSpace/2)+3*legendSpace)  // space legend
-          .attr("y", height + (margin.bottom/2)+ 20)
-          .attr("class", "legend")    // style the legend
-          .style("fill","green")
-          .attr("id", "ConducitvityLabel")
-          .on("click", function(){
-              // Determine if current line is visible 
-              var active   = Conducitvity.active ? false : true,
-              newOpacity = active ? 0.2 : 1; 
-              //console.log("true");
-              // Hide or show the elements based on the ID
-              d3.select("#Conducitvity").style("opacity", newOpacity);
-              d3.select("#ConducitvityAxis").style("opacity", newOpacity);
-              d3.select("#ConducitvityLabel").style("opacity", newOpacity);
-                  
-              // Update whether or not the elements are active
-              Conducitvity.active = active;
-              })  
-          .text("Conductivity"); 
-    
-    //valuesbytime = d3.group(data,d=> d.Time);
-    //console.log(valuesbytime);
+    // If user double click, reinitialize the chart
+    svg.on("dblclick",function(){
+      x.domain(d3.extent(data, function(d) { return d.year; }))
+      xAxis.transition().call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
+      line
+        .select('.line')
+        .transition()
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.year); })
+          .y(function(d) { return y(+d.n); })
+          (d[1])
+     
+      })
+    });  
 })

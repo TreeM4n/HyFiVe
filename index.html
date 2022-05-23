@@ -106,18 +106,6 @@
 
     }
 
-    function create() {
-      $.ajax({
-        url: "./php/query.php",    //the page containing php script
-        type: "post",    //request type,
-        dataType: 'json',
-        data: { },
-        success: function (result) {
-          console.log("success");
-        }
-      });
-    }
-
     // When the user scrolls the page, execute myFunction
     window.onscroll = function () { myFunction() };
 
