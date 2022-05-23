@@ -36,7 +36,7 @@ function create() {
 
     for (prop in d) {
       var y = prop,
-        value = d[prop];
+        value = +d[prop];
       data_long.push({
         x: d.time,
         y: y,    
@@ -44,12 +44,13 @@ function create() {
       });
      
     }
-
+    //cheat
+    data  = data_long;
 
   });
    // console.log(data_long)
   // group the data: I want to draw one line per group
-  const sumstat = d3.group(data_long, d => d.y) // nest function allows to group the calculation per level of a factor
+  const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
    console.log(sumstat)
 
 
@@ -76,7 +77,7 @@ function create() {
 
   //Add Y axis
   const y = d3.scaleLinear()
-    .domain([d3.min(data, function(d) { return +d.value; }), d3.max(data, function(d) { return +d.value; })])
+    .domain([0, d3.max(data, function(d) { return +d.value; })])
     .range([ height, 0 ]);
 
   yAxis = svg.append("g")
