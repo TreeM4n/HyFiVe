@@ -47,6 +47,7 @@ https://github.com/influxdata/influxdb-client-php/blob/master/examples/InfluxDB_
 https://blog.scottlogic.com/2017/04/05/interactive-responsive-small-multiples.html \
 https://bl.ocks.org/ColinEberhardt/3c780088c363d1515403f50a87a87121 \
 https://vestride.github.io/Shuffle/adding-removing \
+https://stackoverflow.com/questions/53000632/d3-js-different-axes-for-different-domains-for-small-multiples \
 
 https://bl.ocks.org/mbostock/3035090 \
 https://d3-graph-gallery.com/graph/basic_datamanipulation.html \
