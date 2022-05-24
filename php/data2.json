@@ -1,0 +1,41 @@
+[
+    {
+        "time": "2022-05-12T07:28:46.000Z",
+        "deployment": "14",
+        "TSYTemperatrue": 23.63,
+        "MS5837Temperature": 24.21,
+        "MS5837Press": 1038.2,
+        "Conducitvity": 686.2,
+        "Oxygen": 0,
+        "Longitude": null,
+        "Latitude": null,
+        "Speed": null,
+        "Course": null
+    },
+    {
+        "time": "2022-05-12T07:28:47.000Z",
+        "deployment": "14",
+        "TSYTemperatrue": 23.63,
+        "MS5837Temperature": 24.21,
+        "MS5837Press": 1038.2,
+        "Conducitvity": 686.8,
+        "Oxygen": 0,
+        "Longitude": null,
+        "Latitude": null,
+        "Speed": null,
+        "Course": null
+    },
+    {
+        "time": "2022-05-12T07:28:48.000Z",
+        "deployment": "14",
+        "TSYTemperatrue": 23.62,
+        "MS5837Temperature": 24.21,
+        "MS5837Press": 1037.9,
+        "Conducitvity": 686.9,
+        "Oxygen": 0,
+        "Longitude": null,
+        "Latitude": null,
+        "Speed": null,
+        "Course": null
+    }
+]
