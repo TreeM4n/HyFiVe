@@ -19,7 +19,8 @@ function create() {
 
       data = result;
 
-
+      var blacklist = ["TSYTemperatrue","MS5837Press","time","deployment","MS5837Temperature",
+      "MS5837Press","Longitude","Latitude","Speed","Course"] 
 
       // format the data
       var data_long = [];
@@ -28,12 +29,16 @@ function create() {
         d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
         d.time = parseTime(d.time);
         d.TSYTemperatrue = +d.TSYTemperatrue;
+        d.Temperature = +d.TSYTemperatrue;
         d.Oxygen = +d.Oxygen;
         d.MS5837Press = +d.MS5837Press;
+        d.Pressure = +d.MS5837Press;
         d.Conducitvity = +d.Conducitvity;
 
 
         for (prop in d) {
+           var a = [prop];
+           if (a.some(r=> blacklist.indexOf(r) >= 0)) {continue;}
           var y = prop,
             value = +d[prop];
 
@@ -46,13 +51,12 @@ function create() {
         }
         //cheat
         data = data_long;
-        console.log(data)
-        console.log(data_long)
+    
       });
       // console.log(data_long)
       // group the data: I want to draw one line per group
       const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
-      console.log(sumstat)
+      //console.log(sumstat)
 
 
       // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
@@ -85,7 +89,7 @@ function create() {
             return +d[prop]; }})])
             */
         //.domain([0, d3.max(sumstat, function (d) {console.log(+d.value); return +d.value; })])
-        .domain([0, d3.max(data, function (d) { return 5; })])
+        .domain([0, d3.max(data, function (d) { return 2000; })])
         .range([height, 0]);
 
       yAxis = svg
@@ -189,7 +193,10 @@ function create() {
 
       // If user double click, reinitialize the chart
       svg.on("dblclick", function () {
-        x.domain(d3.extent(data, function (d) { return d.x; }))
+         
+         //data gets overriden by result = data in map.js need fix 
+
+        x.domain(d3.extent(data, function (d) { ;return d.x; }))
         xAxis.transition().call(d3.axisBottom(x))
         xAxis.call(d3.axisBottom(x).ticks(4));
         line
@@ -206,7 +213,7 @@ function create() {
     }
   });
 }
-
+/*
 //Read the data
 d3.csv("./data/data2.csv").then(function (data) {
 
@@ -223,3 +230,4 @@ d3.csv("./data/data2.csv").then(function (data) {
 
   console.log(sumstat)
 })
+*/
