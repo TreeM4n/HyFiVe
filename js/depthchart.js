@@ -5,12 +5,16 @@ const margin = {top: 30, right: 0, bottom: 30, left: 50},
 
 // parse the date / time
 var parseTime = d3.timeParse("%Y");
+var depthdata;
 
+export function setdepthdata(depthdata){
+    depthdata = depthdata;
+    depthchart();
+}
 //Read the data
-d3.csv("./data/data2.csv").then( function(data) {
-
+function depthchart() {
   // format the data
-  data.forEach(function(d) {
+  depthdata.forEach(function(d) {
       d.year = parseTime(d.year);
  
 
@@ -155,4 +159,4 @@ d3.csv("./data/data2.csv").then( function(data) {
      
       })
     });  
-})
+}
