@@ -54,8 +54,7 @@ function create() {
 
       });
       createsmallmultiple(data)
-      function createsmallmultiple(data)
-      {
+      function createsmallmultiple(data) {
         // console.log(data_long)
         // group the data: I want to draw one line per group
         const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
@@ -97,9 +96,17 @@ function create() {
 
         yAxis = svg
           .append("g")
-          .each(function (d) {
+          .each(function (d, i) {
+            //console.log(d)
+            var min = d3.min(d[1], function (d) { return +d.value; })
+            var max = d3.max(d[1], function (d) { return +d.value; })
+            var y2 = d3.scaleLinear()
+              .domain([min*5/6, max*7/6])
+              .range([height, 0]);
             var svg1 = d3.select(this);
-            svg1.call(d3.axisLeft(y).ticks(4));
+            svg1.call(d3.axisLeft(y2).ticks(6));
+
+
           })
 
 
@@ -132,10 +139,29 @@ function create() {
           .attr("stroke", function (d) { return color(d[0]) })
           .attr("stroke-width", 1.9)
           .attr("d", function (d) {
-            return d3.line()
+            
+            var min = d3.min(d[1], function (d) { return +d.value;})
+            var max = d3.max(d[1], function (d) { return +d.value; })
+
+            var mapY = d3.scaleLinear()
+            .domain([min*5/6, max*7/6])
+            .range([height, 0])
+
+            var lineGen = d3.line()
+            .x(function (d) { return x(d.x); })
+            .y(d=> {console.log(mapY(+d.value)); 
+              return mapY(+d.value);})
+            (d[1])
+              /*
+            var lineGen2 = d3.line()
               .x(function (d) { return x(d.x); })
-              .y(function (d) { return y(+d.value); })
+              .y(function (d) {//console.log(y(+d.value));
+                 return y(+d.value); })
               (d[1])
+              
+            //console.log(lineGen) */
+            return lineGen;
+            
           })
 
         // Add the brushing
@@ -185,11 +211,21 @@ function create() {
             .transition()
             .duration(1000)
             .attr("d", function (d) {
-              return d3.line()
-                .x(function (d) { return x(d.x); })
-                .y(function (d) { return y(+d.value); })
-                (d[1])
 
+              var min = d3.min(d[1], function (d) { return +d.value;})
+              var max = d3.max(d[1], function (d) { return +d.value; })
+  
+              var mapY = d3.scaleLinear()
+              .domain([min*5/6, max*7/6])
+              .range([height, 0])
+  
+              var lineGen = d3.line()
+              .x(function (d) { return x(d.x); })
+              .y(d=> {console.log(mapY(+d.value)); 
+                return mapY(+d.value);})
+              (d[1])
+
+              return lineGen
 
             })
         }
@@ -206,10 +242,21 @@ function create() {
             .select('.line')
             .transition()
             .attr("d", function (d) {
-              return d3.line()
-                .x(function (d) { return x(d.x); })
-                .y(function (d) { return y(+d.value); })
-                (d[1])
+              
+              var min = d3.min(d[1], function (d) { return +d.value;})
+              var max = d3.max(d[1], function (d) { return +d.value; })
+  
+              var mapY = d3.scaleLinear()
+              .domain([min*5/6, max*7/6])
+              .range([height, 0])
+  
+              var lineGen = d3.line()
+              .x(function (d) { return x(d.x); })
+              .y(d=> {console.log(mapY(+d.value)); 
+                return mapY(+d.value);})
+              (d[1])
+
+              return lineGen
 
             })
         });
