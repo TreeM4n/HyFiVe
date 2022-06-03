@@ -1,8 +1,7 @@
 import { mapfnc } from './map.js';
-import {setdepthdata} from './depthchart.js'
 
 var dataquery = [];
- 
+
 export function query() {
   $.ajax({
     url: "./php/dummyquery.php",    //the page containing php script
@@ -13,17 +12,13 @@ export function query() {
       // console.log("query")
       dataquery = result;
       try {
-          mapfnc(dataquery);
-} catch (error) {
-  console.error(error);
-  
-}
-       try {
-          setdepthdata(dataquery);
-} catch (error) {
-  console.error(error);
-}
+        mapfnc(dataquery);
+      } catch (error) {
+        console.error(error);
+
+      }
     }
-    })};
+  })
+};
 
 query();

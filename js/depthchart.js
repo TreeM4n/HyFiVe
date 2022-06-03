@@ -1,162 +1,118 @@
+
+
 // set the dimensions and margins of the graph
-const margin = {top: 30, right: 0, bottom: 30, left: 50},
-    width = 210 - margin.left - margin.right,
-    height = 210 - margin.top - margin.bottom;
+const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%Y");
-var depthdata;
+var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+var depthdata = [];
+var data_long = [];
 
-export function setdepthdata(depthdata){
-    depthdata = depthdata;
-    depthchart();
-}
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+depthchart();
 //Read the data
 function depthchart() {
-  // format the data
-  depthdata.forEach(function(d) {
-      d.year = parseTime(d.year);
- 
 
-  });
+  $.ajax({
+    url: "./php/dummyquery.php",    //the page containing php script
+    type: "post",    //request type,
+    dataType: 'json',
+    data: {},
+    success: function result(result) {
 
-  // group the data: I want to draw one line per group
-  const sumstat = d3.group(data, d => d.name) // nest function allows to group the calculation per level of a factor
-  
+      depthdata = result;
+
+      var blacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
+        "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity"]
+
+      // format the data
 
 
-  // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
-  const svg = d3.select("#my_dataviz")
-    .selectAll("uniqueChart")
-    .data(sumstat)
-    .enter()
-    .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            `translate(${ margin.left },${margin.top})`);
+      depthdata.forEach(function (d) {
+        //2022-05-12T07:28:47.000Z: delete Z and T and milliS
+        d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+        d.time = parseTime(d.time);
+        d.TSYTemperatrue = +d.TSYTemperatrue;
+        d.Temperature = +d.TSYTemperatrue;
+        d.Oxygen = +d.Oxygen;
+        d.MS5837Press = +d.MS5837Press;
+        //d.Pressure = +d.MS5837Press;
+        d.Conducitvity = +d.Conducitvity;
 
-  // Add X axis --> it is a date format
-  const x = d3.scaleTime()
-    .domain(d3.extent(data, function(d) { return d.year; }))
-    .range([ 0, width ]);
-  xAxis = svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(4));
+        //shorten data
+        for (prop in d) {
+          var a = [prop];
+          if (a.some(r => blacklist.indexOf(r) >= 0)) { continue; }
 
-  //Add Y axis
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.n; })])
-    .range([ height, 0 ]);
-  yAxis = svg.append("g")
-    .call(d3.axisLeft(y).ticks(5));
+          var y = prop,
+            value = +d[prop];
 
-     // Add a clipPath: everything out of this area won't be drawn.
-    const clip = svg.append("defs").append("svg:clipPath")
-        .attr("id", "clip")
-        .append("svg:rect")
-        .attr("width", width )
-        .attr("height", height )
-        .attr("x", 0)
-        .attr("y", 0);
+          data_long.push({
+            y: d.MS5837Press,
+            time: d.time,
+            x: +value
+          });
 
-         // Add brushing
-    const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
-        .extent( [ [0,0], [width,height] ] )  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-        .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
+        }
+        //cheat
 
-    // Create the line variable: where both the line and the brush take place
-    const line = svg.append('g')
-      .attr("clip-path", "url(#clip)")
-  // color palette
-  const color = d3.scaleOrdinal()
-    //.domain(allKeys)
-    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+        depthdata = data_long;
 
-  // Draw the line
-  line.append("path")
-  .attr("class","line")
-      .attr("fill", "none")
-      .attr("stroke", function(d){ return color(d[0]) })
-      .attr("stroke-width", 1.9)
-      .attr("d", function(d){
-        return d3.line()
-          .x(function(d) { return x(d.year); })
-          .y(function(d) { return y(+d.n); })
-          (d[1])
-      })
 
-   // Add the brushing
-    line
-      .append("g")
-        .attr("class", "brush")
-        .call(brush);
+      });
 
-    // A function that set idleTimeOut to null
-    let idleTimeout
-    function idled() { idleTimeout = null; }
-  // Add titles
-  svg
-    .append("text")
-    .attr("text-anchor", "start")
-    .attr("y", -5)
-    .attr("x", 0)
-    .text(function(d){ return(d[0])})
-    .style("fill", function(d){ return color(d[0]) })
-// A function that update the chart for given boundaries
-    function updateChart(event,d) {
+      console.log(data_long)
+      createdepthchart(depthdata)
 
-      // What are the selected boundaries?
-      extent = event.selection;
-      //console.log(extent);
-      // If no selection, back to initial coordinate. Otherwise, update X axis domain
-      if(!extent){
-        if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-        //x.domain(d3.extent(data, function(d) { return d.year; }))
-        x.range([ 0, width ]);
-        
-        
-      }else{
-          
-        x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
-        //x.domain(d3.extent(data, function(d) { return d.year; }))
-        line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
-        
+      function createdepthchart(data) {
+
+        const x = d3.scaleLinear()
+          .domain(d3.extent(data, d => d.x))
+          .range([0, width]);
+        svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+        // Add Y axis
+        const y = d3.scaleLinear()
+          .domain([d3.min(data, function (d) { return +d.y; }) * 5/6, d3.max(data, function (d) { return +d.y; }) *7/6])
+          .range([height, 0]);
+        svg.append("g")
+          .call(d3.axisLeft(y));
+        // Add the line
+        svg.append("path")
+          .datum(data)
+          .attr("fill", "none")
+          .attr("stroke", "#69b3a2")
+          .attr("stroke-width", 1.5)
+          .attr("d", d3.line()
+            .curve(d3.curveBasis)
+            .x(d => x(d.x))
+            .y(d => y(d.y))
+          )
+        /*
+        // Add the points
+        svg
+          .append("g")
+          .selectAll("dot")
+          .data(data)
+          .join("circle")
+          .attr("cx", d => x(d.x))
+          .attr("cy", d => y(d.y))
+          .attr("r", 5)
+          .attr("fill", "#69b3a2")
+        */
       }
 
-      // Update axis and line position
-      xAxis.transition().duration(1000).call(d3.axisBottom(x))
-      xAxis.call(d3.axisBottom(x).ticks(4));
-      line
-          .select('.line')
-          .transition()
-          .duration(1000)
-            .attr("d", function(d){
-             return d3.line()
-             .x(function(d) { return x(d.year); })
-             .y(function(d) { return y(+d.n); })
-             (d[1])
-     
-            
-            })
     }
-
-    // If user double click, reinitialize the chart
-    svg.on("dblclick",function(){
-      x.domain(d3.extent(data, function(d) { return d.year; }))
-      xAxis.transition().call(d3.axisBottom(x))
-      xAxis.call(d3.axisBottom(x).ticks(4));
-      line
-        .select('.line')
-        .transition()
-      .attr("d", function(d){
-        return d3.line()
-          .x(function(d) { return x(d.year); })
-          .y(function(d) { return y(+d.n); })
-          (d[1])
-     
-      })
-    });  
-}
+  })
+};
