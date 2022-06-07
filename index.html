@@ -17,6 +17,7 @@
   <script src="./lib/d3.min.js"></script>
   <!-- Load own scripts -->
   <script src="./js/jsquery.js" type="module"></script>
+ 
   <!-- Load node js and query api scripts -->
   <!-- Load leaflet to draw map -->
   <link rel="stylesheet" href="./css/leaflet.css" />
@@ -69,10 +70,11 @@
     <a class="active" href="./index.html">VertikalProfil</a>
     <a href="./depthprofil.html">Tiefenprofil</a>
     <a onclick="darkmode()"> Darkmode</a>
+    
 
   </div>
   <!-- <button onclick="create()">JSON request</button> -->
-  
+   
 
   <div class="row">
     <div class="column">
@@ -83,13 +85,14 @@
     </div>
     <div class="column">
       <div id="map"></div>
-      <script src="./js/map.js" type="module" defer ></script>
+      
       <!-- <script src="./js/query.ts" type="text/typescript"></script> -->
 
     </div>
   </div>
 
   <script>
+  
     // dark mode switch
     var toggle = true;
     function darkmode() {
@@ -124,8 +127,11 @@
         navbar.classList.remove("sticky");
       }
     }
-
-
+    /*
+    function map2(){
+    setmapview(54.548698, 20.769660);
+    }
+    */
   </script>
 </body>
 

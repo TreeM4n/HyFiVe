@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
-  width = 210 - margin.left - margin.right,
-  height = 210 - margin.top - margin.bottom;
+  width = 280 - margin.left - margin.right,
+  height = 280 - margin.top - margin.bottom;
 
 // parse the date / time
 //2022-05-12T07:28:47.000Z
@@ -149,7 +149,7 @@ function create() {
 
             var lineGen = d3.line()
             .x(function (d) { return x(d.x); })
-            .y(d=> {console.log(mapY(+d.value)); 
+            .y(d=> {//console.log(mapY(+d.value)); 
               return mapY(+d.value);})
             (d[1])
               /*
@@ -221,7 +221,7 @@ function create() {
   
               var lineGen = d3.line()
               .x(function (d) { return x(d.x); })
-              .y(d=> {console.log(mapY(+d.value)); 
+              .y(d=> {//console.log(mapY(+d.value)); 
                 return mapY(+d.value);})
               (d[1])
 
@@ -252,7 +252,7 @@ function create() {
   
               var lineGen = d3.line()
               .x(function (d) { return x(d.x); })
-              .y(d=> {console.log(mapY(+d.value)); 
+              .y(d=> {//console.log(mapY(+d.value)); 
                 return mapY(+d.value);})
               (d[1])
 

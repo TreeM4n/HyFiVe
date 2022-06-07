@@ -1,5 +1,3 @@
-import { query } from './jsquery.js';
-
 
 // initialize the map
 var map = L.map('map').setView([54.548698, 10.769660], 10);
@@ -93,7 +91,7 @@ export function mapfnc(dataquery) {
           var pointA = new L.LatLng(lat1, lon1);
           var pointB = new L.LatLng(lat2, lon2);
           var pointList = [pointA, pointB];
-          var line = new L.Polyline(pointList).bindPopup(datamap.time);
+          var line = new L.Polyline(pointList).bindPopup("eh lmao");
           line.addTo(map);
         }
       }
@@ -103,3 +101,8 @@ export function mapfnc(dataquery) {
 
 
 }
+
+export function setmapview () {
+
+  L.map('map').flyToBounds([54.548698, 20.769660],10);
+  }
