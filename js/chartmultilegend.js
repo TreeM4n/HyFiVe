@@ -1,3 +1,5 @@
+
+
 // set the dimensions and margins of the graph
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
   width = 280 - margin.left - margin.right,
@@ -101,7 +103,7 @@ function create() {
             var min = d3.min(d[1], function (d) { return +d.value; })
             var max = d3.max(d[1], function (d) { return +d.value; })
             var y2 = d3.scaleLinear()
-              .domain([min*5/6, max*7/6])
+              .domain([min * 5 / 6, max * 7 / 6])
               .range([height, 0]);
             var svg1 = d3.select(this);
             svg1.call(d3.axisLeft(y2).ticks(6));
@@ -139,29 +141,30 @@ function create() {
           .attr("stroke", function (d) { return color(d[0]) })
           .attr("stroke-width", 1.9)
           .attr("d", function (d) {
-            
-            var min = d3.min(d[1], function (d) { return +d.value;})
+
+            var min = d3.min(d[1], function (d) { return +d.value; })
             var max = d3.max(d[1], function (d) { return +d.value; })
 
             var mapY = d3.scaleLinear()
-            .domain([min*5/6, max*7/6])
-            .range([height, 0])
+              .domain([min * 5 / 6, max * 7 / 6])
+              .range([height, 0])
 
             var lineGen = d3.line()
-            .x(function (d) { return x(d.x); })
-            .y(d=> {//console.log(mapY(+d.value)); 
-              return mapY(+d.value);})
-            (d[1])
-              /*
-            var lineGen2 = d3.line()
               .x(function (d) { return x(d.x); })
-              .y(function (d) {//console.log(y(+d.value));
-                 return y(+d.value); })
+              .y(d => {//console.log(mapY(+d.value)); 
+                return mapY(+d.value);
+              })
               (d[1])
-              
-            //console.log(lineGen) */
-            return lineGen;
+            /*
+          var lineGen2 = d3.line()
+            .x(function (d) { return x(d.x); })
+            .y(function (d) {//console.log(y(+d.value));
+               return y(+d.value); })
+            (d[1])
             
+          //console.log(lineGen) */
+            return lineGen;
+
           })
 
         // Add the brushing
@@ -212,18 +215,19 @@ function create() {
             .duration(1000)
             .attr("d", function (d) {
 
-              var min = d3.min(d[1], function (d) { return +d.value;})
+              var min = d3.min(d[1], function (d) { return +d.value; })
               var max = d3.max(d[1], function (d) { return +d.value; })
-  
+
               var mapY = d3.scaleLinear()
-              .domain([min*5/6, max*7/6])
-              .range([height, 0])
-  
+                .domain([min * 5 / 6, max * 7 / 6])
+                .range([height, 0])
+
               var lineGen = d3.line()
-              .x(function (d) { return x(d.x); })
-              .y(d=> {//console.log(mapY(+d.value)); 
-                return mapY(+d.value);})
-              (d[1])
+                .x(function (d) { return x(d.x); })
+                .y(d => {//console.log(mapY(+d.value)); 
+                  return mapY(+d.value);
+                })
+                (d[1])
 
               return lineGen
 
@@ -242,19 +246,20 @@ function create() {
             .select('.line')
             .transition()
             .attr("d", function (d) {
-              
-              var min = d3.min(d[1], function (d) { return +d.value;})
+
+              var min = d3.min(d[1], function (d) { return +d.value; })
               var max = d3.max(d[1], function (d) { return +d.value; })
-  
+
               var mapY = d3.scaleLinear()
-              .domain([min*5/6, max*7/6])
-              .range([height, 0])
-  
+                .domain([min * 5 / 6, max * 7 / 6])
+                .range([height, 0])
+
               var lineGen = d3.line()
-              .x(function (d) { return x(d.x); })
-              .y(d=> {//console.log(mapY(+d.value)); 
-                return mapY(+d.value);})
-              (d[1])
+                .x(function (d) { return x(d.x); })
+                .y(d => {//console.log(mapY(+d.value)); 
+                  return mapY(+d.value);
+                })
+                (d[1])
 
               return lineGen
 
@@ -264,6 +269,8 @@ function create() {
     }
   });
 }
+
+
 /*
 //Read the data
 d3.csv("./data/data2.csv").then(function (data) {

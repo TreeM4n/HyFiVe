@@ -9,22 +9,22 @@
 
 <head>
   <title>HyFiVe</title>
-  
+
   <!-- Load jQuery to read data -->
   <script src="./lib/jquery-3.6.0.js"></script>
   <!-- Load D3 to draw data graphs -->
   <script src="./lib/d3.js"></script>
   <script src="./lib/d3.min.js"></script>
-  <!-- Load own scripts -->
-  <script src="./js/jsquery.js" type="module"></script>
- 
   <!-- Load node js and query api scripts -->
   <!-- Load leaflet to draw map -->
   <link rel="stylesheet" href="./css/leaflet.css" />
   <link rel=”stylesheet” type=”text/css” href=”./css/hyfive.css”>
   <link rel="stylesheet" href="./css/hyfive.css" />
   <script src="./lib/leaflet.js"></script>
-
+  <!-- Load own scripts -->
+  <script src="./js/map.js" defer type="text/javascript"></script>
+  <script src="./js/jsquery.js" type="module"></script>
+  <script src="./js/chartmultilegend.js" defer type="text/javascript"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
 
@@ -70,29 +70,29 @@
     <a class="active" href="./index.html">VertikalProfil</a>
     <a href="./depthprofil.html">Tiefenprofil</a>
     <a onclick="darkmode()"> Darkmode</a>
-    
+
 
   </div>
   <!-- <button onclick="create()">JSON request</button> -->
-   
+   <button onclick="good()">JSON request</button> 
 
   <div class="row">
     <div class="column">
       <div id="my_dataviz"></div>
 
-      <script src="./js/chartmultilegend.js" defer type="text/javascript"></script>
+
 
     </div>
     <div class="column">
       <div id="map"></div>
-      
+
       <!-- <script src="./js/query.ts" type="text/typescript"></script> -->
 
     </div>
   </div>
 
   <script>
-  
+    
     // dark mode switch
     var toggle = true;
     function darkmode() {
@@ -111,7 +111,7 @@
     }
 
     // When the user scrolls the page, execute myFunction
-    window.onscroll = function () { stickybar() };
+    window.onscroll = function () { stickybar(); };
 
     // Get the navbar
     var navbar = document.getElementById("navbar");
@@ -123,15 +123,14 @@
     function stickybar() {
       if (window.pageYOffset >= sticky) {
         navbar.classList.add("sticky")
+
       } else {
+
         navbar.classList.remove("sticky");
       }
     }
-    /*
-    function map2(){
-    setmapview(54.548698, 20.769660);
-    }
-    */
+
+
   </script>
 </body>
 

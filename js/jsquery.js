@@ -1,8 +1,10 @@
-import { mapfnc } from './map.js';
+import * as mapJs from './map.js';
 
 var dataquery = [];
 
-export function query() {
+
+
+function query() {
   $.ajax({
     url: "./php/dummyquery.php",    //the page containing php script
     type: "post",    //request type,
@@ -12,7 +14,7 @@ export function query() {
       // console.log("query")
       dataquery = result;
       try {
-        mapfnc(dataquery);
+        mapJs.mapfnc(dataquery);
       } catch (error) {
         console.error(error);
 
@@ -22,3 +24,4 @@ export function query() {
 };
 
 query();
+

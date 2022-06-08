@@ -1,6 +1,6 @@
 
 // initialize the map
-var map = L.map('map').setView([54.548698, 10.769660], 10);
+var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
 
 // load a tile layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
@@ -28,11 +28,10 @@ var blacklistmap = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS58
 var data_longmap = [];
 
 
-
 export function mapfnc(dataquery) {
 
   // console.log(dataquery)
-
+  //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
     d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
@@ -66,6 +65,8 @@ export function mapfnc(dataquery) {
 
   // For each row in data, create a marker and add it to the map
   // For each row, columns `Latitude`, `Longitude`, and `Time` are required
+  map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
+  //flyTo
   for (var i in datamap) {
 
     if (i % mult == 1) {
@@ -102,7 +103,7 @@ export function mapfnc(dataquery) {
 
 }
 
-export function setmapview () {
+export function setmapview() {
 
-  L.map('map').flyToBounds([54.548698, 20.769660],10);
-  }
+  L.flyTo([54.548698, 20.769660], 10);
+}
