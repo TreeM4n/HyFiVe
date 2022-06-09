@@ -1,7 +1,7 @@
 
 // initialize the map
 var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
-
+//console.log("map")
 // load a tile layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
   {
@@ -14,7 +14,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
 var mult = 2;
 // time difference before skip line draw
 var distanceinminutes = 2
-
+var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 var diff = 0;
 // Read markers data from data.csv
 var datamap = [];
