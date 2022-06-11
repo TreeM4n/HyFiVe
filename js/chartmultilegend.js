@@ -1,4 +1,7 @@
 
+
+
+
 //console.log("chart")
 // set the dimensions and margins of the graph
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
