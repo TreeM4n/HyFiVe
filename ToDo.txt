@@ -1,0 +1,30 @@
+##Funktionen##
+
+#Vertikalprofil/Small Multiple
+
+-on click show in map / interferes with dbl click -> button for rescale /click for map
+-null data skipping/line.defined
+-color for values
+
+#Map/Leaflet
+
+-offline geojson ?
+-on click pop up with data
+
+#Tiefenprofil/Connected Scatterplot
+
+-a lot
+
+#Html contents
+
+-time selection query -> add functionionality/load order probelm
+
+##Ideen/Verbesserungen##
+
+#Vertikalprofil/Small Multiple
+
+-curved line/.curve https://observablehq.com/@d3/d3-line
+
+#Map/Leaflet
+
+#Tiefenprofil/Connected Scatterplot

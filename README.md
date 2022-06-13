@@ -30,6 +30,7 @@ https://d3-graph-gallery.com/graph/basic_datamanipulation.html \
 https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html \
 https://stackoverflow.com/questions/22941796/attaching-onclick-event-to-d3-chart-background \
 http://jsfiddle.net/V7mC4/ \
+https://observablehq.com/@d3/d3-line \
 
 #Leaflet
 https://leafletjs.com/reference-1.7.1.html#map-methods-for-modifying-map-state \
@@ -39,6 +40,7 @@ https://stackoverflow.com/questions/21710530/leaflet-panto-or-setview-function \
 
 https://www.w3schools.com/howto/howto_js_topnav.asp \
 https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp \
+https://stackoverflow.com/questions/27560653/jquery-on-double-click-event-dblclick-for-mobile \ mobile dbl click
 
 
 #IOW links

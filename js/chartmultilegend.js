@@ -65,7 +65,7 @@ function createsmallmultiple(data) {
 
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
-  const svg = d3.select("#my_dataviz")
+  var svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
     .data(sumstat)
     .enter()
@@ -74,8 +74,8 @@ function createsmallmultiple(data) {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform",
-      `translate(${margin.left},${margin.top})`);
-
+      `translate(${margin.left},${margin.top})`)
+  //svg.on("click", function(){console.log("1")})  
   // Add X axis --> it is a date format
   const x = d3.scaleTime()
     .domain(d3.extent(data, function (d) { return d.x; }))
@@ -167,6 +167,7 @@ function createsmallmultiple(data) {
       return lineGen;
 
     })
+    
 
   // Add the brushing
   line
@@ -267,6 +268,8 @@ function createsmallmultiple(data) {
       })
   });
 }
+
+
 
 /*
 //Read the data
