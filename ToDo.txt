@@ -1,5 +1,8 @@
 ##Funktionen##
 
+-format time proparly iso8601 https://stackoverflow.com/questions/31125119/iso8601-date-time-format-d3
+- fix time for 48h
+
 #Vertikalprofil/Small Multiple
 
 -on click show in map / interferes with dbl click -> button for rescale /click for map

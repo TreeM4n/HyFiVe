@@ -61,7 +61,7 @@ export function mapfnc(dataquery) {
 
   });
 
-  //console.log(dataquery)
+  //console.log(datamap)
 
   // For each row in data, create a marker and add it to the map
   // For each row, columns `Latitude`, `Longitude`, and `Time` are required

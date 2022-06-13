@@ -2,9 +2,9 @@
 
 //var dataquery = [];
 
-//console.log("query")
+//48 h zuerst
 
-export function query() {
+export function query(date1,date2) {
  return jQuery.ajax({
     url: "./php/dummyquery.php",    //the page containing php script
     type: "post",    //request type,
@@ -28,5 +28,5 @@ export function query() {
   //return dataquery;
 };
 
-//query();
+
 

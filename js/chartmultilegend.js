@@ -62,10 +62,11 @@ function createsmallmultiple(data) {
   // group the data: I want to draw one line per group
   const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
   //console.log(sumstat)
-
+  var svg;
+  //d3.select('svg').remove();
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
-  var svg = d3.select("#my_dataviz")
+   svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
     .data(sumstat)
     .enter()
