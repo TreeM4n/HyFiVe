@@ -25,8 +25,8 @@ export function create(result) {
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
-    //d.time = parseTime(d.time);
+    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = parseTime(d.time);
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
@@ -40,7 +40,7 @@ export function create(result) {
       if (a.some(r => blacklist.indexOf(r) >= 0)) { continue; }
       var y = prop,
         value = +d[prop];
-
+      if(d.time === null  || +value > 100000|| +value < -100000){continue;}
       data_long.push({
         x: d.time,
         y: y,
@@ -50,7 +50,7 @@ export function create(result) {
     }
     //cheat
     data = data_long;
-
+    //console.log(data)
   });
 
   createsmallmultiple(data)
@@ -58,7 +58,7 @@ export function create(result) {
 }
 
 function createsmallmultiple(data) {
-  // console.log(data_long)
+   console.log(data)
   // group the data: I want to draw one line per group
   const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
   //console.log(sumstat)
@@ -156,6 +156,7 @@ function createsmallmultiple(data) {
         .y(d => {//console.log(mapY(+d.value)); 
           return mapY(+d.value);
         })
+        .defined(function(d) {return +d.value != 0;})
         (d[1])
       /*
     var lineGen2 = d3.line()
@@ -168,6 +169,7 @@ function createsmallmultiple(data) {
       return lineGen;
 
     })
+    
     
 
   // Add the brushing
@@ -230,6 +232,7 @@ function createsmallmultiple(data) {
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
+          .defined(function(d) {return +d.value != 0;})
           (d[1])
 
         return lineGen
@@ -262,6 +265,7 @@ function createsmallmultiple(data) {
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
+          .defined(function(d) {return +d.value != 0;})
           (d[1])
 
         return lineGen

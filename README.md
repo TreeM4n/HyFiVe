@@ -41,7 +41,7 @@ https://stackoverflow.com/questions/21710530/leaflet-panto-or-setview-function \
 https://www.w3schools.com/howto/howto_js_topnav.asp \
 https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp \
 https://stackoverflow.com/questions/27560653/jquery-on-double-click-event-dblclick-for-mobile \ mobile dbl click
-https://www.codeproject.com/articles/26797/ensure-ensure-javascripts-html-css-are-loaded-on-d \ ensure .js
+
 
 
 #IOW links
