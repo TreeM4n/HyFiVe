@@ -1,32 +1,31 @@
-
+import * as config from './config.js';
 
 
 
 //console.log("chart")
 // set the dimensions and margins of the graph
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
-  width = 280 - margin.left - margin.right,
+  width = 300 - margin.left - margin.right,
   height = 280 - margin.top - margin.bottom;
 
 // parse the date / time
 //2022-05-12T07:28:47.000Z
-var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+//var parseTime = utc.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
 
 
 export function create(result) {
-  
+
   var data = result;
   //console.log(data)
-  var blacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
-    "MS5837Press", "Longitude", "Latitude", "Speed", "Course"]
+
 
   // format the data
   var data_long = [];
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
-    d.time = parseTime(d.time);
+    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = new Date(d.time);
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
@@ -37,10 +36,10 @@ export function create(result) {
 
     for (var prop in d) {
       var a = [prop];
-      if (a.some(r => blacklist.indexOf(r) >= 0)) { continue; }
+      if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
       var y = prop,
         value = +d[prop];
-      if(d.time === null  || +value > 100000|| +value < -100000){continue;}
+      if (d.time === null || +value > 100000 || +value < -100000) { continue; }
       data_long.push({
         x: d.time,
         y: y,
@@ -58,7 +57,7 @@ export function create(result) {
 }
 
 function createsmallmultiple(data) {
-   console.log(data)
+  //console.log(data)
   // group the data: I want to draw one line per group
   const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
   //console.log(sumstat)
@@ -66,7 +65,7 @@ function createsmallmultiple(data) {
   //d3.select('svg').remove();
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
-   svg = d3.select("#my_dataviz")
+  svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
     .data(sumstat)
     .enter()
@@ -132,15 +131,12 @@ function createsmallmultiple(data) {
   const line = svg.append('g')
     .attr("clip-path", "url(#clip)")
   // color palette
-  const color = d3.scaleOrdinal()
-    //.domain(allKeys)
-    .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
 
   // Draw the line
   line.append("path")
     .attr("class", "line")
     .attr("fill", "none")
-    .attr("stroke", function (d) { return color(d[0]) })
+    .attr("stroke", function (d) { return config.chartcolor(d[0]) })
     .attr("stroke-width", 1.9)
     .attr("d", function (d) {
 
@@ -156,7 +152,7 @@ function createsmallmultiple(data) {
         .y(d => {//console.log(mapY(+d.value)); 
           return mapY(+d.value);
         })
-        .defined(function(d) {return +d.value != 0;})
+        .defined(function (d) { return +d.value != 0; })
         (d[1])
       /*
     var lineGen2 = d3.line()
@@ -169,9 +165,38 @@ function createsmallmultiple(data) {
       return lineGen;
 
     })
-    
-    
 
+  //---------------mooseover
+
+  var Tooltip = d3.select("#div_template")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+
+  // Three function that change the stroke
+  var mouseover = function (d) {
+    Tooltip
+      .style("opacity", 1)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
+  }
+
+  var mouseleave = function (d) {
+    Tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "none")
+      .style("opacity", 0.8)
+  }
+
+
+  //-----------------------------------
   // Add the brushing
   line
     .append("g")
@@ -189,7 +214,9 @@ function createsmallmultiple(data) {
     .attr("y", -5)
     .attr("x", 0)
     .text(function (d) { return (d[0]) })
-    .style("fill", function (d) { return color(d[0]) })
+    .style("fill", function (d) { return config.chartcolor(d[0]) })
+
+  
   // A function that update the chart for given boundaries
   function updateChart(event, d) {
 
@@ -232,14 +259,16 @@ function createsmallmultiple(data) {
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
-          .defined(function(d) {return +d.value != 0;})
+          .defined(function (d) { return +d.value != 0; })
           (d[1])
 
         return lineGen
 
       })
   }
-
+  svg.on("mouseover", mouseover)
+  //svg.on("mouseover", mousemove)
+  svg.on("mouseleave", mouseleave)
   // If user double click, reinitialize the chart
   svg.on("dblclick", function () {
 
@@ -272,9 +301,10 @@ function createsmallmultiple(data) {
 
       })
   });
+
+
+
 }
-
-
 
 /*
 //Read the data

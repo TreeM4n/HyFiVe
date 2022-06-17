@@ -1,4 +1,4 @@
-
+import * as config from './config.js';
 
 // set the dimensions and margins of the graph
 const margin = { top: 10, right: 30, bottom: 30, left: 60 },
@@ -31,10 +31,6 @@ function depthchart() {
     success: function result(result) {
 
       depthdata = result;
-
-      var blacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
-        "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity"]
-
       // format the data
 
 
@@ -52,7 +48,7 @@ function depthchart() {
         //shorten data
         for (prop in d) {
           var a = [prop];
-          if (a.some(r => blacklist.indexOf(r) >= 0)) { continue; }
+          if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
 
           var y = prop,
             value = +d[prop];

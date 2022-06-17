@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="./css/ui.css" />
   <script src="./lib/leaflet.js"></script>
   <!-- Load own scripts  type="text/javascript"-->
-  
+  <script src="./js/config.js" type="module"></script>
   <script src="./js/map.js"  type="module"></script>
   <script src="./js/jsquery.js" type="module"></script>
   <script src="./js/chartmultilegend.js"  type="module"></script>
@@ -54,6 +54,7 @@
 
   <div class="row">
     <div class="column">
+      <input type="button" defer  id="rescale" value="Rescale charts" />
       <div id="my_dataviz"></div>
 
 

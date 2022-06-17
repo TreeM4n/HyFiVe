@@ -1,12 +1,9 @@
 ##Funktionen##
 
--format time proparly iso8601 https://stackoverflow.com/questions/31125119/iso8601-date-time-format-d3
-- fix time for 48h
-
 #Vertikalprofil/Small Multiple
 
 -on click show in map / interferes with dbl click -> button for rescale /click for map
--null data skipping/line.defined
+-line.defined detect end of hol
 -color for values
 
 #Map/Leaflet
@@ -16,19 +13,23 @@
 
 #Tiefenprofil/Connected Scatterplot
 
--a lot
+-beschriftung skala
+-seperate in hols /add hol selection 
 
 #Html contents
-
--time selection query -> add functionionality/load order probelm https://stackoverflow.com/questions/7789521/how-to-link-external-javascript-file-onclick-of-button
+-font :ariel
+-time selection query -> add functionionality -> send to query dates
 
 ##Ideen/Verbesserungen##
 
 #Vertikalprofil/Small Multiple
-
 -curved line/.curve https://observablehq.com/@d3/d3-line
--y scaleable
+-y scaleable/recalcuted after brushing
 
 #Map/Leaflet
-
 #Tiefenprofil/Connected Scatterplot
+
+##Misc##
+-get css access or help?
+-how to treat wrong data?
+-check who is wrong with date
