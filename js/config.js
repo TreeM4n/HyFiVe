@@ -12,7 +12,7 @@ export const chartcolor = d3.scaleOrdinal()
 
 //------MAP-------
 // values that dont matter for the map
-export var blacklistmap = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
+export var mapblacklistmap = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
   "MS5837Press", "Speed", "Course", "Latitude", "Oxygen", "Longitude"]
 
 // variable for not drawing line in minutes 
@@ -23,5 +23,5 @@ export var MapPoints = 2;
 
 //---------DEPTHCHART-------------------
 //values which arent important for dephtchart
-export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
+export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "time", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity"]

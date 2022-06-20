@@ -139,10 +139,10 @@ function createsmallmultiple(data) {
     .attr("stroke", function (d) { return config.chartcolor(d[0]) })
     .attr("stroke-width", 1.9)
     .attr("d", function (d) {
-
+      
       var min = d3.min(d[1], function (d) { return +d.value; })
       var max = d3.max(d[1], function (d) { return +d.value; })
-
+     
       var mapY = d3.scaleLinear()
         .domain([min * 5 / 6, max * 7 / 6])
         .range([height, 0])

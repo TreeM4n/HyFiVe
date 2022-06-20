@@ -32,4 +32,4 @@
 ##Misc##
 -get css access or help?
 -how to treat wrong data?
--check who is wrong with date
+-check who is wrong with date/date conversion?

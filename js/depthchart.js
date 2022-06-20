@@ -1,12 +1,11 @@
 import * as config from './config.js';
 
 // set the dimensions and margins of the graph
-const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+const margin = { top: 100, right: 60, bottom: 60, left: 60 },
   width = 460 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
 
-// parse the date / time
-var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+
 var depthdata = [];
 var data_long = [];
 
@@ -19,96 +18,145 @@ var svg = d3.select("#my_dataviz")
   .attr("transform",
     "translate(" + margin.left + "," + margin.top + ")");
 
-depthchart();
+
 //Read the data
-function depthchart() {
-
-  $.ajax({
-    url: "./php/dummyquery.php",    //the page containing php script
-    type: "post",    //request type,
-    dataType: 'json',
-    data: {},
-    success: function result(result) {
-
-      depthdata = result;
-      // format the data
+export function depthchart(result) {
 
 
-      depthdata.forEach(function (d) {
-        //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-        d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
-        d.time = parseTime(d.time);
-        d.TSYTemperatrue = +d.TSYTemperatrue;
-        d.Temperature = +d.TSYTemperatrue;
-        d.Oxygen = +d.Oxygen;
-        d.MS5837Press = +d.MS5837Press;
-        //d.Pressure = +d.MS5837Press;
-        d.Conducitvity = +d.Conducitvity;
 
-        //shorten data
-        for (prop in d) {
-          var a = [prop];
-          if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
-
-          var y = prop,
-            value = +d[prop];
-
-          data_long.push({
-            y: d.MS5837Press,
-            time: d.time,
-            x: +value
-          });
-
-        }
-        //cheat
-
-        depthdata = data_long;
+  depthdata = result;
+  // format the data
 
 
+  depthdata.forEach(function (d) {
+
+    d.time = new Date(d.time);
+    d.Temperature = +d.TSYTemperatrue;
+    d.Oxygen = +d.Oxygen;
+
+    //d.Pressure = +d.MS5837Press;
+    d.Conducitvity = +d.Conducitvity;
+
+    //shorten data
+    for (var prop in d) {
+      var a = [prop];
+      if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
+
+      var y = prop,
+        value = +d[prop];
+
+      data_long.push({
+        y: d.MS5837Press,
+        time: d.time,
+        x: +value,
+        depl: d.deployment
       });
 
-      console.log(data_long)
-      createdepthchart(depthdata)
-
-      function createdepthchart(data) {
-
-        const x = d3.scaleLinear()
-          .domain(d3.extent(data, d => d.x))
-          .range([0, width]);
-        svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
-        // Add Y axis
-        const y = d3.scaleLinear()
-          .domain([d3.min(data, function (d) { return +d.y; }) * 5/6, d3.max(data, function (d) { return +d.y; }) *7/6])
-          .range([height, 0]);
-        svg.append("g")
-          .call(d3.axisLeft(y));
-        // Add the line
-        svg.append("path")
-          .datum(data)
-          .attr("fill", "none")
-          .attr("stroke", "#69b3a2")
-          .attr("stroke-width", 1.5)
-          .attr("d", d3.line()
-            .curve(d3.curveBasis)
-            .x(d => x(d.x))
-            .y(d => y(d.y))
-          )
-        /*
-        // Add the points
-        svg
-          .append("g")
-          .selectAll("dot")
-          .data(data)
-          .join("circle")
-          .attr("cx", d => x(d.x))
-          .attr("cy", d => y(d.y))
-          .attr("r", 5)
-          .attr("fill", "#69b3a2")
-        */
-      }
-
     }
-  })
-};
+    //cheat
+
+    depthdata = data_long;
+
+
+  });
+  // List of groups (here I have one group per column)
+  var allGroup = new Set(depthdata.map(d => d.depl))
+
+  //  console.log(allGroup[Symbol.iterator]().next().value)
+  createdepthchart(depthdata)
+
+  function createdepthchart(data) {
+
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+      .data(allGroup)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+
+    const x = d3.scaleLinear()
+      .domain(d3.extent(data, d => d.x))
+      .range([0, width]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    // Add Y axis
+    const y = d3.scaleLinear()
+      .domain([d3.min(data, function (d) { return +d.y; }) * 5 / 6, d3.max(data, function (d) { return +d.y; }) * 7 / 6])
+      .range([height, 0]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+    // Add the line
+    svg.append("path")
+      .datum(data.filter(function (d) {
+        return d.depl == allGroup[Symbol.iterator]().next().value;//console.log(d.depl == allGroup[Symbol.iterator]().next().value)
+      }))
+      .attr("fill", "none")
+      .attr("stroke", "#69b3a2")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .curve(d3.curveBasis)
+        .x(d => x(d.x))
+        .y(d => y(d.y))
+      )
+
+    svg
+      .append("text")
+      .attr("text-anchor", "start")
+      .attr("y", -5)
+      .attr("x", 0)
+      .text(function (d) { return "Pressure" })
+      .style("fill", function (d) { return "blue" })
+
+    svg
+      .append("text")
+      .attr("text-anchor", "start")
+      .attr("y", height + margin.bottom)
+      .attr("x", width - margin.right / 2)
+      .text(function (d) { return "Temperature" })
+      .style("fill", function (d) { return "red" })
+
+    // A function that update the chart
+    function update(selectedGroup) {
+
+      // Create new data with the selection?
+      const dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
+      
+      // Give these new data to update line
+      svg
+        .datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+        .curve(d3.curveBasis)
+        .x(d => x(d.x))
+        .y(d => y(d.y))
+      )
+       
+    }
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton").on("change", function (event, d) {
+      // recover the option that has been chosen
+      const selectedOption = d3.select(this).property("value")
+      // run the updateChart function with this selected option
+      update(selectedOption)
+    })
+    /*
+    // Add the points
+    svg
+      .append("g")
+      .selectAll("dot")
+      .data(data)
+      .join("circle")
+      .attr("cx", d => x(d.x))
+      .attr("cy", d => y(d.y))
+      .attr("r", 5)
+      .attr("fill", "#69b3a2")
+    */
+  }
+
+}

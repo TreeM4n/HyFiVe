@@ -1,6 +1,6 @@
 import * as mapJS from './map.js';
 import * as queryJS from './jsquery.js';
-import * as chartJS from './chartmultilegend.js';
+import * as depthJS from './depthchart.js';
 
 //Zeile 254 m�sste stehen "#flux-enabled = false" was ge�ndert werden muss zu "flux-enabled = true" 
 var hours = 48;
@@ -15,7 +15,7 @@ var formatData = d3.timeFormat("%Y-%m-%d");
 //.toISOString() 
 //console.log(formatData(last48h))
 queryJS.query(today.toISOString(),last48h).then(response => {data = response;mapJS.mapfnc(data);
-chartJS.create(data)});
+depthJS.depthchart(data)});
 
 document.getElementById('field2').value = formatData(today);
 document.getElementById('field1').value = formatData(last48h);
@@ -40,7 +40,7 @@ export function reload() {
 		}
   }
 
- document.querySelector('#reload').addEventListener('click', reload)
+ document.querySelector('#reloaddepth').addEventListener('click', reload)
 
 //console.log(queryJS.query())
 //mapJs.mapfnc(queryJS.query());

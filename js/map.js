@@ -12,10 +12,16 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     minZoom: 4
   }).addTo(map);
 
-//var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 var diff = 0;
+
+  // Date parser
+  var parseUTCDate = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
+  var getDate = function(d) {
+    return parseUTCDate(d).setHours(0,0,0,0);
+  };
 // Read markers data from data.csv
-var datamap = [];
+var datamap = [1];
 
 //console.log("map")
 
@@ -29,13 +35,14 @@ export function mapfnc(dataquery) {
   //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
     d.time = parseTime(d.time);
-    d.TSYTemperatrue = +d.TSYTemperatrue;
 
+    //d.time = +d.time
+    d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
-
+   //    console.log(d.time);
 
 
     for (var prop in d) {
