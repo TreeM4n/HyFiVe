@@ -33,3 +33,9 @@
 -get css access or help?
 -how to treat wrong data?
 -check who is wrong with date/date conversion?
+
+
+-warning for high values
+-plausibe werte
+
+-steffen odin2 

@@ -63,7 +63,7 @@ function createsmallmultiple(data) {
   //console.log(sumstat)
   var svg;
   //d3.select('svg').remove();
-
+  
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
   svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")

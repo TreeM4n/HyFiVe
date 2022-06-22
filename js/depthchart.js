@@ -48,7 +48,7 @@ export function depthchart(result) {
       data_long.push({
         y: d.MS5837Press,
         time: d.time,
-        x: +value,
+        x: d.Temperature,
         depl: d.deployment
       });
 
@@ -80,17 +80,17 @@ export function depthchart(result) {
     const x = d3.scaleLinear()
       .domain(d3.extent(data, d => d.x))
       .range([0, width]);
-    svg.append("g")
+    var xAxis = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
     // Add Y axis
     const y = d3.scaleLinear()
       .domain([d3.min(data, function (d) { return +d.y; }) * 5 / 6, d3.max(data, function (d) { return +d.y; }) * 7 / 6])
       .range([height, 0]);
-    svg.append("g")
+    var yAxis = svg.append("g")
       .call(d3.axisLeft(y));
     // Add the line
-    svg.append("path")
+    var line = svg.append("path")
       .datum(data.filter(function (d) {
         return d.depl == allGroup[Symbol.iterator]().next().value;//console.log(d.depl == allGroup[Symbol.iterator]().next().value)
       }))
@@ -124,9 +124,15 @@ export function depthchart(result) {
 
       // Create new data with the selection?
       const dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
-      
+      console.log(dataFilter  )
       // Give these new data to update line
-      svg
+      x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
+      xAxis.transition().call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
+      y.domain([d3.max(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.min(dataFilter, function (d) { return +d.y; }) * 5 / 6])
+      yAxis.transition().call(d3.axisLeft(y))
+      yAxis.call(d3.axisLeft(y).ticks(4));
+      line
         .datum(dataFilter)
         .transition()
         .duration(1000)
@@ -135,6 +141,7 @@ export function depthchart(result) {
         .x(d => x(d.x))
         .y(d => y(d.y))
       )
+
        
     }
 
