@@ -10,7 +10,7 @@ export function query(date1,date2) {
     type: "post",    //request type,
     dataType: 'json',
     data: {},
-    //success: function result(result) {
+    success: function result(result) {
       //console.log(result);
       //dataquery = result;
       /*
@@ -22,7 +22,7 @@ export function query(date1,date2) {
       }
       */
      
-    //}
+    }
   })
   //console.log(dataquery);
   //return dataquery;

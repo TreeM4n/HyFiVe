@@ -14,7 +14,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 
 
 export function create(result) {
-
+  
   var data = result;
   //console.log(data)
 
@@ -57,6 +57,7 @@ export function create(result) {
 }
 
 function createsmallmultiple(data) {
+  var diff = 0;
   //console.log(data)
   // group the data: I want to draw one line per group
   const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
@@ -131,7 +132,7 @@ function createsmallmultiple(data) {
   const line = svg.append('g')
     .attr("clip-path", "url(#clip)")
   // color palette
-
+  
   // Draw the line
   line.append("path")
     .attr("class", "line")
@@ -146,13 +147,14 @@ function createsmallmultiple(data) {
       var mapY = d3.scaleLinear()
         .domain([min * 5 / 6, max * 7 / 6])
         .range([height, 0])
-
+       
       var lineGen = d3.line()
+        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
         .x(function (d) { return x(d.x); })
         .y(d => {//console.log(mapY(+d.value)); 
           return mapY(+d.value);
         })
-        .defined(function (d) { return +d.value != 0; })
+        
         (d[1])
       /*
     var lineGen2 = d3.line()
@@ -162,6 +164,8 @@ function createsmallmultiple(data) {
       (d[1])
       
     //console.log(lineGen) */
+    
+    
       return lineGen;
 
     })
@@ -255,11 +259,12 @@ function createsmallmultiple(data) {
           .range([height, 0])
 
         var lineGen = d3.line()
+        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
           .x(function (d) { return x(d.x); })
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
-          .defined(function (d) { return +d.value != 0; })
+         
           (d[1])
 
         return lineGen
@@ -290,11 +295,12 @@ function createsmallmultiple(data) {
           .range([height, 0])
 
         var lineGen = d3.line()
+        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
           .x(function (d) { return x(d.x); })
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
-          .defined(function(d) {return +d.value != 0;})
+         
           (d[1])
 
         return lineGen

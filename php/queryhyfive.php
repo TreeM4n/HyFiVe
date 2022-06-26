@@ -9,7 +9,7 @@ use InfluxDB2\Client;
 use InfluxDB2\Point;
 
 $username = 'admin';
-$password = 'password';
+$password = 'hyfive0815';
 
 $database = 'hyfive';
 $retentionPolicy = 'autogen';
@@ -17,7 +17,7 @@ $retentionPolicy = 'autogen';
 $bucket = "$database/$retentionPolicy";
 
 $client = new Client([
-    "url" => "192.168.178.36:8086",
+    "url" => "10.11.180.23:8086",
     "token" => "$username:$password",
     "bucket" => $bucket,
     "org" => "-",
@@ -30,7 +30,7 @@ WHERE time >= '2022-04-07T07:38:00Z'
 and time < '2022-04-07T09:38:00Z'
 */
 $queryApi = $client->createQueryApi();
-$query = "from(bucket: \"{$bucket}\") |> range(start:-1h)";
+$query = "from(bucket: \"{$bucket}\") |> range(start:-20d) ";
 $tables = $queryApi->query($query);
 /*
 foreach ($tables as $table) {

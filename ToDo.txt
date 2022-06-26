@@ -13,6 +13,7 @@
 
 #Tiefenprofil/Connected Scatterplot
 
+-seperat graph - marker map
 -beschriftung skala
 -seperate in hols /add hol selection 
 

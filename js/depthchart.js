@@ -26,10 +26,10 @@ export function depthchart(result) {
 
   depthdata = result;
   // format the data
-
+  //console.log(result)
 
   depthdata.forEach(function (d) {
-
+    
     d.time = new Date(d.time);
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
@@ -41,9 +41,7 @@ export function depthchart(result) {
     for (var prop in d) {
       var a = [prop];
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
-
-      var y = prop,
-        value = +d[prop];
+      if ( d.MS5837Press == null || d.Temperature == null ||d.MS5837Press == 0 || d.Temperature == 0) { continue; }
 
       data_long.push({
         y: d.MS5837Press,
@@ -54,7 +52,7 @@ export function depthchart(result) {
 
     }
     //cheat
-
+    //console.log(depthdata)
     depthdata = data_long;
 
 
@@ -76,24 +74,23 @@ export function depthchart(result) {
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-
+    var  dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
     const x = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.x))
+    .domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       .range([0, width]);
     var xAxis = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x).ticks(4));
     // Add Y axis
     const y = d3.scaleLinear()
-      .domain([d3.min(data, function (d) { return +d.y; }) * 5 / 6, d3.max(data, function (d) { return +d.y; }) * 7 / 6])
+      .domain([d3.min(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.max(dataFilter, function (d) { return +d.y; }) * 5 / 6])
       .range([height, 0]);
     var yAxis = svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y).ticks(4));
+    
     // Add the line
     var line = svg.append("path")
-      .datum(data.filter(function (d) {
-        return d.depl == allGroup[Symbol.iterator]().next().value;//console.log(d.depl == allGroup[Symbol.iterator]().next().value)
-      }))
+      .datum(dataFilter)
       .attr("fill", "none")
       .attr("stroke", "#69b3a2")
       .attr("stroke-width", 1.5)
@@ -123,8 +120,8 @@ export function depthchart(result) {
     function update(selectedGroup) {
 
       // Create new data with the selection?
-      const dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
-      console.log(dataFilter  )
+      dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
+      //console.log(dataFilter  )
       // Give these new data to update line
       x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       xAxis.transition().call(d3.axisBottom(x))
