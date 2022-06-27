@@ -1,12 +1,8 @@
         #map {
-            width: 45vw;
-            height: 65vh;
+            width: 25vw;
+            height: 70vh;
         }
 
-        img {
-            width: 45vw;
-            height: 45vh;
-        }
 
         * {
             box-sizing: border-box;
@@ -30,9 +26,22 @@
 
         /* Create two equal columns that sits next to each other */
         .column {
-            flex: 50%;
+            display: 50%;
             padding: 5px;
         }
+        .column2 {
+            display: 25%;
+            padding: 5px;
+        }
+
+nav ul{
+    height:70vh;
+    width:20vw;
+}
+nav ul{
+    overflow:hidden;
+    overflow-y:scroll;
+}
 
 /* navbar */
 

@@ -49,26 +49,31 @@
 
   </div>
   <!-- <button onclick="create()">JSON request</button> -->
-  
+ 
 
-  <div class="row">
+   <div class="row">
     <div class="column">
-      <!-- Initialize a select button -->
-<select id="selectButton"></select>
+      
       <div id="my_dataviz"></div>
 
-      
+
 
     </div>
     <div class="column">
-      <div id="map"></div>
-      <script src="./js/map.js" type="module" defer ></script>
-      <div align ="left">
-        From : <input type="date" name="field1" id="field1" />
-        To :   <input type="date" name="field2" id="field2" /><br /><br />
-
-        <input type="button" defer  id="reloaddepth" value="Show" />
+    <div class="row">
+    <div class="column2">
+      
+            <select id="selectButton"></select>
       </div>
+
+      <!-- <script src="./js/query.ts" type="text/typescript"></script> -->
+       
+      <div class="column2">
+           <div id="map"></div>
+      <div align ="left"></div>
+      
+      </div>
+    </div>
 
     </div>
   </div>

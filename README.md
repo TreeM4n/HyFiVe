@@ -36,6 +36,10 @@ https://observablehq.com/@d3/d3-line \
 https://leafletjs.com/reference-1.7.1.html#map-methods-for-modifying-map-state \
 https://stackoverflow.com/questions/21710530/leaflet-panto-or-setview-function \
 
+#UI design
+https://stackoverflow.com/questions/27521037/add-items-to-listbox-using-javascript \
+https://stackoverflow.com/questions/21998679/css-how-to-make-scrollable-list
+
 #HTML
 
 https://www.w3schools.com/howto/howto_js_topnav.asp \
@@ -45,18 +49,9 @@ https://stackoverflow.com/questions/27560653/jquery-on-double-click-event-dblcli
 
 
 #IOW links
-
+https://www.emodnet-physics.eu/map/platinfo/pifvplot.aspx?platformid=1000349 \
 https://git.io-warnemuende.de/bjoerner/ \
 https://git.io-warnemuende.de/bjoerner/MultiParamterLogger/src/branch/master
 
-#git commands\
-
-
-1. upload\
-cd \
-git add --all\
-git commit -m \
-git remote add origin <remote repository URL> \
-git push origin master \
-
-2. download\
+#commands
+Hold down Ctrl and press F5. - hard refresh 

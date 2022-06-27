@@ -2,7 +2,6 @@ import * as mapJS from './map.js';
 import * as queryJS from './jsquery.js';
 import * as depthJS from './depthchart.js';
 
-//Zeile 254 m�sste stehen "#flux-enabled = false" was ge�ndert werden muss zu "flux-enabled = true" 
 var hours = 48;
 
 var data ;

@@ -99,20 +99,21 @@ export function depthchart(result) {
         .x(d => x(d.x))
         .y(d => y(d.y))
       )
-
+      //y axis
     svg
-      .append("text")
-      .attr("text-anchor", "start")
-      .attr("y", -5)
-      .attr("x", 0)
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left+20)
+    .attr("x", -margin.top)
       .text(function (d) { return "Pressure" })
       .style("fill", function (d) { return "blue" })
-
+    //x axis
     svg
       .append("text")
-      .attr("text-anchor", "start")
-      .attr("y", height + margin.bottom)
-      .attr("x", width - margin.right / 2)
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height+ 35)
       .text(function (d) { return "Temperature" })
       .style("fill", function (d) { return "red" })
 

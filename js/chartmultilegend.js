@@ -215,6 +215,7 @@ function createsmallmultiple(data) {
   svg
     .append("text")
     .attr("text-anchor", "start")
+    
     .attr("y", -5)
     .attr("x", 0)
     .text(function (d) { return (d[0]) })
