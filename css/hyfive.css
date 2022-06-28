@@ -37,6 +37,10 @@
 nav ul{
     height:70vh;
     width:20vw;
+      list-style-type: none;
+  margin: 0;
+  padding: 0;
+  
 }
 nav ul{
     overflow:hidden;

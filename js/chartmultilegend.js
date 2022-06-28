@@ -1,5 +1,5 @@
 import * as config from './config.js';
-
+import * as mapJS from './map.js';
 
 
 //console.log("chart")
@@ -12,7 +12,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 //2022-05-12T07:28:47.000Z
 //var parseTime = utc.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
 
-
+var showDepl;
 export function create(result) {
   
   var data = result;
@@ -21,6 +21,7 @@ export function create(result) {
 
   // format the data
   var data_long = [];
+  var compareDepl = 0;
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
@@ -39,22 +40,39 @@ export function create(result) {
       if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
       var y = prop,
         value = +d[prop];
-      if (d.time === null || +value > 100000 || +value < -100000) { continue; }
+      if (d.time === null || +value > 100000 || +value < -100000 || +value === 0) { continue; }
+      
+      
       data_long.push({
         x: d.time,
         y: y,
-        value: +value
+        value: +value,
+        depl: d.deployment
       });
-
+      /*
+      if (d.deployment != compareDepl ) 
+      {
+          compareDepl = d.deployment;
+            var el = document.getElementById("list");
+            var node = document.createElement("li");
+            var link = document.createElement("a");
+            link.innerText = d.deployment
+            //link.addEventListener('click', console())
+            //link.setAttribute('href', 'http://www.google.it');
+            node.appendChild(link);
+            el.appendChild(node);
+      }
+      */
     }
-    //cheat
-    data = data_long;
-    //console.log(data)
+    
   });
+  data = data_long;
+  
 
   createsmallmultiple(data)
 
 }
+
 
 function createsmallmultiple(data) {
   var diff = 0;
@@ -64,6 +82,21 @@ function createsmallmultiple(data) {
   //console.log(sumstat)
   var svg;
   //d3.select('svg').remove();
+
+
+    // List of groups (here I have one group per column)
+  var allGroup = new Set(data.map(d => d.depl))
+
+
+      // add the options to the list
+    d3.select("#list")
+      .selectAll('myOptions')
+      .data(allGroup)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+      
   
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
   svg = d3.select("#my_dataviz")
@@ -222,9 +255,9 @@ function createsmallmultiple(data) {
     .style("fill", function (d) { return config.chartcolor(d[0]) })
 
   
-  // A function that update the chart for given boundaries
+  // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
-
+      var dataFilter = data;
     // What are the selected boundaries?
     var extent = event.selection;
     //console.log(extent);
@@ -238,6 +271,9 @@ function createsmallmultiple(data) {
     } else {
 
       x.domain([x.invert(extent[0]), x.invert(extent[1])])
+     
+       // dataFilter = data.filter(function (d) { return (d.x >= x.invert(extent[0]) && d.x <= x.invert(extent[1]) )})
+     
       //x.domain(d3.extent(data, function(d) { return d.year; }))
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
@@ -246,6 +282,10 @@ function createsmallmultiple(data) {
     // Update axis and line position
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
     xAxis.call(d3.axisBottom(x).ticks(4));
+  
+
+
+  
     line
       .select('.line')
       .transition()
@@ -272,13 +312,55 @@ function createsmallmultiple(data) {
 
       })
   }
+  //update function for deploy id
+  function updateChart2 (selectedGroup) {
+
+    var dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
+
+      x.domain(d3.extent(dataFilter, function (d) { return d.x; }))
+        // Update axis and line position
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+    xAxis.call(d3.axisBottom(x).ticks(4));
+  
+
+
+  
+    line
+      .select('.line')
+      .transition()
+      .duration(1000)
+      .attr("d", function (d) {
+
+        var min = d3.min(d[1], function (d) { return +d.value; })
+        var max = d3.max(d[1], function (d) { return +d.value; })
+
+        var mapY = d3.scaleLinear()
+          .domain([min * 5 / 6, max * 7 / 6])
+          .range([height, 0])
+
+        var lineGen = d3.line()
+        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
+          .x(function (d) { return x(d.x); })
+          .y(d => {//console.log(mapY(+d.value)); 
+            return mapY(+d.value);
+          })
+         
+          (d[1])
+
+        return lineGen
+
+      })
+      mapJS.setmapview(dataFilter);
+  }
+
+
   svg.on("mouseover", mouseover)
   //svg.on("mouseover", mousemove)
   svg.on("mouseleave", mouseleave)
   // If user double click, reinitialize the chart
   svg.on("dblclick", function () {
-
-    //data gets overriden by result = data in map.js need fix 
+      
+     
 
     x.domain(d3.extent(data, function (d) { ; return d.x; }))
     xAxis.transition().call(d3.axisBottom(x))
@@ -309,20 +391,19 @@ function createsmallmultiple(data) {
       })
   });
 
+    // When the button is changed, run the updateChart function
+    d3.select("#list").on("click", function (event, d) {
+      // recover the option that has been chosen
+      const selectedOption = event.explicitOriginalTarget.value
+
+      // run the updateChart function with this selected option
+      updateChart2(selectedOption)
+      //console.log(event.explicitOriginalTarget)
+    })
+
 
 
 }
 
-/*
-//Read the data
-d3.csv("./data/data2.csv").then(function (data) {
-  // format the data
-  data.forEach(function (d) {
-    d.year = parseTime(d.year);
-  });
-  // group the data: I want to draw one line per group
-  const sumstat = d3.group(data, d => d.name) // nest function all
-  //ows to group the calculation per level of a factor
-  console.log(sumstat)
-})
-*/
+
+

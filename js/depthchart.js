@@ -53,10 +53,11 @@ export function depthchart(result) {
     }
     //cheat
     //console.log(depthdata)
-    depthdata = data_long;
+    
 
 
   });
+  depthdata = data_long;
   // List of groups (here I have one group per column)
   var allGroup = new Set(depthdata.map(d => d.depl))
 

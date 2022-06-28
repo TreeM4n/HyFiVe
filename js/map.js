@@ -54,7 +54,8 @@ export function mapfnc(dataquery) {
       data_longmap.push({
         time: d.time,
         Latitude: d.Latitude,
-        Longitude: d.Longitude
+        Longitude: d.Longitude,
+        depl: d.deployment
       });
 
     }
@@ -105,7 +106,9 @@ export function mapfnc(dataquery) {
 
 }
 
-export function setmapview() {
-
-  L.flyTo([54.548698, 20.769660], 10);
+export function setmapview(data) {
+    
+    var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
+    console.log(dataFilter)
+  //L.flyTo([lat, lng] 10);
 }

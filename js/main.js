@@ -23,6 +23,7 @@ document.getElementById('field1').value = formatData(last48h);
 }
 initial();
 
+document.getElementById('list').addEventListener('click', chartJS.console)
 
 
 

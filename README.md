@@ -35,10 +35,12 @@ https://observablehq.com/@d3/d3-line \
 #Leaflet
 https://leafletjs.com/reference-1.7.1.html#map-methods-for-modifying-map-state \
 https://stackoverflow.com/questions/21710530/leaflet-panto-or-setview-function \
+https://geojson-maps.ash.ms/\
 
 #UI design
 https://stackoverflow.com/questions/27521037/add-items-to-listbox-using-javascript \
 https://stackoverflow.com/questions/21998679/css-how-to-make-scrollable-list
+https://fontawesome.com/icons/affiliatetheme?s=brands
 
 #HTML
 
