@@ -46,7 +46,11 @@ https://fontawesome.com/icons/affiliatetheme?s=brands
 
 https://www.w3schools.com/howto/howto_js_topnav.asp \
 https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp \
-https://stackoverflow.com/questions/27560653/jquery-on-double-click-event-dblclick-for-mobile \ mobile dbl click
+https://bl.ocks.org/mbostock/7555321 \
+
+#menu \
+https://www.studytonight.com/post/create-modern-navigation-bar-with-icons-using-html-css-and-hover-effect \ 
+https://stackoverflow.com/questions/30624709/css-html-navigation-and-logo-on-same-line \
 
 
 

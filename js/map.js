@@ -1,16 +1,55 @@
 import * as config from './config.js';
 
+var startIcon = L.icon({
+    iconUrl: 'marker-start.png',
+    iconSize:     [38, 95], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location 
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
 
-// initialize the map
-var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
-//console.log("map")
-// load a tile layer
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+var endIcon = L.icon({
+    iconUrl: 'marker-end.png',
+    iconSize:     [38, 95], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location 
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+
+var map=L.map('map').setView([54.17939750000001, 12.081335], 10);
+
+
+var online = navigator.onLine;
+
+if (online) {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
   {
-    attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+    attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>',
     maxZoom: 21,
     minZoom: 4
   }).addTo(map);
+}
+else {
+    var myGeoJSONPath = './maps/custom.geo.json';
+var myCustomStyle = {
+            stroke: false,
+            fill: true,
+            fillColor: '#fff',
+            fillOpacity: 1
+        }
+$.getJSON(myGeoJSONPath,function(data){
+            
+
+            L.geoJson(data, {
+                clickable: false,
+                style: myCustomStyle,
+                    attribution: 'Tiles by <a href="https://www.naturalearthdata.com/">NaturalEarth</a>',
+    maxZoom: 21,
+    minZoom: 4
+            }).addTo(map);
+        })
+}
+
+
 
 var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 var diff = 0;
@@ -84,7 +123,7 @@ export function mapfnc(dataquery) {
 
 
 
-      if (i > 9) {
+      if (i > 1+config.MapPoints) {
         diff = Math.abs(+datamap[i - config.MapPoints].time - +datamap[i].time);
         //console.log(diff );
         if (diff < 60000 * config.MapDim) {
@@ -95,7 +134,7 @@ export function mapfnc(dataquery) {
           var pointA = new L.LatLng(lat1, lon1);
           var pointB = new L.LatLng(lat2, lon2);
           var pointList = [pointA, pointB];
-          var line = new L.Polyline(pointList).bindPopup("eh lmao");
+          var line = new L.Polyline(pointList).bindPopup( datamap[i].depl);
           line.addTo(map);
         }
       }
@@ -105,10 +144,45 @@ export function mapfnc(dataquery) {
 
 
 }
-
+var markerStart = {};
+var markerEnd = {};
 export function setmapview(data) {
     
     var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
-    console.log(dataFilter)
-  //L.flyTo([lat, lng] 10);
+   //console.log(dataFilter)
+   
+   map.flyTo([dataFilter[0].Latitude, dataFilter[0].Longitude]);
+     
+        if (markerEnd != undefined) {
+              map.removeLayer(markerStart);
+              map.removeLayer(markerEnd);
+        };
+ 
+          markerStart =  L.marker ([dataFilter[0].Latitude, dataFilter[0].Longitude],{
+          //    icon: startIcon,
+          opacity: 1,
+          color: 'red'
+      }).bindPopup("Start Position").addTo(map);
+      
+     
+          markerStart.addTo(map);
+                    markerEnd =  L.marker ([dataFilter[dataFilter.length  -1 ].Latitude, dataFilter[dataFilter.length  -1 ].Longitude],{
+            //  icon: endIcon,
+          opacity: 1,
+          color: 'red'
+      }).bindPopup("End Position").addTo(map);
+        
+      
+    
+      
+    //Add a marker to show where you clicked.
+     //theMarker = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude]).addTo(map); 
+}
+
+export function removemapview()
+{
+      if (markerEnd != undefined) {
+              map.removeLayer(markerStart);
+              map.removeLayer(markerEnd);
+        };
 }

@@ -49,25 +49,22 @@ export function create(result) {
         value: +value,
         depl: d.deployment
       });
-      /*
-      if (d.deployment != compareDepl ) 
-      {
-          compareDepl = d.deployment;
-            var el = document.getElementById("list");
-            var node = document.createElement("li");
-            var link = document.createElement("a");
-            link.innerText = d.deployment
-            //link.addEventListener('click', console())
-            //link.setAttribute('href', 'http://www.google.it');
-            node.appendChild(link);
-            el.appendChild(node);
-      }
-      */
+  
     }
     
   });
   data = data_long;
-  
+  //console.log("1")
+          // add all  options to the list
+    d3.select("#list")
+      .selectAll('allOption')
+      .data([1])//to generate just one
+      .enter()
+      .append('option')
+      .text( "Everything else" ) // text showed in the menu
+      .attr("value", 0 ) // corresponding value returned by the button
+      .attr('tabindex', 1)
+       
 
   createsmallmultiple(data)
 
@@ -96,6 +93,7 @@ function createsmallmultiple(data) {
       .append('option')
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
+      .attr('tabindex', 1)
       
   
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
@@ -107,6 +105,7 @@ function createsmallmultiple(data) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
+    .attr("value", function (d) { return d[0]; })
     .attr("transform",
       `translate(${margin.left},${margin.top})`)
   //svg.on("click", function(){console.log("1")})  
@@ -122,12 +121,6 @@ function createsmallmultiple(data) {
   //Add Y axis
 
   var y = d3.scaleLinear()
-    /*.domain([0, d3.max(sumstat, function (d) { 
-      for (prop in d) {
-        console.log(+d[prop]);
-        return +d[prop]; }})])
-        */
-    //.domain([0, d3.max(sumstat, function (d) {console.log(+d.value); return +d.value; })])
     .domain([0, d3.max(data, function (d) { return 2000; })])
     .range([height, 0]);
 
@@ -357,6 +350,8 @@ function createsmallmultiple(data) {
   svg.on("mouseover", mouseover)
   //svg.on("mouseover", mousemove)
   svg.on("mouseleave", mouseleave)
+
+  /*
   // If user double click, reinitialize the chart
   svg.on("dblclick", function () {
       
@@ -390,15 +385,51 @@ function createsmallmultiple(data) {
 
       })
   });
+  */
 
     // When the button is changed, run the updateChart function
     d3.select("#list").on("click", function (event, d) {
       // recover the option that has been chosen
       const selectedOption = event.explicitOriginalTarget.value
 
-      // run the updateChart function with this selected option
+      if (selectedOption == 0)
+      {
+          x.domain(d3.extent(data, function (d) { ; return d.x; }))
+    xAxis.transition().call(d3.axisBottom(x))
+    xAxis.call(d3.axisBottom(x).ticks(4));
+    line
+      .select('.line')
+      .transition()
+      .attr("d", function (d) {
+
+        var min = d3.min(d[1], function (d) { return +d.value; })
+        var max = d3.max(d[1], function (d) { return +d.value; })
+
+        var mapY = d3.scaleLinear()
+          .domain([min * 5 / 6, max * 7 / 6])
+          .range([height, 0])
+
+        var lineGen = d3.line()
+        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
+          .x(function (d) { return x(d.x); })
+          .y(d => {//console.log(mapY(+d.value)); 
+            return mapY(+d.value);
+          })
+         
+          (d[1])
+
+        return lineGen
+
+      })
+      mapJS.removemapview();
+
+      }
+      else{
+              // run the updateChart function with this selected option
       updateChart2(selectedOption)
       //console.log(event.explicitOriginalTarget)
+      }
+  
     })
 
 

@@ -35,3 +35,13 @@ export function stickybar() {
   }
 }
 
+document.querySelector('ul').addEventListener('click', function(e) {   // 1.
+  var selected;
+  
+  if(e.target.tagName === 'OPTION') {                                      // 2.
+    selected= document.querySelector('option.selected');                   // 2a.
+    if(selected) selected.className= '';                               // "
+    e.target.className= 'selected';                                    // 2b.
+  }
+});
+

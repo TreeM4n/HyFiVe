@@ -81,3 +81,8 @@ nav ul{
 .sticky + .content {
   padding-top: 60px;
 } 
+
+
+.selected {
+  background: lightgreen;
+}
