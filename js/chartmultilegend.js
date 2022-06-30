@@ -14,7 +14,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 
 var showDepl;
 export function create(result) {
-  
+
   var data = result;
   //console.log(data)
 
@@ -41,30 +41,33 @@ export function create(result) {
       var y = prop,
         value = +d[prop];
       if (d.time === null || +value > 100000 || +value < -100000 || +value === 0) { continue; }
-      
-      
+
+
       data_long.push({
         x: d.time,
         y: y,
         value: +value,
         depl: d.deployment
       });
-  
+
     }
-    
+
   });
   data = data_long;
   //console.log("1")
-          // add all  options to the list
-    d3.select("#list")
-      .selectAll('allOption')
-      .data([1])//to generate just one
-      .enter()
-      .append('option')
-      .text( "Everything else" ) // text showed in the menu
-      .attr("value", 0 ) // corresponding value returned by the button
-      .attr('tabindex', 1)
-       
+  // add all  options to the list
+  d3.select("#list")
+    .selectAll('allOption')
+    .data([1])//to generate just one
+    .enter()
+    .append('option')
+    .attr("value", 0) // corresponding value returned by the button
+    .attr('tabindex', 1)
+    .attr("id", "option")
+    .text("va  lue")
+    .append('li')
+    .text("va  lue")
+  
 
   createsmallmultiple(data)
 
@@ -81,21 +84,21 @@ function createsmallmultiple(data) {
   //d3.select('svg').remove();
 
 
-    // List of groups (here I have one group per column)
+  // List of groups (here I have one group per column)
   var allGroup = new Set(data.map(d => d.depl))
 
 
-      // add the options to the list
-    d3.select("#list")
-      .selectAll('myOptions')
-      .data(allGroup)
-      .enter()
-      .append('option')
-      .text(function (d) { return d; }) // text showed in the menu
-      .attr("value", function (d) { return d; }) // corresponding value returned by the button
-      .attr('tabindex', 1)
-      
-  
+  // add the options to the list
+  d3.select("#list")
+    .selectAll('myOptions')
+    .data(allGroup)
+    .enter()
+    .append('option')
+    .text(function (d) { return d; }) // text showed in the menu
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+    .attr('tabindex', 1)
+
+
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
   svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
@@ -158,7 +161,7 @@ function createsmallmultiple(data) {
   const line = svg.append('g')
     .attr("clip-path", "url(#clip)")
   // color palette
-  
+
   // Draw the line
   line.append("path")
     .attr("class", "line")
@@ -166,21 +169,21 @@ function createsmallmultiple(data) {
     .attr("stroke", function (d) { return config.chartcolor(d[0]) })
     .attr("stroke-width", 1.9)
     .attr("d", function (d) {
-      
+
       var min = d3.min(d[1], function (d) { return +d.value; })
       var max = d3.max(d[1], function (d) { return +d.value; })
-     
+
       var mapY = d3.scaleLinear()
         .domain([min * 5 / 6, max * 7 / 6])
         .range([height, 0])
-       
+
       var lineGen = d3.line()
-        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
+        .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
         .x(function (d) { return x(d.x); })
         .y(d => {//console.log(mapY(+d.value)); 
           return mapY(+d.value);
         })
-        
+
         (d[1])
       /*
     var lineGen2 = d3.line()
@@ -190,8 +193,8 @@ function createsmallmultiple(data) {
       (d[1])
       
     //console.log(lineGen) */
-    
-    
+
+
       return lineGen;
 
     })
@@ -241,16 +244,16 @@ function createsmallmultiple(data) {
   svg
     .append("text")
     .attr("text-anchor", "start")
-    
+
     .attr("y", -5)
     .attr("x", 0)
     .text(function (d) { return (d[0]) })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
 
-  
+
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
-      var dataFilter = data;
+    var dataFilter = data;
     // What are the selected boundaries?
     var extent = event.selection;
     //console.log(extent);
@@ -264,9 +267,9 @@ function createsmallmultiple(data) {
     } else {
 
       x.domain([x.invert(extent[0]), x.invert(extent[1])])
-     
-       // dataFilter = data.filter(function (d) { return (d.x >= x.invert(extent[0]) && d.x <= x.invert(extent[1]) )})
-     
+
+      // dataFilter = data.filter(function (d) { return (d.x >= x.invert(extent[0]) && d.x <= x.invert(extent[1]) )})
+
       //x.domain(d3.extent(data, function(d) { return d.year; }))
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
@@ -275,10 +278,10 @@ function createsmallmultiple(data) {
     // Update axis and line position
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
     xAxis.call(d3.axisBottom(x).ticks(4));
-  
 
 
-  
+
+
     line
       .select('.line')
       .transition()
@@ -293,12 +296,12 @@ function createsmallmultiple(data) {
           .range([height, 0])
 
         var lineGen = d3.line()
-        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
+          .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
           .x(function (d) { return x(d.x); })
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
-         
+
           (d[1])
 
         return lineGen
@@ -306,18 +309,18 @@ function createsmallmultiple(data) {
       })
   }
   //update function for deploy id
-  function updateChart2 (selectedGroup) {
+  function updateChart2(selectedGroup) {
 
     var dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
 
-      x.domain(d3.extent(dataFilter, function (d) { return d.x; }))
-        // Update axis and line position
+    x.domain(d3.extent(dataFilter, function (d) { return d.x; }))
+    // Update axis and line position
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
     xAxis.call(d3.axisBottom(x).ticks(4));
-  
 
 
-  
+
+
     line
       .select('.line')
       .transition()
@@ -332,18 +335,18 @@ function createsmallmultiple(data) {
           .range([height, 0])
 
         var lineGen = d3.line()
-        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
+          .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
           .x(function (d) { return x(d.x); })
           .y(d => {//console.log(mapY(+d.value)); 
             return mapY(+d.value);
           })
-         
+
           (d[1])
 
         return lineGen
 
       })
-      mapJS.setmapview(dataFilter);
+    mapJS.setmapview(dataFilter);
   }
 
 
@@ -387,50 +390,49 @@ function createsmallmultiple(data) {
   });
   */
 
-    // When the button is changed, run the updateChart function
-    d3.select("#list").on("click", function (event, d) {
-      // recover the option that has been chosen
-      const selectedOption = event.explicitOriginalTarget.value
+  // When the button is changed, run the updateChart function
+  d3.select("#list").on("click", function (event, d) {
+    // recover the option that has been chosen
+    const selectedOption = event.explicitOriginalTarget.value
 
-      if (selectedOption == 0)
-      {
-          x.domain(d3.extent(data, function (d) { ; return d.x; }))
-    xAxis.transition().call(d3.axisBottom(x))
-    xAxis.call(d3.axisBottom(x).ticks(4));
-    line
-      .select('.line')
-      .transition()
-      .attr("d", function (d) {
+    if (selectedOption == 0) {
+      x.domain(d3.extent(data, function (d) { ; return d.x; }))
+      xAxis.transition().call(d3.axisBottom(x))
+      xAxis.call(d3.axisBottom(x).ticks(4));
+      line
+        .select('.line')
+        .transition()
+        .attr("d", function (d) {
 
-        var min = d3.min(d[1], function (d) { return +d.value; })
-        var max = d3.max(d[1], function (d) { return +d.value; })
+          var min = d3.min(d[1], function (d) { return +d.value; })
+          var max = d3.max(d[1], function (d) { return +d.value; })
 
-        var mapY = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
-          .range([height, 0])
+          var mapY = d3.scaleLinear()
+            .domain([min * 5 / 6, max * 7 / 6])
+            .range([height, 0])
 
-        var lineGen = d3.line()
-        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
-          .x(function (d) { return x(d.x); })
-          .y(d => {//console.log(mapY(+d.value)); 
-            return mapY(+d.value);
-          })
-         
-          (d[1])
+          var lineGen = d3.line()
+            .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
+            .x(function (d) { return x(d.x); })
+            .y(d => {//console.log(mapY(+d.value)); 
+              return mapY(+d.value);
+            })
 
-        return lineGen
+            (d[1])
 
-      })
+          return lineGen
+
+        })
       mapJS.removemapview();
 
-      }
-      else{
-              // run the updateChart function with this selected option
+    }
+    else {
+      // run the updateChart function with this selected option
       updateChart2(selectedOption)
       //console.log(event.explicitOriginalTarget)
-      }
-  
-    })
+    }
+
+  })
 
 
 

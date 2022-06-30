@@ -1,16 +1,16 @@
 import * as config from './config.js';
 
 var startIcon = L.icon({
-    iconUrl: 'marker-start.png',
-    iconSize:     [38, 95], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location 
+    iconUrl: './assets/marker-start.png',
+    iconSize:     [64,64], // size of the icon
+    iconAnchor:   [32,64], // point of the icon which will correspond to marker's location 
     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
 
 var endIcon = L.icon({
-    iconUrl: 'marker-end.png',
-    iconSize:     [38, 95], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location 
+    iconUrl: './assets/marker-end.png',
+    iconSize:     [64,64], // size of the icon
+    iconAnchor:   [32,64], // point of the icon which will correspond to marker's location 
     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
 
@@ -29,7 +29,7 @@ if (online) {
   }).addTo(map);
 }
 else {
-    var myGeoJSONPath = './maps/custom.geo.json';
+    var myGeoJSONPath = './assets/custom.geo.json';
 var myCustomStyle = {
             stroke: false,
             fill: true,
@@ -159,7 +159,7 @@ export function setmapview(data) {
         };
  
           markerStart =  L.marker ([dataFilter[0].Latitude, dataFilter[0].Longitude],{
-          //    icon: startIcon,
+             icon: startIcon,
           opacity: 1,
           color: 'red'
       }).bindPopup("Start Position").addTo(map);
@@ -167,7 +167,7 @@ export function setmapview(data) {
      
           markerStart.addTo(map);
                     markerEnd =  L.marker ([dataFilter[dataFilter.length  -1 ].Latitude, dataFilter[dataFilter.length  -1 ].Longitude],{
-            //  icon: endIcon,
+             icon: endIcon,
           opacity: 1,
           color: 'red'
       }).bindPopup("End Position").addTo(map);
