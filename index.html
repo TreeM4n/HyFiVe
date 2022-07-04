@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  
+
 <!-- php -S localhost:8000 -->
 <!-- php -S 0.0.0.0:8888 -->
 <!-- netstat -ano | findstr :8000 -->
@@ -9,83 +9,81 @@
 
 <head>
   <title>HyFiVe</title>
-   <meta charset="UTF-8">
-        <meta content="utf-8" http-equiv="encoding">
+  <meta charset="UTF-8">
+  <meta content="utf-8" http-equiv="encoding">
   <!-- Load jQuery to read data -->
   <script src="./lib/jquery-3.6.0.js"></script>
   <!-- Load D3 to draw data graphs -->
   <script src="./lib/d3.js"></script>
-  
+  <script src="./lib/leaflet.js"></script>
   <!-- Load node js and query api scripts -->
   <!-- Load leaflet to draw map -->
   <link rel="stylesheet" href="./css/leaflet.css" />
   <link rel="stylesheet" href="./css/hyfive.css" />
-  <script src="./lib/leaflet.js"></script>
+
   <!-- Load own scripts  type="text/javascript"-->
   <script src="./js/config.js" type="module"></script>
-  <script src="./js/map.js"  type="module"></script>
+  <script src="./js/map.js" type="module"></script>
   <script src="./js/jsquery.js" type="module"></script>
-  <script src="./js/chartmultilegend.js"  type="module"></script>
+  <script src="./js/chartmultilegend.js" type="module"></script>
   <script src="./js/main.js" type="module"></script>
-  <script src="./js/ui.js"  type="module"></script>
+  <script src="./js/ui.js" type="module"></script>
   <script src="./js/selection.js" type="module"></script>
-    <link rel="stylesheet" href="./css/hyfive-after.css" />
+ 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
 
   <style>
-   
+
   </style>
 </head>
 
 <body>
-  <script src="./js/ui.js"  type="module"></script>
-  <div id="navbar">
-    <a class="active" href="./index.html">VertikalProfil</a>
-    <a href="./depthprofil.html">Tiefenprofil</a>
-    <a id="darkmode"> Darkmode</a>
   
-
-
-  </div>
-  <!-- <button onclick="create()">JSON request</button> -->
-          From : <input type="date" name="field1" id="field1" />
-        To :   <input type="date" name="field2" id="field2" />
-
-        <input type="button" defer  id="reload" value="Show" />
-
-  <div class="row">
-    <div class="column">
-      
-      <div id="my_dataviz"></div>
-
-
-
+  <div id="navbar">
+    <a href="#default" id="logo">CompanyLogo</a>
+    
+    <div id="navbar-right">
+      <a class="active" href="#home">Home</a>
+      <a href="./depthprofil.html">Tiefenprofil</a>
+      <a href="#about">About</a>
     </div>
-    <div class="column">
+  </div>
+
+  <div id = "whole">
+    <!-- <button onclick="create()">JSON request</button> -->
+    <p><b> From : <input type="date" name="field1" id="field1" />
+    To : <input type="date" name="field2" id="field2" />
+
+    <input type="button" defer id="reload" value="Show" />
+  </b></p>
     <div class="row">
-    <div class="column2">
-         
-         <nav id ="UList">
-            <ul style="cursor:pointer;" id = "list">
+      <div class="column">
+        <div id="my_dataviz"></div>
+      </div>
+
+      <div class="row" id = "row2" >
+        
+        <div class="column2">
+          
+          <nav id="UList">
+            <ul  id="list">
             </ul>
-        </nav>
+          </nav>
+        </div>
+
+        <div class="column2">
+          <div id="map"></div>
+          
+
+        </div>
       </div>
 
-      <!-- <script src="./js/query.ts" type="text/typescript"></script> -->
-       
-      <div class="column2">
-           <div id="map"></div>
-      <div align ="left"></div>
-      
-      </div>
     </div>
 
-    </div>
-  </div>
 
-  <script >
-  </script>
+    <script>
+    </script>
 </body>
 
 </html>

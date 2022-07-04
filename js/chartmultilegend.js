@@ -3,10 +3,10 @@ import * as mapJS from './map.js';
 
 
 //console.log("chart")
-// set the dimensions and margins of the graph
+// set the dimensions and margins of the graph 20% x 30% ratio to viewport
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
-  width = 300 - margin.left - margin.right,
-  height = 280 - margin.top - margin.bottom;
+  width = window.innerWidth / 10 * 2 - margin.left - margin.right,
+  height = window.innerWidth / 10 * 4 - margin.top - margin.bottom;
 
 // parse the date / time
 //2022-05-12T07:28:47.000Z
@@ -33,6 +33,7 @@ export function create(result) {
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
+    d.Salinity = +d.Conducitvity + 3;
 
 
     for (var prop in d) {
@@ -56,18 +57,23 @@ export function create(result) {
   data = data_long;
   //console.log("1")
   // add all  options to the list
-  d3.select("#list")
+   var text_node = d3.select("#list")
     .selectAll('allOption')
     .data([1])//to generate just one
     .enter()
     .append('option')
-    .attr("value", 0) // corresponding value returned by the button
-    .attr('tabindex', 1)
-    .attr("id", "option")
-    .text("va  lue")
-    .append('li')
-    .text("va  lue")
+  .attr("value", 0) // corresponding value returned by the button
+  .attr('tabindex', 1)
+  .attr("id", "option")
+  .text("Back to selected Dates")
+  .append('li')
+  .text("Start:            " + document.getElementById('field1').value)
+  .attr("value", -1) // corresponding value returned by the button
+  .append('li')
+  .text("End:            " + document.getElementById('field2').value)
+  .attr("value", -1) // corresponding value returned by the button
   
+
 
   createsmallmultiple(data)
 
@@ -86,17 +92,24 @@ function createsmallmultiple(data) {
 
   // List of groups (here I have one group per column)
   var allGroup = new Set(data.map(d => d.depl))
+  //console.log(allGroup)
 
-
+  var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
   // add the options to the list
   d3.select("#list")
     .selectAll('myOptions')
     .data(allGroup)
     .enter()
     .append('option')
-    .text(function (d) { return d; }) // text showed in the menu
+    .text(function (d) { return "ID:" + d; }) // text showed in the menu
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
     .attr('tabindex', 1)
+    .append('li')
+    .text("Start:            " + document.getElementById('field1').value)
+    .attr("value", -1) // corresponding value returned by the button
+    .append('li')
+    .text("End:            " + document.getElementById('field2').value)
+    .attr("value", -1) // corresponding value returned by the button
 
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
@@ -124,7 +137,7 @@ function createsmallmultiple(data) {
   //Add Y axis
 
   var y = d3.scaleLinear()
-    .domain([0, d3.max(data, function (d) { return 2000; })])
+    .domain([0, d3.max(data, function (d) { return +d.value; })])
     .range([height, 0]);
 
   var yAxis = svg
@@ -201,28 +214,17 @@ function createsmallmultiple(data) {
 
   //---------------mooseover
 
-  var Tooltip = d3.select("#div_template")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
-
   // Three function that change the stroke
   var mouseover = function (d) {
-    Tooltip
-      .style("opacity", 1)
+
     d3.select(this)
       .style("stroke", "black")
       .style("opacity", 1)
   }
 
+
   var mouseleave = function (d) {
-    Tooltip
-      .style("opacity", 0)
+
     d3.select(this)
       .style("stroke", "none")
       .style("opacity", 0.8)
@@ -352,6 +354,7 @@ function createsmallmultiple(data) {
 
   svg.on("mouseover", mouseover)
   //svg.on("mouseover", mousemove)
+  //svg.on('mousemove', mousemove)
   svg.on("mouseleave", mouseleave)
 
   /*
@@ -395,6 +398,7 @@ function createsmallmultiple(data) {
     // recover the option that has been chosen
     const selectedOption = event.explicitOriginalTarget.value
 
+    //console.log( event.explicitOriginalTarget)
     if (selectedOption == 0) {
       x.domain(d3.extent(data, function (d) { ; return d.x; }))
       xAxis.transition().call(d3.axisBottom(x))
@@ -425,6 +429,9 @@ function createsmallmultiple(data) {
         })
       mapJS.removemapview();
 
+    }
+    else if (selectedOption == -1) {
+      // do nothing for description
     }
     else {
       // run the updateChart function with this selected option

@@ -24,10 +24,14 @@ $client = new Client([
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
 /*
+
 SELECT time, TSYTemperatrue, MS5837Temperature,
 MS5837Press, Conducitvity FROM cabin
 WHERE time >= '2022-04-07T07:38:00Z' 
 and time < '2022-04-07T09:38:00Z'
+
+
+
 */
 $queryApi = $client->createQueryApi();
 $query = "from(bucket: \"{$bucket}\") |> range(start:-20d) ";

@@ -2,13 +2,17 @@
 
 #Vertikalprofil/Small Multiple
 
--on click show in map / interferes with dbl click -> button for rescale /click for map
--line.defined detect end of hol
+-adjust y axis aswell
+-schwellenwert warnung
 -color for values
+-salinity
+-unify update functionionality
+-id list show start and end 
+-mouseover show values
 
 #Map/Leaflet
 
--offline geojson ?
+
 -on click pop up with data
 
 #Tiefenprofil/Connected Scatterplot
@@ -20,9 +24,11 @@
 #Html contents
 -font :ariel
 -time selection query -> add functionionality -> send to query dates
+-logger
 
 ##Ideen/Verbesserungen##
 
+https://stackoverflow.com/questions/45842149/change-bar-chart-to-line-chart-in-d3 
 #Vertikalprofil/Small Multiple
 -curved line/.curve https://observablehq.com/@d3/d3-line
 -y scaleable/recalcuted after brushing

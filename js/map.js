@@ -1,5 +1,6 @@
 import * as config from './config.js';
 
+
 var startIcon = L.icon({
     iconUrl: './assets/marker-start.png',
     iconSize:     [64,64], // size of the icon

@@ -14,35 +14,36 @@ export function darkmode() {
   element.classList.toggle("dark-mode");
    
 }
- document.querySelector('#darkmode').addEventListener('click', darkmode)
-// When the user scrolls the page, execute myFunction
-window.onscroll = function () { stickybar(); };
+ //document.querySelector('#darkmode').addEventListener('click', darkmode)
+// When the user scrolls down 80px from the top of the document, resize the navbar's padding and the logo's font size
+window.onscroll = function() {scrollFunction()};
 
-// Get the navbar
-var navbar = document.getElementById("navbar");
-
-// Get the offset position of the navbar
-var sticky = navbar.offsetTop;
-
-// Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
-export function stickybar() {
-  if (window.pageYOffset >= sticky) {
-    navbar.classList.add("sticky")
-
+function scrollFunction() {
+  if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+    document.getElementById("navbar").style.padding = "40px 10px";
+    document.getElementById("logo").style.fontSize = "20px";
+    document.getElementById("navbar").style.fontSize = "20px";
+    //document.getElementById("row2").style.position = "fixed";
+    
   } else {
-
-    navbar.classList.remove("sticky");
+    document.getElementById("navbar").style.padding = "50px 10px";
+    document.getElementById("logo").style.fontSize = "35px";
+    document.getElementById("navbar").style.fontSize = "35px";
+    //document.getElementById("row2").style.position = "relative";
+   
+  
   }
-}
+} 
 
 document.querySelector('ul').addEventListener('click', function(e) {   // 1.
   var selected;
   //console.log(e.target.tagName )
-  if(e.target.tagName === 'OPTION' || e.target.tagName === 'LI') {                                      // 2.
+  if(e.target.tagName === 'OPTION' ) {                                      // 2.
     selected= document.querySelector('option.selected');      
     //console.log(selected )
     if(selected) selected.className= '';                               // "
     e.target.className= 'selected';                                    // 2b.
   }
+  
 });
 

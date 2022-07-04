@@ -14,7 +14,8 @@ var formatData = d3.timeFormat("%Y-%m-%d");
 //today = parseToday(today).toString(); -> query(today)
 //.toISOString() 
 //console.log(formatData(last48h))
-queryJS.query(today.toISOString(),last48h).then(response => {data = response;mapJS.mapfnc(data);
+queryJS.query(today.toISOString(),last48h).then(response => {data = response;
+	mapJS.mapfnc(data);
 chartJS.create(data)});
 
 document.getElementById('field2').value = formatData(today);
