@@ -26,6 +26,8 @@
 
     /* Create two equal columns that sits next to each other */
     .column {
+     
+      width: 45vw;
 
       padding: 5px;
     }
@@ -81,7 +83,7 @@
       position: sticky;
       top: 0;
    
-      background-color: #fff;
+      
       display: block;
       padding: 10px 15px;
       margin-bottom: -1px;
@@ -166,7 +168,9 @@
       transition: 0.4s;
 
     }
-
+    #darkmode{
+      cursor : pointer;
+    }
     /* Links on mouse-over */
     #navbar a:hover {
       background-color: #ddd;

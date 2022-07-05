@@ -6,7 +6,7 @@ import * as mapJS from './map.js';
 // set the dimensions and margins of the graph 20% x 30% ratio to viewport
 const margin = { top: 30, right: 0, bottom: 30, left: 50 },
   width = window.innerWidth / 10 * 2 - margin.left - margin.right,
-  height = window.innerWidth / 10 * 4 - margin.top - margin.bottom;
+  height = window.innerWidth / 10 * 2 - margin.top - margin.bottom;
 
 // parse the date / time
 //2022-05-12T07:28:47.000Z
@@ -92,9 +92,9 @@ function createsmallmultiple(data) {
 
   // List of groups (here I have one group per column)
   var allGroup = new Set(data.map(d => d.depl))
-  //console.log(allGroup)
-
   var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+  
+  
   // add the options to the list
   d3.select("#list")
     .selectAll('myOptions')
@@ -105,10 +105,12 @@ function createsmallmultiple(data) {
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
     .attr('tabindex', 1)
     .append('li')
-    .text("Start:            " + document.getElementById('field1').value)
+    //get start date 
+    .text(function (d) {var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime(start[0].x )})
     .attr("value", -1) // corresponding value returned by the button
     .append('li')
-    .text("End:            " + document.getElementById('field2').value)
+    // get end date 
+    .text(function (d) {var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length -1].x )})
     .attr("value", -1) // corresponding value returned by the button
 
 

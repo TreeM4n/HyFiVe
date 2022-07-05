@@ -1,27 +1,42 @@
 import * as mapJS from './map.js';
 import * as queryJS from './jsquery.js';
 import * as chartJS from './chartmultilegend.js';
+import * as config from './config.js';
 
-//Zeile 254 m�sste stehen "#flux-enabled = false" was ge�ndert werden muss zu "flux-enabled = true" 
-var hours = 48;
+
+var hours = config.initialhours;
 
 var data ;
 function initial(){
-var today = new Date();
-var last48h = today - (3600000 *hours);
+
+var end ;
+var start;
+if (sessionStorage.getItem("sessionfield1")) {
+	end = document.getElementById('field2').value
+	
+	start = document.getElementById('field1').value
+}
+else {
+	end = new Date();
+	start = end - (3600000 *hours);
+	end = end.toISOString();
+}
+ 
 //var parseToday = d3.timeParse("%f");
 var formatData = d3.timeFormat("%Y-%m-%d");
 //today = parseToday(today).toString(); -> query(today)
 //.toISOString() 
 //console.log(formatData(last48h))
-queryJS.query(today.toISOString(),last48h).then(response => {data = response;
+queryJS.query(end,start).then(response => {data = response;
 	mapJS.mapfnc(data);
 chartJS.create(data)});
 
-document.getElementById('field2').value = formatData(today);
-document.getElementById('field1').value = formatData(last48h);
-
+document.getElementById('field2').value = formatData(end);
+document.getElementById('field1').value = formatData(start);
+sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
+sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
 }
+
 initial();
 
 document.getElementById('list').addEventListener('click', chartJS.console)

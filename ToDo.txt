@@ -22,7 +22,7 @@
 -seperate in hols /add hol selection 
 
 #Html contents
--font :ariel
+
 -time selection query -> add functionionality -> send to query dates
 -logger
 
@@ -30,19 +30,19 @@
 
 https://stackoverflow.com/questions/45842149/change-bar-chart-to-line-chart-in-d3 
 #Vertikalprofil/Small Multiple
--curved line/.curve https://observablehq.com/@d3/d3-line
+
 -y scaleable/recalcuted after brushing
 
 #Map/Leaflet
 #Tiefenprofil/Connected Scatterplot
 
 ##Misc##
--get css access or help?
+
 -how to treat wrong data?
--check who is wrong with date/date conversion?
+
 
 
 -warning for high values
 -plausibe werte
 
--steffen odin2 
+

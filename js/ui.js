@@ -1,20 +1,21 @@
 // dark mode switch
 var toggle = true;
 export function darkmode() {
-  /*
+  
   if (toggle) {
   document.querySelector('html').style.filter = 'invert(100%)';
+  
   toggle  = false;
 
   } else {
   document.querySelector('html').style.filter = 'invert(0%)';
   toggle = true;}
-  */
+  
   var element = document.body;
-  element.classList.toggle("dark-mode");
+  //element.classList.toggle("dark-mode");
    
 }
- //document.querySelector('#darkmode').addEventListener('click', darkmode)
+ document.querySelector('#darkmode').addEventListener('click', darkmode)
 // When the user scrolls down 80px from the top of the document, resize the navbar's padding and the logo's font size
 window.onscroll = function() {scrollFunction()};
 

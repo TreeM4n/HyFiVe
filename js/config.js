@@ -1,3 +1,7 @@
+//------------MAIN PAGE--------------------------------
+// "now - initialhours":start date of query 
+export var  initialhours = 48;
+
 
 //------------MULTIPLECHARTS-----------------------
 // values that should not get an chart / or are renamed and therefore double

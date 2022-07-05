@@ -18,7 +18,8 @@ depthJS.depthchart(data)});
 
 document.getElementById('field2').value = formatData(today);
 document.getElementById('field1').value = formatData(last48h);
-
+start = sessionStorage.getItem("sessionfield1")
+console.log(start)
 }
 initial();
 
