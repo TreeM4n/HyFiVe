@@ -29,7 +29,7 @@ export function depthchart(result) {
   //console.log(result)
 
   depthdata.forEach(function (d) {
-    
+
     d.time = new Date(d.time);
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
@@ -41,7 +41,7 @@ export function depthchart(result) {
     for (var prop in d) {
       var a = [prop];
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
-      if ( d.MS5837Press == null || d.Temperature == null ||d.MS5837Press == 0 || d.Temperature == 0) { continue; }
+      if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
 
       data_long.push({
         y: d.MS5837Press,
@@ -53,20 +53,45 @@ export function depthchart(result) {
     }
     //cheat
     //console.log(depthdata)
-    
+
 
 
   });
   depthdata = data_long;
   // List of groups (here I have one group per column)
-  var allGroup = new Set(depthdata.map(d => d.depl))
+
 
   //  console.log(allGroup[Symbol.iterator]().next().value)
   createdepthchart(depthdata)
 
   function createdepthchart(data) {
 
-    // add the options to the button
+    // List of groups (here I have one group per column)
+    var allGroup = new Set(data.map(d => d.depl))
+    var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+
+
+    // add the options to the list
+    d3.select("#list")
+      .selectAll('myOptions')
+      .data(allGroup)
+      .enter()
+      .append('option')
+      .text(function (d) { return "ID:" + d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+      .attr('tabindex', 1)
+      .append('li')
+      //get start date 
+      .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime(start[0].time) })
+      .attr("value", -1) // corresponding value returned by the button
+      .append('li')
+      // get end date 
+      .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length - 1].time) })
+      .attr("value", -1) // corresponding value returned by the button
+
+
+    /*
+    // add the options to the dropdown 
     d3.select("#selectButton")
       .selectAll('myOptions')
       .data(allGroup)
@@ -74,10 +99,10 @@ export function depthchart(result) {
       .append('option')
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
-
-    var  dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
+*/
+    var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
     const x = d3.scaleLinear()
-    .domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
+      .domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       .range([0, width]);
     var xAxis = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -88,7 +113,7 @@ export function depthchart(result) {
       .range([height, 0]);
     var yAxis = svg.append("g")
       .call(d3.axisLeft(y).ticks(4));
-    
+
     // Add the line
     var line = svg.append("path")
       .datum(dataFilter)
@@ -100,21 +125,21 @@ export function depthchart(result) {
         .x(d => x(d.x))
         .y(d => y(d.y))
       )
-      //y axis
+    //y axis
     svg
-    .append("text")
-    .attr("text-anchor", "end")
-    .attr("transform", "rotate(-90)")
-    .attr("y", -margin.left+20)
-    .attr("x", -margin.top)
+      .append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 20)
+      .attr("x", -margin.top)
       .text(function (d) { return "Pressure" })
       .style("fill", function (d) { return "blue" })
     //x axis
     svg
       .append("text")
-    .attr("text-anchor", "end")
-    .attr("x", width)
-    .attr("y", height+ 35)
+      .attr("text-anchor", "end")
+      .attr("x", width)
+      .attr("y", height + 35)
       .text(function (d) { return "Temperature" })
       .style("fill", function (d) { return "red" })
 
@@ -125,31 +150,58 @@ export function depthchart(result) {
       dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
       //console.log(dataFilter  )
       // Give these new data to update line
+
       x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
-      xAxis.transition().call(d3.axisBottom(x))
-      xAxis.call(d3.axisBottom(x).ticks(4));
+      xAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x).ticks(4));
+      
       y.domain([d3.max(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.min(dataFilter, function (d) { return +d.y; }) * 5 / 6])
-      yAxis.transition().call(d3.axisLeft(y))
-      yAxis.call(d3.axisLeft(y).ticks(4));
+      yAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(y).ticks(4));
+      
       line
         .datum(dataFilter)
         .transition()
         .duration(1000)
         .attr("d", d3.line()
-        .curve(d3.curveBasis)
-        .x(d => x(d.x))
-        .y(d => y(d.y))
-      )
+          .curve(d3.curveBasis)
+          .x(d => x(d.x))
+          .y(d => y(d.y))
+        )
 
-       
+
     }
-
+    /* 
+    //  needed for dropdown
     // When the button is changed, run the updateChart function
     d3.select("#selectButton").on("change", function (event, d) {
       // recover the option that has been chosen
       const selectedOption = d3.select(this).property("value")
       // run the updateChart function with this selected option
       update(selectedOption)
+    })
+    */
+
+    // When the button is changed, run the updateChart function
+    d3.select("#list").on("click", function (event, d) {
+      // recover the option that has been chosen
+      const selectedOption = event.explicitOriginalTarget.value
+
+      //console.log( event.explicitOriginalTarget)
+     
+      if (selectedOption == -1) {
+        // do nothing for description
+      }
+      else {
+        // run the updateChart function with this selected option
+        update(selectedOption)
+        //console.log(event.explicitOriginalTarget)
+      }
+
     })
     /*
     // Add the points

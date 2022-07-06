@@ -6,41 +6,69 @@ var hours = 48;
 
 var data ;
 function initial(){
-var today = new Date();
-var last48h = today - (3600000 *hours);
-//var parseToday = d3.timeParse("%f");
-var formatData = d3.timeFormat("%Y-%m-%d");
+	var end ;
+	var start;
+	var formatData = d3.timeFormat("%Y-%m-%d");
+	
+	//save selected time for session
+	if (sessionStorage.getItem("sessionfield1")) {
+	
+		end = sessionStorage.getItem("sessionfield2")
+		start = sessionStorage.getItem("sessionfield1")
+		
+		document.getElementById('field2').value = (end);
+		document.getElementById('field1').value = (start);
+	}
+	else {
+		end = new Date();
+		start = end - (3600000 *hours);
+		
+		
+		document.getElementById('field2').value = formatData(end);
+		document.getElementById('field1').value = formatData(start);
+		sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
+		sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
+	
+	}
 //today = parseToday(today).toString(); -> query(today)
 //.toISOString() 
 //console.log(formatData(last48h))
-queryJS.query(today.toISOString(),last48h).then(response => {data = response;mapJS.mapfnc(data);
+queryJS.query(end,start).then(response => {data = response;mapJS.mapfnc(data);
 depthJS.depthchart(data)});
 
-document.getElementById('field2').value = formatData(today);
-document.getElementById('field1').value = formatData(last48h);
-start = sessionStorage.getItem("sessionfield1")
-console.log(start)
+
 }
 initial();
 
 
+//update session resources
+export function timeselected() {
+	sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
+	sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
+	console.log(sessionStorage.getItem("sessionfield1"))
+}
+ document.querySelector('#field1').addEventListener('onchange', timeselected)
+ document.querySelector('#field2').addEventListener('onchange', timeselected)
 
 
+
+// reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
-
-
 export function reload() {
    		var date1 = parseDate(document.getElementById('field1').value);
 		var date2 = parseDate(document.getElementById('field2').value);
 		if(!date1 || !date2 ){
+		
 		console.log("error")
 		}
 		else {
+			sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
+			sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
 			//queryJS.query(2,2).then(response => {data = response;mapJS.mapfnc(data);chartJS.create(data)});
 		}
   }
 
- document.querySelector('#reloaddepth').addEventListener('click', reload)
+ document.querySelector('#reload').addEventListener('click', reload)
 
 //console.log(queryJS.query())
 //mapJs.mapfnc(queryJS.query());
