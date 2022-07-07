@@ -1,14 +1,14 @@
 ##Funktionen##
 
+-save query result as session variable
+
 #Vertikalprofil/Small Multiple
 
--adjust y axis aswell
 -schwellenwert warnung
 -color for values
 -salinity
--unify update functionionality
--id list show start and end 
 -mouseover show values
+-skala
 
 #Map/Leaflet
 
@@ -24,25 +24,23 @@
 #Html contents
 
 -time selection query -> add functionionality -> send to query dates
--logger
+-logger -> warning high values, wrong data info,
 
 ##Ideen/Verbesserungen##
 
-https://stackoverflow.com/questions/45842149/change-bar-chart-to-line-chart-in-d3 
+
 #Vertikalprofil/Small Multiple
 
--y scaleable/recalcuted after brushing
-
 #Map/Leaflet
+
 #Tiefenprofil/Connected Scatterplot
 
 ##Misc##
 
--how to treat wrong data?
 
 
 
--warning for high values
--plausibe werte
+
+
 
 

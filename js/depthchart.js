@@ -68,6 +68,7 @@ export function depthchart(result) {
 
     // List of groups (here I have one group per column)
     var allGroup = new Set(data.map(d => d.depl))
+
     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
 
 
@@ -100,6 +101,8 @@ export function depthchart(result) {
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 */
+
+// draw the first id on loading page
     var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
     const x = d3.scaleLinear()
       .domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
@@ -114,6 +117,8 @@ export function depthchart(result) {
     var yAxis = svg.append("g")
       .call(d3.axisLeft(y).ticks(4));
 
+      var line = svg.append("path")
+/*
     // Add the line
     var line = svg.append("path")
       .datum(dataFilter)
@@ -125,6 +130,8 @@ export function depthchart(result) {
         .x(d => x(d.x))
         .y(d => y(d.y))
       )
+
+      */
     //y axis
     svg
       .append("text")
@@ -165,6 +172,9 @@ export function depthchart(result) {
       
       line
         .datum(dataFilter)
+        .attr("fill", "none")
+        .attr("stroke", "#69b3a2")
+        .attr("stroke-width", 1.5)
         .transition()
         .duration(1000)
         .attr("d", d3.line()

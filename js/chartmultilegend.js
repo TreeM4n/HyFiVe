@@ -12,7 +12,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 //2022-05-12T07:28:47.000Z
 //var parseTime = utc.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
 
-var showDepl;
+
 export function create(result) {
 
   var data = result;
@@ -21,7 +21,7 @@ export function create(result) {
 
   // format the data
   var data_long = [];
-  var compareDepl = 0;
+
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
@@ -57,22 +57,22 @@ export function create(result) {
   data = data_long;
   //console.log("1")
   // add all  options to the list
-   var text_node = d3.select("#list")
+  var text_node = d3.select("#list")
     .selectAll('allOption')
     .data([1])//to generate just one
     .enter()
     .append('option')
-  .attr("value", 0) // corresponding value returned by the button
-  .attr('tabindex', 1)
-  .attr("id", "option")
-  .text("Back to selected Dates")
-  .append('li')
-  .text("Start:            " + document.getElementById('field1').value)
-  .attr("value", -1) // corresponding value returned by the button
-  .append('li')
-  .text("End:            " + document.getElementById('field2').value)
-  .attr("value", -1) // corresponding value returned by the button
-  
+    .attr("value", 0) // corresponding value returned by the button
+    .attr('tabindex', 1)
+    .attr("id", "option")
+    .text("Back to selected Dates")
+    .append('li')
+    .text("Start:            " + document.getElementById('field1').value)
+    .attr("value", -1) // corresponding value returned by the button
+    .append('li')
+    .text("End:            " + document.getElementById('field2').value)
+    .attr("value", -1) // corresponding value returned by the button
+
 
 
   createsmallmultiple(data)
@@ -93,8 +93,8 @@ function createsmallmultiple(data) {
   // List of groups (here I have one group per column)
   var allGroup = new Set(data.map(d => d.depl))
   var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
-  
-  
+
+
   // add the options to the list
   d3.select("#list")
     .selectAll('myOptions')
@@ -106,11 +106,11 @@ function createsmallmultiple(data) {
     .attr('tabindex', 1)
     .append('li')
     //get start date 
-    .text(function (d) {var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime(start[0].x )})
+    .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime(start[0].x) })
     .attr("value", -1) // corresponding value returned by the button
     .append('li')
     // get end date 
-    .text(function (d) {var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length -1].x )})
+    .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length - 1].x) })
     .attr("value", -1) // corresponding value returned by the button
 
 
@@ -138,9 +138,7 @@ function createsmallmultiple(data) {
 
   //Add Y axis
 
-  var y = d3.scaleLinear()
-    .domain([0, d3.max(data, function (d) { return +d.value; })])
-    .range([height, 0]);
+
 
   var yAxis = svg
     .append("g")
@@ -152,6 +150,7 @@ function createsmallmultiple(data) {
         .domain([min * 5 / 6, max * 7 / 6])
         .range([height, 0]);
       var svg1 = d3.select(this);
+
       svg1.call(d3.axisLeft(y2).ticks(6));
 
 
@@ -260,6 +259,7 @@ function createsmallmultiple(data) {
     var dataFilter = data;
     // What are the selected boundaries?
     var extent = event.selection;
+    //console.log(x.invert(extent[0]))
     //console.log(extent);
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
@@ -272,28 +272,52 @@ function createsmallmultiple(data) {
 
       x.domain([x.invert(extent[0]), x.invert(extent[1])])
 
-      // dataFilter = data.filter(function (d) { return (d.x >= x.invert(extent[0]) && d.x <= x.invert(extent[1]) )})
-
-      //x.domain(d3.extent(data, function(d) { return d.year; }))
+      dataFilter = data.filter(function (d) { return d.x >= x.invert(extent[0]) })
+      dataFilter = dataFilter.filter(function (d) { return d.x <= x.invert(extent[1]) })
+      console.log(dataFilter)
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
     }
 
     // Update axis and line position
-    xAxis.transition().duration(1000).call(d3.axisBottom(x))
-    xAxis.call(d3.axisBottom(x).ticks(4));
+    xAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x).ticks(4));
 
 
+    if (dataFilter != 0) {
+      yAxis
+        .transition()
+        .duration(1000)
+        .each(function (d, i) {
+          var value = d[1][1].y;
+          var dataFilter2 = dataFilter.filter(function (d) { return d.y == value })
+          var min = d3.min(dataFilter2, function (d) { return +d.value; })
+          var max = d3.max(dataFilter2, function (d) { return +d.value; })
+          var y2 = d3.scaleLinear()
+            .domain([min * 5 / 6, max * 7 / 6])
+            .range([height, 0]);
+          var svg1 = d3.select(this);
+
+          svg1
+            .transition()
+            .duration(1000)
+            .call(d3.axisLeft(y2).ticks(6));
 
 
+        })
+    }
     line
       .select('.line')
       .transition()
       .duration(1000)
       .attr("d", function (d) {
 
-        var min = d3.min(d[1], function (d) { return +d.value; })
-        var max = d3.max(d[1], function (d) { return +d.value; })
+        var value = d[1][1].y;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.y == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.value; })
+        var max = d3.max(dataFilter2, function (d) { return +d.value; })
 
         var mapY = d3.scaleLinear()
           .domain([min * 5 / 6, max * 7 / 6])
@@ -319,10 +343,31 @@ function createsmallmultiple(data) {
 
     x.domain(d3.extent(dataFilter, function (d) { return d.x; }))
     // Update axis and line position
-    xAxis.transition().duration(1000).call(d3.axisBottom(x))
-    xAxis.call(d3.axisBottom(x).ticks(4));
+    xAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x).ticks(4));
+
+    yAxis
+      .transition()
+      .duration(1000)
+      .each(function (d, i) {
+        var value = d[1][1].y;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.y == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.value; })
+        var max = d3.max(dataFilter2, function (d) { return +d.value; })
+        var y2 = d3.scaleLinear()
+          .domain([min * 5 / 6, max * 7 / 6])
+          .range([height, 0]);
+        var svg1 = d3.select(this);
+
+        svg1
+          .transition()
+          .duration(1000)
+          .call(d3.axisLeft(y2).ticks(6));
 
 
+      })
 
 
     line
@@ -330,9 +375,12 @@ function createsmallmultiple(data) {
       .transition()
       .duration(1000)
       .attr("d", function (d) {
+        var value = d[1][1].y;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.y == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.value; })
+        var max = d3.max(dataFilter2, function (d) { return +d.value; })
 
-        var min = d3.min(d[1], function (d) { return +d.value; })
-        var max = d3.max(d[1], function (d) { return +d.value; })
+
 
         var mapY = d3.scaleLinear()
           .domain([min * 5 / 6, max * 7 / 6])
@@ -351,6 +399,7 @@ function createsmallmultiple(data) {
 
       })
     mapJS.setmapview(dataFilter);
+
   }
 
 
@@ -403,8 +452,29 @@ function createsmallmultiple(data) {
     //console.log( event.explicitOriginalTarget)
     if (selectedOption == 0) {
       x.domain(d3.extent(data, function (d) { ; return d.x; }))
-      xAxis.transition().call(d3.axisBottom(x))
-      xAxis.call(d3.axisBottom(x).ticks(4));
+      // Update axis and line position
+      xAxis
+        .transition()
+        .duration(1000)
+        .call(d3.axisBottom(x).ticks(4));
+
+      yAxis
+        .each(function (d, i) {
+          //console.log(d)
+          var min = d3.min(d[1], function (d) { return +d.value; })
+          var max = d3.max(d[1], function (d) { return +d.value; })
+          var y2 = d3.scaleLinear()
+            .domain([min * 5 / 6, max * 7 / 6])
+            .range([height, 0]);
+          var svg1 = d3.select(this);
+
+          svg1
+            .transition()
+            .duration(1000)
+            .call(d3.axisLeft(y2).ticks(6));
+
+
+        })
       line
         .select('.line')
         .transition()
