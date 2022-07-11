@@ -29,7 +29,7 @@
   <script src="./js/main.js" type="module"></script>
   <script src="./js/ui.js" type="module"></script>
   <script src="./js/selection.js" type="module"></script>
- 
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
 
@@ -39,52 +39,58 @@
 </head>
 
 <body>
-  
+
   <div id="navbar">
     <a href="#default" id="logo">CompanyLogo</a>
-    
+
     <div id="navbar-right">
       <a class="active" href="#home">Vertical profile</a>
       <a href="./depthprofil.html">Depth profile</a>
       <a href="./manual.html">Manual</a>
-      <a id = "darkmode" >Darkmode</a>
+      <a id="darkmode">Darkmode</a>
     </div>
   </div>
 
-  <div id = "whole">
+  <div id="whole">
     <!-- <button onclick="create()">JSON request</button> -->
     <p><b> From : <input type="date" name="field1" id="field1" />
-    To : <input type="date" name="field2" id="field2" />
+        To : <input type="date" name="field2" id="field2" />
 
-    <input type="button" defer id="reload" value="Show" />
-  </b></p>
+        <input type="button" defer id="reload" value="Show" />
+      </b></p>
     <div class="row">
       <div class="column">
         <div id="my_dataviz"></div>
       </div>
 
-      <div class="row" id = "row2" >
-        
+      <div class="row" id="row2">
+
         <div class="column2">
-          
+
           <nav id="UList">
-            <ul  id="list">
+            <ul id="list">
             </ul>
           </nav>
+          <div id="idselectlabel" class="selected" align=center>
+            Select an ID
+          </div>
         </div>
 
         <div class="column2">
           <div id="map"></div>
-          
-
+        </div>
+        <div id = "switch" class = "selected"align = center >
+          ᐱᐱ Switch to log ᐱᐱ
         </div>
       </div>
 
     </div>
 
+  </div>
 
-    <script>
-    </script>
+
+  <script>
+  </script>
 </body>
 
 </html>

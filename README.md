@@ -10,7 +10,6 @@ https://d3-graph-gallery.com/line \
 https://www.robinwieruch.de/d3-angular-small-multiples-brushing/ \
 
 #php for data query
-https://localcoder.org/how-to-pull-data-from-mysql-database-and-visualize-with-d3-js \
 https://www.slashdb.com/2018/02/15/howto-d3js/ \
 https://stackoverflow.com/questions/4885737/pass-a-php-array-to-a-javascript-function \
 https://github.com/influxdata/influxdb-php \
@@ -47,6 +46,10 @@ https://fontawesome.com/icons/affiliatetheme?s=brands
 https://www.w3schools.com/howto/howto_js_topnav.asp \
 https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp \
 https://bl.ocks.org/mbostock/7555321 \
+https://www.w3schools.com/howto/howto_make_a_webbook.asp \
+
+https://webocreation.com/blog/steps-create-custom-url-work-locally-xampp-localhost-virtual-host/\
+https://nil.pro.np/xampp-windows-localhost-domain/ \
 
 #menu \
 https://www.studytonight.com/post/create-modern-navigation-bar-with-icons-using-html-css-and-hover-effect \ 

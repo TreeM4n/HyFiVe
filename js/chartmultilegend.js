@@ -253,6 +253,7 @@ function createsmallmultiple(data) {
     .text(function (d) { return (d[0]) })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
 
+ 
 
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
@@ -274,7 +275,7 @@ function createsmallmultiple(data) {
 
       dataFilter = data.filter(function (d) { return d.x >= x.invert(extent[0]) })
       dataFilter = dataFilter.filter(function (d) { return d.x <= x.invert(extent[1]) })
-      console.log(dataFilter)
+      //console.log(dataFilter)
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
     }
@@ -504,6 +505,9 @@ function createsmallmultiple(data) {
     }
     else if (selectedOption == -1) {
       // do nothing for description
+    }
+    else if (selectedOption == undefined) {
+      // do nothing in case
     }
     else {
       // run the updateChart function with this selected option

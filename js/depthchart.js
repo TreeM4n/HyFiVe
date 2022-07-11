@@ -1,4 +1,5 @@
 import * as config from './config.js';
+import * as mapJS from './map.js';
 
 // set the dimensions and margins of the graph
 const margin = { top: 100, right: 60, bottom: 60, left: 60 },
@@ -157,7 +158,7 @@ export function depthchart(result) {
       dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
       //console.log(dataFilter  )
       // Give these new data to update line
-
+      mapJS.setmapview(dataFilter);
       x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       xAxis
       .transition()

@@ -1,25 +1,25 @@
 ##Funktionen##
-
--save query result as session variable
+-give server url
+-save query result as session variable - to change double query
 
 #Vertikalprofil/Small Multiple
 
 -schwellenwert warnung
--color for values
--salinity
+-color for values - charts
+-salinity formula
 -mouseover show values
 -skala
 
 #Map/Leaflet
 
-
+-click in chart zoom into map
 -on click pop up with data
 
 #Tiefenprofil/Connected Scatterplot
 
 -seperat graph - marker map
 -beschriftung skala
--seperate in hols /add hol selection 
+ 
 
 #Html contents
 
@@ -37,7 +37,8 @@
 
 ##Misc##
 
-
+-next meeting 
+    new data leads to removal or update ?
 
 
 

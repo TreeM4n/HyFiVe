@@ -26,15 +26,15 @@
 
     /* Create two equal columns that sits next to each other */
     .column {
-     
-      width: 45vw;
 
+      width: 45vw;
+      position: flex;
       padding: 5px;
     }
 
     .column2 {
       position: sticky;
-      height: 100vh;
+      width: 25vw;
       padding: 5px;
     }
 
@@ -58,22 +58,41 @@
       position: sticky;
       top: 0;
       transition: 0.4s;
-     
+
       display: inline-block;
-   
+
       padding: 4px;
       line-height: 1.42857143;
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 4px;
-    
 
-     
+
+
 
     }
 
+    #idselectlabel {
+      font-size: 18px;
+      border-radius: 4px;
+      font-weight: bold;
+      padding: 5px;
+    }
+
+    #switch {
+      font-size: 9px;
+      border-radius: 4px;
+      font-weight: bold;
+      padding: 5px;
+      position: flex;
+    }
 
     /* list id*/
+
+    #UList {
+      padding: 4px;
+    }
+
     nav ul {
       height: 70vh;
       width: 20vw;
@@ -82,8 +101,8 @@
       padding: 0;
       position: sticky;
       top: 0;
-   
-      
+
+
       display: block;
       padding: 10px 15px;
       margin-bottom: -1px;
@@ -130,6 +149,8 @@
 
     /* list id  end*/
 
+
+
     /* navbar */
 
     /* Create a sticky/fixed navbar */
@@ -168,9 +189,11 @@
       transition: 0.4s;
 
     }
-    #darkmode{
-      cursor : pointer;
+
+    #darkmode {
+      cursor: pointer;
     }
+
     /* Links on mouse-over */
     #navbar a:hover {
       background-color: #ddd;
