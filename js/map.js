@@ -61,7 +61,7 @@ var getDate = function (d) {
   return parseUTCDate(d).setHours(0, 0, 0, 0);
 };
 // Read markers data from data.csv
-var datamap = [1];
+var datamap;
 
 //console.log("map")
 
@@ -69,9 +69,10 @@ var datamap = [1];
 var data_longmap = [];
 
 
-export function mapfnc(dataquery) {
+export function mapfnc() {
 
-  // console.log(dataquery)
+  var dataquery = sessionStorage.getItem("response")
+  dataquery = JSON.parse(dataquery)
   //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS

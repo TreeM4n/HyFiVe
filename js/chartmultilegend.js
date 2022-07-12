@@ -11,11 +11,12 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 // parse the date / time
 //2022-05-12T07:28:47.000Z
 //var parseTime = utc.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
+var formatTime = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
+export function create() {
 
-export function create(result) {
-
-  var data = result;
+  var data = sessionStorage.getItem("response");
+  data = JSON.parse(data)
   //console.log(data)
 
 
@@ -38,10 +39,53 @@ export function create(result) {
 
     for (var prop in d) {
       var a = [prop];
+
       if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
       var y = prop,
         value = +d[prop];
-      if (d.time === null || +value > 100000 || +value < -100000 || +value === 0) { continue; }
+
+      if (d.time === null || value > 100000 || value < -100000 || value === 0) {
+        /*
+        d3.select("#ULerror")
+          .selectAll('myOptions')
+          .data([1])//to generate just one
+          .enter()
+          .append('li')
+          //get start date 
+          .text(function (d) { return "value or time overload: " + y + "  value:" + value })
+          .style('padding', '4px')
+          .style('color', 'orange')
+          .attr("value", -1) // corresponding value returned by the button
+          */
+        continue;
+
+      }
+      //threshhold function
+      if (config.thresholdProp.indexOf(prop) != -1) {
+        if (config.thresholdValues[config.thresholdProp.indexOf(prop)][0] > value
+          || config.thresholdValues[config.thresholdProp.indexOf(prop)][1] < value) {
+            var timeStorage = formatTime(d.time);
+
+          d3.select("#ULerror")
+            .selectAll('myOptions')
+            .data([1])//to generate just one
+            .enter()
+            .append('li')
+            //get start date 
+            .text(function (d) { return "Threshold reached: " + prop + " was:" + value })
+            .style('padding', '4px')
+            .style('color', 'orange')
+            .attr("value", -1) // corresponding value returned by the button
+            //get start date 
+            .append('li')
+            .text(function (d) { return "at " + timeStorage + " UTC" })
+            .style('padding', '4px')
+            .style('color', 'orange')
+            .attr("value", -1) // corresponding value returned by the button
+
+          continue;
+        }
+      }
 
 
       data_long.push({
@@ -51,8 +95,8 @@ export function create(result) {
         depl: d.deployment
       });
 
-    }
 
+    }
   });
   data = data_long;
   //console.log("1")
@@ -92,7 +136,7 @@ function createsmallmultiple(data) {
 
   // List of groups (here I have one group per column)
   var allGroup = new Set(data.map(d => d.depl))
-  var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+ 
 
 
   // add the options to the list
@@ -120,6 +164,7 @@ function createsmallmultiple(data) {
     .data(sumstat)
     .enter()
     .append("svg")
+    .attr("ID", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -253,7 +298,7 @@ function createsmallmultiple(data) {
     .text(function (d) { return (d[0]) })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
 
- 
+
 
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {

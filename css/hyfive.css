@@ -73,12 +73,13 @@
     }
 
     #idselectlabel {
+      width: flex;
       font-size: 18px;
       border-radius: 4px;
       font-weight: bold;
       padding: 5px;
     }
-
+    /* error log */
     #switch {
       font-size: 9px;
       border-radius: 4px;
@@ -86,7 +87,12 @@
       padding: 5px;
       position: flex;
     }
-
+    #NAVerror{
+      padding: 4px
+    }
+    #panel{
+      display:none;
+    }
     /* list id*/
 
     #UList {

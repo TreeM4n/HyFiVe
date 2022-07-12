@@ -35,8 +35,8 @@ function scrollFunction() {
   
   }
 } 
-
-document.querySelector('ul').addEventListener('click', function(e) {   // 1.
+//on click ID list show selected data 
+document.querySelector('#list').addEventListener('click', function(e) {   // 1.
   var selected;
   //console.log(e.target.tagName )
   if(e.target.tagName === 'OPTION' ) {                                      // 2.
@@ -46,5 +46,22 @@ document.querySelector('ul').addEventListener('click', function(e) {   // 1.
     e.target.className= 'selected';                                    // 2b.
   }
   
+});
+
+var toggle2 = true;
+//error log / map slider
+$(document).ready(function(){
+  $("#switch").click(function(){
+    $("#panel").slideToggle("1000");
+    $("#map").slideToggle("1000");
+    if (toggle2) {
+      document.getElementById("switch").textContent = "˅˅ Switch to map ˅˅";
+      toggle2 = false;
+    }
+    else {
+      document.getElementById("switch").textContent = "⌃⌃ Switch to log ⌃⌃";
+      toggle2 = true;
+    }
+  });
 });
 
