@@ -56,6 +56,8 @@ var parseDate = d3.timeParse("%Y-%m-%d");
 export function reload() {
 	var date1 = parseDate(document.getElementById('field1').value);
 	var date2 = parseDate(document.getElementById('field2').value);
+	document.getElementById('Temperature').style.display = none;
+	
 	if (!date1 || !date2) {
 
 		console.log("error")

@@ -164,7 +164,7 @@ function createsmallmultiple(data) {
     .data(sumstat)
     .enter()
     .append("svg")
-    .attr("ID", function (d) { return d[0]; })
+    .attr("id", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -220,12 +220,30 @@ function createsmallmultiple(data) {
   const line = svg.append('g')
     .attr("clip-path", "url(#clip)")
   // color palette
-
+/*
+        // Set the gradient
+        svg.append("linearGradient")
+        .attr("id", "line-gradient")
+        .attr("gradientUnits", "userSpaceOnUse")
+        .attr("x1", 0)
+        .attr("y1", y(0))
+        .attr("x2", 0)
+        .attr("y2", y(max))
+        .selectAll("stop")
+          .data([
+            {offset: "0%", color: "blue"},
+            {offset: "100%", color: "red"}
+          ])
+        .enter().append("stop")
+          .attr("offset", function(d) { return d.offset; })
+          .attr("stop-color", function(d) { return d.color; });
+          */
   // Draw the line
   line.append("path")
     .attr("class", "line")
     .attr("fill", "none")
-    .attr("stroke", function (d) { return config.chartcolor(d[0]) })
+    .attr("stroke", "url(#line-gradient)" )
+    //.attr("stroke", function (d) { return config.chartcolor(d[0]) })
     .attr("stroke-width", 1.9)
     .attr("d", function (d) {
 
