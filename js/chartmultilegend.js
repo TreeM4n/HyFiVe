@@ -242,8 +242,8 @@ function createsmallmultiple(data) {
   line.append("path")
     .attr("class", "line")
     .attr("fill", "none")
-    .attr("stroke", "url(#line-gradient)" )
-    //.attr("stroke", function (d) { return config.chartcolor(d[0]) })
+    //.attr("stroke", "url(#line-gradient)" )
+    .attr("stroke", function (d) { return config.chartcolor(d[0]) })
     .attr("stroke-width", 1.9)
     .attr("d", function (d) {
 
