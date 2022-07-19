@@ -13,21 +13,23 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 //var parseTime = utc.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
 var formatTime = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
+var sumstat;
+
 export function create() {
 
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
   //console.log(data)
 
-
+  var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
   // format the data
   var data_long = [];
 
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
-    d.time = new Date(d.time);
+    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = parseTime(d.time);
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
@@ -35,6 +37,9 @@ export function create() {
     d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
     d.Salinity = +d.Conducitvity + 3;
+
+
+    //d.Foo = +d.TSYTemperatrue;
 
 
     for (var prop in d) {
@@ -61,7 +66,8 @@ export function create() {
 
       }
       //threshhold function
-      if (config.thresholdProp.indexOf(prop) != -1) {
+      if (config.thresholdProp.indexOf(prop) != -1 && config.thresholdValues[config.thresholdProp.indexOf(prop)][0] != "")  {
+         
         if (config.thresholdValues[config.thresholdProp.indexOf(prop)][0] > value
           || config.thresholdValues[config.thresholdProp.indexOf(prop)][1] < value) {
             var timeStorage = formatTime(d.time);
@@ -128,7 +134,7 @@ function createsmallmultiple(data) {
   var diff = 0;
   //console.log(data)
   // group the data: I want to draw one line per group
-  const sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
+   sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
   //console.log(sumstat)
   var svg;
   //d3.select('svg').remove();
@@ -154,7 +160,7 @@ function createsmallmultiple(data) {
     .attr("value", -1) // corresponding value returned by the button
     .append('li')
     // get end date 
-    .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length - 1].x) })
+    .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime(end[end.length - 1].x) })
     .attr("value", -1) // corresponding value returned by the button
 
 
@@ -251,7 +257,7 @@ function createsmallmultiple(data) {
       var max = d3.max(d[1], function (d) { return +d.value; })
 
       var mapY = d3.scaleLinear()
-        .domain([min * 5 / 6, max * 7 / 6])
+         .domain([min * 5 / 6, max * 7 / 6])
         .range([height, 0])
 
       var lineGen = d3.line()
@@ -276,23 +282,7 @@ function createsmallmultiple(data) {
 
     })
 
-  //---------------mooseover
-
-  // Three function that change the stroke
-  var mouseover = function (d) {
-
-    d3.select(this)
-      .style("stroke", "black")
-      .style("opacity", 1)
-  }
-
-
-  var mouseleave = function (d) {
-
-    d3.select(this)
-      .style("stroke", "none")
-      .style("opacity", 0.8)
-  }
+ 
 
 
   //-----------------------------------
@@ -313,17 +303,36 @@ function createsmallmultiple(data) {
 
     .attr("y", -5)
     .attr("x", 0)
-    .text(function (d) { return (d[0]) })
+    .text(function (d) {
+        if (config.thresholdUnits[config.thresholdProp.indexOf(d[0])] != undefined) {
+            return (d[0]+"("+ config.thresholdUnits[config.thresholdProp.indexOf(d[0])]) +")" 
+        }
+    else {
+        return d[0]
+    }
+    })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
 
 
+
+   svg.on("click", function (event, d) {
+        var time = x.invert(d3.pointer(event)[0]);
+  
+     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+    var dataFilter = data.filter(function (d) { return formatTime(d.x) == formatTime(time)})
+    //console.log(dataFilter[0])
+    document.getElementById('stats').textContent = dataFilter[0].y + dataFilter[0].depl;
+      mapJS.showpoint(x.invert(d3.pointer(event)[0]))
+     
+
+  });
 
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
     var dataFilter = data;
     // What are the selected boundaries?
     var extent = event.selection;
-    //console.log(x.invert(extent[0]))
+   // console.log(x.invert(extent[0]))
     //console.log(extent);
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
@@ -335,10 +344,10 @@ function createsmallmultiple(data) {
     } else {
 
       x.domain([x.invert(extent[0]), x.invert(extent[1])])
-
+      
       dataFilter = data.filter(function (d) { return d.x >= x.invert(extent[0]) })
-      dataFilter = dataFilter.filter(function (d) { return d.x <= x.invert(extent[1]) })
-      //console.log(dataFilter)
+      dataFilter = dataFilter.filter(function (d) { return d.x<= x.invert(extent[1]) })
+      //datafilter here is broken, shortens the start and end time
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
     }
@@ -379,12 +388,12 @@ function createsmallmultiple(data) {
       .attr("d", function (d) {
 
         var value = d[1][1].y;
-        var dataFilter2 = dataFilter.filter(function (d) { return d.y == value })
+        var dataFilter2 = data.filter(function (d) { return d.y == value })
         var min = d3.min(dataFilter2, function (d) { return +d.value; })
         var max = d3.max(dataFilter2, function (d) { return +d.value; })
 
         var mapY = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
+           .domain([min * 5 / 6, max * 7 / 6])
           .range([height, 0])
 
         var lineGen = d3.line()
@@ -467,46 +476,26 @@ function createsmallmultiple(data) {
   }
 
 
-  svg.on("mouseover", mouseover)
+  svg.on("mouseover", function (d) {
+  
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
+  })
   //svg.on("mouseover", mousemove)
   //svg.on('mousemove', mousemove)
-  svg.on("mouseleave", mouseleave)
+  svg.on("mouseleave", function (d) {
 
-  /*
-  // If user double click, reinitialize the chart
-  svg.on("dblclick", function () {
-      
-     
+    d3.select(this)
+      .style("stroke", "none")
+      .style("opacity", 0.8)
+  })
 
-    x.domain(d3.extent(data, function (d) { ; return d.x; }))
-    xAxis.transition().call(d3.axisBottom(x))
-    xAxis.call(d3.axisBottom(x).ticks(4));
-    line
-      .select('.line')
-      .transition()
-      .attr("d", function (d) {
 
-        var min = d3.min(d[1], function (d) { return +d.value; })
-        var max = d3.max(d[1], function (d) { return +d.value; })
+   //---------------mooseover
 
-        var mapY = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
-          .range([height, 0])
+ 
 
-        var lineGen = d3.line()
-        .defined(function (d) { var i =d.x-diff ;diff = d.x;return i <= 300000 && +d.value != 0 ; })
-          .x(function (d) { return x(d.x); })
-          .y(d => {//console.log(mapY(+d.value)); 
-            return mapY(+d.value);
-          })
-         
-          (d[1])
-
-        return lineGen
-
-      })
-  });
-  */
 
   // When the button is changed, run the updateChart function
   d3.select("#list").on("click", function (event, d) {
@@ -515,6 +504,7 @@ function createsmallmultiple(data) {
 
     //console.log( event.explicitOriginalTarget)
     if (selectedOption == 0) {
+      
       x.domain(d3.extent(data, function (d) { ; return d.x; }))
       // Update axis and line position
       xAxis
@@ -584,5 +574,13 @@ function createsmallmultiple(data) {
 
 }
 
+
+export function resetCharts () {
+    d3.selectAll('svg').remove();
+    d3.selectAll('option').remove();
+     d3.selectAll('li').remove();
+    
+    create();
+}
 
 

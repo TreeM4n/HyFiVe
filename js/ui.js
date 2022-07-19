@@ -12,7 +12,7 @@ export function darkmode() {
     toggle = true;
   }
 
-  var element = document.body;
+  //var element = document.body;
   //element.classList.toggle("dark-mode");
 
 }

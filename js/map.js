@@ -157,6 +157,7 @@ export function mapfnc() {
 }
 var markerStart = {};
 var markerEnd = {};
+var markerPosition = {};
 export function setmapview(data) {
 
   var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
@@ -195,4 +196,27 @@ export function removemapview() {
     map.removeLayer(markerStart);
     map.removeLayer(markerEnd);
   };
+}
+
+
+export function showpoint(time) {
+    var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+    var dataFilter = datamap.filter(function (d) { return formatTime(d.time) == formatTime(time)})
+   // console.log(dataFilter)
+    
+    if (dataFilter.length != 0 && dataFilter) {
+        //console.log(dataFilter)
+    map.flyTo([dataFilter[0].Latitude, dataFilter[0].Longitude]);
+
+    if (markerPosition != undefined) {
+    map.removeLayer(markerPosition);
+    
+  };
+    markerPosition = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude], {
+    icon: startIcon,
+    opacity: 1,
+    color: 'red'
+  }).bindPopup("Latitude:  " +dataFilter[0].Latitude +  "<br> Longitude: " + dataFilter[0].Longitude).addTo(map);
+    }
+    
 }

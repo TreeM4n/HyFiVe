@@ -9,7 +9,7 @@ export function query(date1,date2) {
     url: "./php/dummyquery.php",    //the page containing php script
     type: "post",    //request type,
     dataType: 'json',
-    data: {},
+    data: JSON.stringify({ date1: date1, date2: date2 }),
     success: function result(result) {
       //console.log(result);
       //dataquery = result;
@@ -27,6 +27,5 @@ export function query(date1,date2) {
   //console.log(dataquery);
   //return dataquery;
 };
-
 
 

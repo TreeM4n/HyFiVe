@@ -51,7 +51,7 @@ body {
   padding: 0px;
   background-color: white;
   color: black;
-  
+  display: table;
   margin-left: 0%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   
@@ -93,8 +93,9 @@ body {
 }
 
 #whole {
-  position: sticky;
-  align-items: flex-start
+    padding-top: 6vh;
+  position: flex;
+  align-items: flex-start;
 }
 
 #map {

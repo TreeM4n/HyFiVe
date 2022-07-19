@@ -2,9 +2,10 @@
 -give server url
 -save query result as session variable - to change double query
 
+
 #Vertikalprofil/Small Multiple
 
--schwellenwert warnung
+
 -color for values - charts
 -salinity formula
 -mouseover show values
@@ -12,13 +13,12 @@
 
 #Map/Leaflet
 
--click in chart zoom into map
--on click pop up with data
+-make green marker
 
 #Tiefenprofil/Connected Scatterplot
 
 -seperat graph - marker map
--beschriftung skala
+
  
 
 #Html contents
@@ -27,7 +27,7 @@
 -logger -> warning high values, wrong data info,
 
 ##Ideen/Verbesserungen##
-
+-UI for config
 
 #Vertikalprofil/Small Multiple
 
@@ -39,6 +39,8 @@
 
 -next meeting 
     new data leads to removal or update ?
+    what to write in manual
+    pressure reverse ?
 
 
 
