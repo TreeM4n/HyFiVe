@@ -98,6 +98,15 @@ body {
   align-items: flex-start;
 }
 
+#stats{
+  
+  
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 6px;
+  
+}
+
 #map {
   width: 25vw;
   height: 70vh;

@@ -52,17 +52,25 @@
   </div>
 
   <div id="whole">
-    <!-- <button onclick="create()">JSON request</button> -->
-    <p><b> From : <input type="date" name="field1" id="field1" />
-        To : <input type="date" name="field2" id="field2" />
 
-        <input type="button" defer id="reload" value="Show" />
-         <label id="stats" align center >data />
-      </b>
-      
-      </p>
     <div class="row">
-      
+      <div class="row">
+        <!-- <button onclick="create()">JSON request</button> -->
+        <p><b> From : <input type="date" name="field1" id="field1" />
+            To : <input type="date" name="field2" id="field2" />
+
+            <input type="button" defer id="reload" value="Show" />
+
+          </b>
+
+        </p>
+      </div>
+      <div class="row">
+        <div id="stats" class="selected" align=right></div>
+      </div>
+    </div>
+    <div class="row">
+
 
       <div class="row" id="row2">
 
@@ -79,7 +87,7 @@
 
         <div class="column2">
           <div id="map"></div>
-          <div id="switch" align center class = "selected">ᐱᐱ Switch to log ᐱᐱ</div>
+          <div id="switch" align=center class="selected">ᐱᐱ Switch to log ᐱᐱ</div>
           <div id="panel">
             <nav id="NAVerror">
               <ul id="ULerror">
@@ -87,9 +95,10 @@
             </nav>
           </div>
         </div>
-        
+
       </div>
       <div class="column">
+
         <div id="my_dataviz"></div>
       </div>
 
