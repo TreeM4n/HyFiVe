@@ -22,7 +22,7 @@ export var thresholdProp = ["Temperature","Pressure","Conducitvity","Oxygen"]
 // in order the thresholds
 export var thresholdValues = [["-20","18"],["",""],["",""],["",""]] 
 // in order the units
-export var thresholdUnits = [["'C"],["mbar"],["\u00B5/cm"],["\u00B5g/L"]] 
+export var thresholdUnits = [["'C"],["mbar"],["\u00B5S/cm"],["\u00B5g/L"]] 
 
 
 //------MAP-------

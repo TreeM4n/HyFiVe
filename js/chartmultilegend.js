@@ -1,5 +1,6 @@
 import * as config from './config.js';
 import * as mapJS from './map.js';
+import * as salJS from './salinity.js'
 
 
 //console.log("chart")
@@ -14,9 +15,25 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 var formatTime = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
 var sumstat;
-function dummy (number) {
-  return number +3;
+
+/*
+function getSalinity (c,t,p) {
+  var strUrl = "./php/salinity.php"; var strReturn = "";
+  return jQuery.ajax({
+    url: strUrl,
+    type: "POST",
+    datatype: 'json',
+    data:  JSON.stringify({c: c,t:t,p:p}),
+    success: function(html) {
+      console.log(html)
+      //strReturn = html;
+    },
+    async:false
+  });
+  
+
 }
+*/
 export function create() {
 
   var data = sessionStorage.getItem("response");
@@ -38,10 +55,12 @@ export function create() {
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
-    d.Salinity = dummy(+d.Conducitvity);
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity/1000, +d.TSYTemperatrue, +d.Pressure);
 
+    console.log(d.Salinity)
+    
 
-    d.Foo = +d.TSYTemperatrue;
+    //d.Foo = +d.TSYTemperatrue;
 
 
     for (var prop in d) {
