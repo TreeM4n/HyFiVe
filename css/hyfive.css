@@ -202,7 +202,21 @@ li {
   font-weight: normal;
 }
 
-
+g {
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  text-align: center;
+  padding: 4px;
+  line-height: 1.42857143;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top-color: rgb(221, 221, 221);
+  border-right-color: rgb(221, 221, 221);
+  border-bottom-color: rgb(221, 221, 221);
+  border-left-color: rgb(221, 221, 221);
+  border-radius: 4px;
+  font-weight: bold;
+}
 
 
 .selected {

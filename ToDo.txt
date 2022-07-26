@@ -38,9 +38,14 @@
 ##Misc##
 
 -next meeting 
-    new data leads to removal or update ?
-    what to write in manual
+   
+    what to write in manual ? 
     pressure reverse ?
+    beautify charts ?
+    colored charts?
+    how to separate cast?
+   
+
 
 
 

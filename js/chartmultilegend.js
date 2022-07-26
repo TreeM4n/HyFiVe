@@ -57,7 +57,7 @@ export function create() {
     d.Conducitvity = +d.Conducitvity;
     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity/1000, +d.TSYTemperatrue, +d.Pressure);
 
-    console.log(d.Salinity)
+    //console.log(d.Salinity)
     
 
     //d.Foo = +d.TSYTemperatrue;
@@ -237,15 +237,26 @@ function createsmallmultiple(data) {
     .attr("height", height)
     .attr("x", 0)
     .attr("y", 0);
+  
+
+ 
+    
+    
 
   // Add brushing
   const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
     .extent([[0, 0], [width, height]])  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
     .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
 
+
+   
+
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g')
     .attr("clip-path", "url(#clip)")
+
+
+    
   // color palette
   /*
           // Set the gradient
@@ -313,6 +324,9 @@ function createsmallmultiple(data) {
     .attr("class", "brush")
     .call(brush);
 
+   
+
+
 
   // A function that set idleTimeOut to null
   let idleTimeout
@@ -357,21 +371,24 @@ function createsmallmultiple(data) {
        .attr("alignment-baseline", "middle")
 
   // Create a rect on top of the svg area: this rectangle recovers mouse position
-  svg
+  var rect = svg
     .append('rect')
+    .attr("class", "hoverover")
     .style("fill", "none")
     .style("pointer-events", "all")
     .attr('width', width)
     .attr('height', height)
+    
     .on('mouseover', mouseover)
     .on('mousemove', mousemove)
     .on('mouseout', mouseout);
 
-
+ 
   // What happens when the mouse move -> show the annotations at the right positions.
   function mouseover() {
     focus.style("opacity", 1)
     focusText.style("opacity",1)
+    console.log("1")
   }
 
   function mousemove(event, d) {
@@ -398,6 +415,7 @@ function createsmallmultiple(data) {
     focusText.style("opacity", 0)
   }
 
+ 
 
 /*
   svg.on("mousemove", function (event, d) {

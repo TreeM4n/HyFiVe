@@ -170,7 +170,10 @@ export function depthchart(result) {
       .transition()
       .duration(1000)
       .call(d3.axisLeft(y).ticks(4));
-      
+      var minutesToAdd=15;
+      //console.log(dataFilter[0].time.getTime() -dataFilter[dataFilter.length-1].time.getTime())
+      var downcasttime = new Date(dataFilter[0].time.getTime() + minutesToAdd*60000);
+      var upcasttime = new Date(dataFilter[dataFilter.length-1].time.getTime() - minutesToAdd*60000);
       line
         .datum(dataFilter)
         .attr("fill", "none")
@@ -179,6 +182,11 @@ export function depthchart(result) {
         .transition()
         .duration(1000)
         .attr("d", d3.line()
+          .defined(function (d) { 
+
+         
+             return ((d.time.getTime() > dataFilter[0].time.getTime()  && d.time.getTime() < downcasttime ) || 
+             (d.time.getTime() > upcasttime && d.time.getTime() < dataFilter[dataFilter.length-1].time.getTime() ))  })
           .curve(d3.curveBasis)
           .x(d => x(d.x))
           .y(d => y(d.y))

@@ -124,3 +124,14 @@ function doOnOrientationChange() {
 
 //Listen to orientation change
 window.addEventListener('orientationchange', doOnOrientationChange);  
+
+
+try {
+  //on click ID list show selected data 
+  document.querySelector('#brushover').addEventListener('click', function (e) {   // 1.
+    document.getElementsByClassName('#hoverover').style.display = "inline";
+
+  });
+}
+catch (e) {
+}
