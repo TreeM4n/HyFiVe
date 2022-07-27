@@ -54,7 +54,7 @@ export function create() {
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
-    d.Conducitvity = +d.Conducitvity;
+    d.Conducitvity = +d.Conducitvity/1000;
     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity/1000, +d.TSYTemperatrue, +d.Pressure);
 
     //console.log(d.Salinity)
@@ -370,6 +370,7 @@ function createsmallmultiple(data) {
        .attr("text-anchor", "left")
        .attr("alignment-baseline", "middle")
 
+       /*
   // Create a rect on top of the svg area: this rectangle recovers mouse position
   var rect = svg
     .append('rect')
@@ -382,7 +383,7 @@ function createsmallmultiple(data) {
     .on('mouseover', mouseover)
     .on('mousemove', mousemove)
     .on('mouseout', mouseout);
-
+*/
  
   // What happens when the mouse move -> show the annotations at the right positions.
   function mouseover() {

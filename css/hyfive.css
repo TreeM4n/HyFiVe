@@ -179,6 +179,20 @@ nav ul {
 
 }
 
+#logo{
+  max-width:6%;
+    max-height:6%;
+    width:auto;
+    height:auto;
+}
+#BMEL{
+  max-width:6%;
+    max-height:4%;
+    width:auto;
+    height:auto;
+}
+
+
 option {
   cursor: pointer;
   padding: 10px 15px;
