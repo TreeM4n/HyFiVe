@@ -8,6 +8,22 @@ require __DIR__ . '/vendor/autoload.php';
 use InfluxDB2\Client;
 use InfluxDB2\Point;
 
+if(isset($_POST['start']))
+{
+    $start = $_POST['start'];
+
+    // Do whatever you want with the $uid
+}
+
+//echo $start;
+
+if(isset($_POST['end']))
+{
+    $end = $_POST['end'];
+
+    // Do whatever you want with the $uid
+}
+
 $username = 'admin';
 $password = 'hyfive0815';
 
@@ -30,11 +46,20 @@ MS5837Press, Conducitvity FROM cabin
 WHERE time >= '2022-04-07T07:38:00Z' 
 and time < '2022-04-07T09:38:00Z'
 
-
-
 */
+
+$mes ='_measurement';
+$cabin = 'cabin';
+$Conducitvity = 'Conducitvity';
+
+
 $queryApi = $client->createQueryApi();
-$query = "from(bucket: \"{$bucket}\") |> range(start:-20d) ";
+$query = "from(bucket: \"{$bucket}\") 
+             |> range(start: $start, stop: $end) 
+             
+             
+
+";
 $tables = $queryApi->query($query);
 /*
 foreach ($tables as $table) {
@@ -46,6 +71,20 @@ foreach ($tables as $table) {
     }
 }
 */
+
+foreach ($tables as $table) {
+    foreach ($table->records as $record) {
+        $time = $record->getTime();
+        $measurement = $record->getMeasurement();
+        $value = $record->getValue();
+        $field = $record->getField();
+        print "$time $field is $value\n";
+       
+    }
+}
+
+
+//$tables = json_decode($tables);
 header('Content-type:application/json;charset=utf-8');
 echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
    

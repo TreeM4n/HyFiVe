@@ -18,11 +18,13 @@ export const chartcolor = d3.scaleOrdinal()
 // for threshhold and labeling
 // ----------------!IMPORTANT all arrays need the same length with at least empty strings-------------------------------
 // name / property
-export var thresholdProp = ["Temperature","Pressure","Conducitvity","Oxygen","salinity"]
+export var thresholdProp = ["Temperature","Pressure","Conducitvity","Oxygen","Salinity"]
 // in order the thresholds
 export var thresholdValues = [["-20","18"],["",""],["",""],["",""],["",""]] 
 // in order the units
 export var thresholdUnits = [["'C"],["mbar"],["\u00B5S/cm"],["\u00B5g/L"],["g/kg"]] 
+
+// \u00B5S = mycro
 
 
 //------MAP-------

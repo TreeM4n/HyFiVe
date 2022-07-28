@@ -39,7 +39,8 @@ function initial() {
 	//today = parseToday(today).toString(); -> query(today)
 	//.toISOString() 
 	//console.log(formatData(last48h))
-	queryJS.query(end, start).then(response => {
+	queryJS.query().then(response => {
+		console.log(response)
 		sessionStorage.setItem("response", JSON.stringify(response));
 		mapJS.mapfnc();
 		chartJS.create()
@@ -65,8 +66,13 @@ export function reload() {
 	else {
 		sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
 		sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
-		//queryJS.query(2,2).then(response => {data = response;mapJS.mapfnc(data);chartJS.create(data)});
-		chartJS.resetCharts();
+		queryJS.query().then(response => {
+			console.log(response)
+			sessionStorage.setItem("response", JSON.stringify(response));
+			chartJS.resetCharts();
+		
+		});
+		
 	}
 }
 

@@ -4,25 +4,28 @@
 
 //48 h zuerst
 
-export function query(date1,date2) {
- return jQuery.ajax({
-    url: "./php/dummyquery.php",    //the page containing php script
-    type: "post",    //request type,
-    dataType: 'json',
-    data: JSON.stringify({ date1: date1, date2: date2 }),
-    success: function result(result) {
-      //console.log(result);
-      //dataquery = result;
-      /*
-      try {
-        mapJs.mapfnc(dataquery);
-      } catch (error) {
-        console.error(error);
+export function query() {
+    var formatData = d3.timeFormat("%Y-%m-%dT%H:%M:%SZ");
 
-      }
-      */
+    var end = new Date (document.getElementById('field2').value)
+  end = formatData(end)
+    //console.log(end)
+	var	start = new Date (document.getElementById('field1').value)
+    start = formatData(start)
+
+ return jQuery.ajax({
+    url: "./php/queryhyfive.php",    //the page containing php script
+    type: 'POST',    //request type,
+    dataType: 'json',
+    data: { start: start, end: end },
+    complete: function(result){console.log(result)}
+    //,
+    /*success: function result(result) {
+      console.log(result);
+
      
-    }
+     
+    }*/
   })
   //console.log(dataquery);
   //return dataquery;

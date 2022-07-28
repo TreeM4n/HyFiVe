@@ -38,7 +38,7 @@ export function create() {
 
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
-  //console.log(data)
+  
 
   var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
   // format the data
@@ -55,12 +55,12 @@ export function create() {
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity/1000;
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity/1000, +d.TSYTemperatrue, +d.Pressure);
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity, +d.TSYTemperatrue, +d.Pressure);
 
     //console.log(d.Salinity)
     
 
-    //d.Foo = +d.TSYTemperatrue;
+    d.Foo = +d.TSYTemperatrue;
 
 
     for (var prop in d) {

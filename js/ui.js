@@ -54,6 +54,8 @@ catch (e) {
 }
 var toggle2 = true;
 //error log / map slider
+
+try {
 $(document).ready(function () {
   $("#switch").click(function () {
 
@@ -73,8 +75,11 @@ $(document).ready(function () {
     }
   });
 });
+} 
+catch(e){
 
-
+}
+try {
 //credits https://www.bram.us/2020/01/10/smooth-scrolling-sticky-scrollspy-navigation/
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -95,7 +100,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
 });
-
+}
+catch(e){}
 
 function doOnOrientationChange() {
   
@@ -129,7 +135,7 @@ window.addEventListener('orientationchange', doOnOrientationChange);
 try {
   //on click ID list show selected data 
   document.querySelector('#brushover').addEventListener('click', function (e) {   // 1.
-    document.getElementsByClassName('#hoverover').style.display = "inline";
+    document.getElementById('Salinity').style.display = "inline";
 
   });
 }

@@ -235,6 +235,13 @@ body {
       }
     }
 
+    #logo{
+  max-width:6%;
+    max-height:6%;
+    width:auto;
+    height:auto;
+}
+
     /* navbar end */
 
 
