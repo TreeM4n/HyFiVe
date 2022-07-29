@@ -47,7 +47,7 @@ export function create() {
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
     d.time = parseTime(d.time);
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
@@ -60,7 +60,7 @@ export function create() {
     //console.log(d.Salinity)
     
 
-    d.Foo = +d.TSYTemperatrue;
+    //d.Foo = +d.TSYTemperatrue;
 
 
     for (var prop in d) {

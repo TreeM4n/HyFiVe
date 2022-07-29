@@ -6,7 +6,7 @@ import * as config from './config.js';
 
 var hours = config.initialhours;
 
-var data;
+
 function initial() {
 
 	var end;
@@ -39,11 +39,36 @@ function initial() {
 	//today = parseToday(today).toString(); -> query(today)
 	//.toISOString() 
 	//console.log(formatData(last48h))
+
+
 	queryJS.query().then(response => {
-		console.log(response)
-		sessionStorage.setItem("response", JSON.stringify(response));
+		var data= [];
+		
+		var i = 0 ; 
+		//console.log(response)
+		var allGroup = d3.group(response, d => d.time)
+		allGroup.forEach(element => {
+			
+			
+			var dataObject = {};
+			//console.log(element)
+			element.forEach(element2 =>{
+				
+				dataObject[element2.prop] = element2.value;
+				dataObject.time = element2.time.toString();
+			} )
+			data[i] = dataObject;
+			//console.log(dataObject);
+			i++;
+			dataObject = {};
+			//console.log(data)
+		});
+
+		//console.log((data))
+		sessionStorage.setItem("response", JSON.stringify(data));
 		mapJS.mapfnc();
 		chartJS.create()
+	
 	});
 
 }

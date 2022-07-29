@@ -1,4 +1,6 @@
-//import * as mapJs from './map.js';
+import * as mapJS from './map.js';
+import * as chartJS from './chartmultilegend.js';
+import * as config from './config.js';
 
 //var dataquery = [];
 
@@ -18,7 +20,9 @@ export function query() {
     type: 'POST',    //request type,
     dataType: 'json',
     data: { start: start, end: end },
-    complete: function(result){console.log(result)}
+    complete: function(data){
+    
+    }
     //,
     /*success: function result(result) {
       console.log(result);

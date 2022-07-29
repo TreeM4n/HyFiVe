@@ -22,7 +22,7 @@ export var thresholdProp = ["Temperature","Pressure","Conducitvity","Oxygen","Sa
 // in order the thresholds
 export var thresholdValues = [["-20","18"],["",""],["",""],["",""],["",""]] 
 // in order the units
-export var thresholdUnits = [["'C"],["mbar"],["\u00B5S/cm"],["\u00B5g/L"],["g/kg"]] 
+export var thresholdUnits = [["'C"],["mbar"],["mS/cm"],["\u00B5g/L"],["g/kg"]] 
 
 // \u00B5S = mycro
 

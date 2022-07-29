@@ -73,10 +73,11 @@ export function mapfnc() {
 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
+  console.log(dataquery)
   //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split(".")[0]
+    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
     d.time = parseTime(d.time);
 
     //d.time = +d.time
@@ -92,20 +93,21 @@ export function mapfnc() {
       if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
 
       if (d.Latitude === null || d.Longitude === null) { continue; }
+      if (d.Latitude || d.Longitude ){
       data_longmap.push({
         time: d.time,
         Latitude: d.Latitude,
         Longitude: d.Longitude,
         depl: d.deployment
       });
-
+    }
     }
     //cheat
     datamap = data_longmap;
 
   });
 
-  //console.log(datamap)
+  console.log(datamap)
 
   // For each row in data, create a marker and add it to the map
   // For each row, columns `Latitude`, `Longitude`, and `Time` are required

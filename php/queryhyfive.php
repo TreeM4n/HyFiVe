@@ -48,9 +48,7 @@ and time < '2022-04-07T09:38:00Z'
 
 */
 
-$mes ='_measurement';
-$cabin = 'cabin';
-$Conducitvity = 'Conducitvity';
+
 
 
 $queryApi = $client->createQueryApi();
@@ -71,22 +69,24 @@ foreach ($tables as $table) {
     }
 }
 */
-
+$array = [];
 foreach ($tables as $table) {
     foreach ($table->records as $record) {
         $time = $record->getTime();
         $measurement = $record->getMeasurement();
         $value = $record->getValue();
         $field = $record->getField();
-        print "$time $field is $value\n";
+        $innerarray = (object) ['time' => $time, 'prop' => $field, 'value' => $value];
+        array_push($array,$innerarray);
+        //print "$innerarray\n";
        
     }
 }
 
 
-//$tables = json_decode($tables);
-header('Content-type:application/json;charset=utf-8');
-echo json_encode( $tables, JSON_PRETTY_PRINT ) ;
+$tables = [];
+//header('Content-type:application/json;charset=utf-8');
+echo json_encode( $array, JSON_PRETTY_PRINT ) ;
    
 $client->close();
 
