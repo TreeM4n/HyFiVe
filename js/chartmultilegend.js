@@ -39,15 +39,17 @@ export function create() {
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
   
-
-  var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+  var parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ");
+  //var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
   // format the data
   var data_long = [];
 
   data.forEach(function (d) {
     //console.log(data)
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
+
+
+    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
     d.time = parseTime(d.time);
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
@@ -121,12 +123,12 @@ export function create() {
         value: +value,
         depl: d.deployment
       });
-
+      console.log(data_long)
 
     }
   });
   data = data_long;
-  //console.log("1")
+  //console.log(data)
   // add all  options to the list
   var text_node = d3.select("#list")
     .selectAll('allOption')
@@ -679,7 +681,7 @@ function createsmallmultiple(data) {
             })
 
             (d[1])
-
+            //console.log(lineGen)
           return lineGen
 
         })

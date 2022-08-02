@@ -1,15 +1,15 @@
 ##Funktionen##
 -give server url
--save query result as session variable - to change double query
+
 
 
 #Vertikalprofil/Small Multiple
 
 
 -color for values - charts
--salinity formula
--mouseover show values
--skala
+
+
+
 
 #Map/Leaflet
 

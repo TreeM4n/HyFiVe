@@ -1,31 +1,21 @@
 import * as config from './config.js';
 import * as mapJS from './map.js';
+import * as salJS from './salinity.js'
 
 // set the dimensions and margins of the graph
-const margin = { top: 100, right: 60, bottom: 60, left: 60 },
-  width = 460 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+const margin = { top: 30, right: 0, bottom: 30, left: 50 },
+  width = window.innerWidth / 10 * 2 - margin.left - margin.right,
+  height = window.innerWidth / 10 * 2 - margin.top - margin.bottom;
 
-
-var depthdata = [];
 var data_long = [];
 
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-
 //Read the data
-export function depthchart(result) {
+export function depthchart() {
 
 
+  var depthdata = sessionStorage.getItem("response");
+  depthdata = JSON.parse(depthdata)
 
-  depthdata = result;
   // format the data
   //console.log(result)
 
@@ -34,6 +24,10 @@ export function depthchart(result) {
     d.time = new Date(d.time);
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
+    d.MS5837Press = +d.MS5837Press;
+    d.Pressure = +d.MS5837Press;
+    d.Conducitvity = +d.Conducitvity / 1000;
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity, +d.TSYTemperatrue, +d.Pressure);
 
     //d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
@@ -41,18 +35,21 @@ export function depthchart(result) {
     //shorten data
     for (var prop in d) {
       var a = [prop];
+      var y = prop,
+        value = +d[prop];
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
       if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
 
       data_long.push({
         y: d.MS5837Press,
         time: d.time,
-        x: d.Temperature,
+        value: +value,
+        x: y,
         depl: d.deployment
       });
 
     }
-    //cheat
+
     //console.log(depthdata)
 
 
@@ -60,7 +57,7 @@ export function depthchart(result) {
   });
   depthdata = data_long;
   // List of groups (here I have one group per column)
-
+  console.log(depthdata)
 
   //  console.log(allGroup[Symbol.iterator]().next().value)
   createdepthchart(depthdata)
@@ -71,7 +68,8 @@ export function depthchart(result) {
     var allGroup = new Set(data.map(d => d.depl))
 
     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
-
+    // group the data: I want to draw one line per group
+    var sumstat = d3.group(data, d => d.x) // nest function allows to group the calculation per level of a factor
 
     // add the options to the list
     d3.select("#list")
@@ -102,55 +100,108 @@ export function depthchart(result) {
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 */
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz")
+      .selectAll("uniqueChart")
+      .data(sumstat)
+      .enter()
+      .append("svg")
+      .attr("id", function (d) { return d[0]; })
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("value", function (d) { return d[0]; })
+      .attr("transform",
+        `translate(${margin.left},${margin.top})`)
 
-// draw the first id on loading page
+    // draw the first id on loading page
     var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
-    const x = d3.scaleLinear()
+
+    //.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
+    /*const x = d3.scaleLinear()
       .domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       .range([0, width]);
     var xAxis = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x).ticks(4));
-    // Add Y axis
-    const y = d3.scaleLinear()
-      .domain([d3.min(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.max(dataFilter, function (d) { return +d.y; }) * 5 / 6])
-      .range([height, 0]);
-    var yAxis = svg.append("g")
-      .call(d3.axisLeft(y).ticks(4));
+    */
+    // Add X axis
 
-      var line = svg.append("path")
-/*
-    // Add the line
+    //.domain([d3.min(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.max(dataFilter, function (d) { return +d.y; }) * 5 / 6])
+    var xAxis = svg
+      .append("g")
+      .attr("transform", `translate(0, ${height}) rotate(-90)`)
+      .each(function (d, i) {
+        //console.log(d)
+        var min = d3.min(d[1], function (d) { return +d.value; })
+        var max = d3.max(d[1], function (d) { return +d.value; })
+        var x2 = d3.scaleLinear()
+          .domain([min * 5 / 6, max * 7 / 6])
+          .range([0, width]);
+        var svg1 = d3.select(this);
+
+        svg1.call(d3.axisLeft(x2).ticks(6));
+
+
+      })
+
+
+    // Add Y axis
+    //.domain([d3.min(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.max(dataFilter, function (d) { return +d.y; }) * 5 / 6])
+    var yAxis = svg
+      .append("g")
+      .each(function (d, i) {
+        //console.log(d)
+        var min = d3.min(d[1], function (d) { return +d.y; })
+        var max = d3.max(d[1], function (d) { return +d.y; })
+        var y2 = d3.scaleLinear()
+          .domain([min * 7 / 6, max * 5 / 6])
+          .range([height, 0]);
+        var svg1 = d3.select(this);
+
+        svg1.call(d3.axisLeft(y2).ticks(6));
+
+
+      })
+
     var line = svg.append("path")
-      .datum(dataFilter)
       .attr("fill", "none")
       .attr("stroke", "#69b3a2")
       .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .curve(d3.curveBasis)
-        .x(d => x(d.x))
-        .y(d => y(d.y))
-      )
+    /*
+        // Add the line
+        var line = svg.append("path")
+          .datum(dataFilter)
+          .attr("fill", "none")
+          .attr("stroke", "#69b3a2")
+          .attr("stroke-width", 1.5)
+          .attr("d", d3.line()
+            .curve(d3.curveBasis)
+            .x(d => x(d.x))
+            .y(d => y(d.y))
+          )
+    
+          */
 
-      */
-    //y axis
-    svg
-      .append("text")
-      .attr("text-anchor", "end")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left + 20)
-      .attr("x", -margin.top)
-      .text(function (d) { return "Pressure" })
-      .style("fill", function (d) { return "blue" })
-    //x axis
-    svg
-      .append("text")
-      .attr("text-anchor", "end")
-      .attr("x", width)
-      .attr("y", height + 35)
-      .text(function (d) { return "Temperature" })
-      .style("fill", function (d) { return "red" })
-
+    /*
+  //y axis
+  svg
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left + 20)
+    .attr("x", -margin.top)
+    .text(function (d) { return "Pressure" })
+    .style("fill", function (d) { return "blue" })
+  //x axis
+  svg
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height + 35)
+    .text(function (d) { return "Temperature" })
+    .style("fill", function (d) { return "red" })
+  */
     // A function that update the chart
     function update(selectedGroup) {
 
@@ -159,17 +210,53 @@ export function depthchart(result) {
       //console.log(dataFilter  )
       // Give these new data to update line
       mapJS.setmapview(dataFilter);
-      x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
+      //x.domain([d3.min(dataFilter, function (d) { return +d.x; }) * 5 / 6, d3.max(dataFilter, function (d) { return +d.x; }) * 7 / 6])
       xAxis
-      .transition()
-      .duration(1000)
-      .call(d3.axisBottom(x).ticks(4));
-      
-      y.domain([d3.max(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.min(dataFilter, function (d) { return +d.y; }) * 5 / 6])
+        .transition()
+        .duration(1000)
+        .each(function (d, i) {
+          var value = d[1][1].x;
+          var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+          var min = d3.min(dataFilter2, function (d) { return +d.value; })
+          var max = d3.max(dataFilter2, function (d) { return +d.value; })
+          var y2 = d3.scaleLinear()
+            .domain([min * 5 / 6, max * 7 / 6])
+            .range([0, width]);
+          var svg1 = d3.select(this);
+
+          svg1
+            .transition()
+            .duration(1000)
+            .call(d3.axisLeft(y2).ticks(6));
+
+
+        })
+
+
+      // y.domain([d3.max(dataFilter, function (d) { return +d.y; }) * 7 / 6, d3.min(dataFilter, function (d) { return +d.y; }) * 5 / 6])
       yAxis
-      .transition()
-      .duration(1000)
-      .call(d3.axisLeft(y).ticks(4));
+        .transition()
+        .duration(1000)
+        .each(function (d, i) {
+          //console.log(d)
+          var value = d[1][1].x;
+          var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+          var min = d3.min(dataFilter2, function (d) { return +d.y; })
+          var max = d3.max(dataFilter2, function (d) { return +d.y; })
+          var y2 = d3.scaleLinear()
+            .domain([min * 7 / 6, max * 5 / 6])
+            .range([height, 0]);
+          var svg1 = d3.select(this);
+
+          svg1
+            .transition()
+            .duration(1000)
+            .call(d3.axisLeft(y2).ticks(6));
+
+
+        })
+
+      /*
       var minutesToAdd=15;
       //console.log(dataFilter[0].time.getTime() -dataFilter[dataFilter.length-1].time.getTime())
       var downcasttime = new Date(dataFilter[0].time.getTime() + minutesToAdd*60000);
@@ -191,7 +278,47 @@ export function depthchart(result) {
           .x(d => x(d.x))
           .y(d => y(d.y))
         )
+            */
+      line
+        .attr("fill", "none")
+        .attr("stroke", "#69b3a2")
+        .attr("stroke-width", 1.5)
+        .transition()
+        .duration(1000)
+        .attr("d", function (d) {
+          //console.log(d);
+          var value = d[1][1].x;
+          var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+          //console.log(dataFilter2)
+          var min = d3.min(dataFilter2, function (d) { return +d.value; })
+          var max = d3.max(dataFilter2, function (d) { return +d.value; })
+          var miny = d3.min(dataFilter2, function (d) { return +d.y; })
+          var maxy = d3.max(dataFilter2, function (d) { return +d.y; })
 
+
+          var mapY = d3.scaleLinear()
+            .domain([min * 7 / 6, max * 5 / 6])
+            .range([0, width])
+          var mapX = d3.scaleLinear()
+            .domain([miny * 5 / 6, maxy * 7 / 6])
+            .range([height, 0])
+
+          var lineGen = d3.line()
+            //.defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
+            //.x(function (d) { return x(d.x); })
+            .curve(d3.curveBasis)
+            .x(d => {//console.log(mapY(+d.value)); 
+              return mapX(+d.value);
+            })
+            .y(d => {//console.log(mapY(+d.value)); 
+              return mapY(+d.y);
+            })
+
+            (d[1])
+          //console.log(lineGen)
+          return lineGen
+
+        })
 
     }
     /* 
@@ -211,7 +338,7 @@ export function depthchart(result) {
       const selectedOption = event.explicitOriginalTarget.value
 
       //console.log( event.explicitOriginalTarget)
-     
+
       if (selectedOption == -1) {
         // do nothing for description
       }

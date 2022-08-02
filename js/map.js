@@ -73,7 +73,7 @@ export function mapfnc() {
 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
-  console.log(dataquery)
+  //console.log(dataquery)
   //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
@@ -107,7 +107,7 @@ export function mapfnc() {
 
   });
 
-  console.log(datamap)
+  //console.log(datamap)
 
   // For each row in data, create a marker and add it to the map
   // For each row, columns `Latitude`, `Longitude`, and `Time` are required

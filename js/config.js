@@ -41,4 +41,4 @@ export var MapPoints = 2;
 //---------DEPTHCHART-------------------
 //values which arent important for dephtchart
 export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","time", "MS5837Temperature",
-"MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity"]
+"MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity", "Pressure"]

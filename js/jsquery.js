@@ -16,7 +16,7 @@ export function query() {
     start = formatData(start)
 
  return jQuery.ajax({
-    url: "./php/queryhyfive.php",    //the page containing php script
+    url: "./php/dummyquery.php",    //the page containing php script
     type: 'POST',    //request type,
     dataType: 'json',
     data: { start: start, end: end },
