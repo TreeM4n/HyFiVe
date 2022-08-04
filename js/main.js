@@ -3,10 +3,18 @@ import * as queryJS from './jsquery.js';
 import * as chartJS from './chartmultilegend.js';
 import * as config from './config.js';
 
+/*
+Main initializer for "homepage" 
 
+manages initiale query and execution of charts and map 
+
+handles subqequent qeuries
+
+
+*/
 var hours = config.initialhours;
 
-var firstload
+// on page load function is executed
 function initial() {
 
 	var end;
@@ -112,5 +120,3 @@ export function reload() {
 
 document.querySelector('#reload').addEventListener('click', reload)
 
-//console.log(queryJS.query())
-//mapJs.mapfnc(queryJS.query());

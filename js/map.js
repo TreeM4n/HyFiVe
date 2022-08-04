@@ -1,6 +1,17 @@
 import * as config from './config.js';
 
 
+/*
+split int 3 parts
+
+1. initiate map and get assets
+2. format data
+3. draw lines on map based on data
+
+*/
+
+// -------------------------------------------- PART 1 ----------------------------
+
 var startIcon = L.icon({
   iconUrl: './assets/marker-start.png',
   iconSize: [64, 64], // size of the icon
@@ -18,7 +29,7 @@ var endIcon = L.icon({
 
 var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
 
-
+// function so an online and offline map exists
 var online = navigator.onLine;
 
 if (online) {
@@ -50,16 +61,11 @@ else {
   })
 }
 
-
+//---------------------------------------------------------- PART 2 ---------------------------------------------------
 
 var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 var diff = 0;
 
-// Date parser
-var parseUTCDate = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
-var getDate = function (d) {
-  return parseUTCDate(d).setHours(0, 0, 0, 0);
-};
 // Read markers data from data.csv
 var datamap;
 
@@ -73,8 +79,6 @@ export function mapfnc() {
 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
-  //console.log(dataquery)
-  //map.flyTo([54.548698, 20.769660], 10);
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
     d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
@@ -102,35 +106,27 @@ export function mapfnc() {
       });
     }
     }
-    //cheat
+    
     datamap = data_longmap;
 
   });
 
   //console.log(datamap)
-
-  // For each row in data, create a marker and add it to the map
-  // For each row, columns `Latitude`, `Longitude`, and `Time` are required
+// --------------------------------------------------- PART 3 --------------------------------------------------------------
+ // focus map on first coordinate
   map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
   //flyTo
   for (var i in datamap) {
 
     if (i % config.MapPoints == 1) {
-      //for markers instead of lines
       /*
-      var marker = L.marker([row.Latitude, row.Longitude], {
-          opacity: 1
-      }).bindPopup(row.Time);
-
-      marker.addTo(map);
-      */
-
+      //function to generate random color / useful to color e.g different tracks
       var color;
       var r = Math.floor(Math.random() * 255);
       var g = Math.floor(Math.random() * 255);
       var b = Math.floor(Math.random() * 255);
       color = "rgb(" + r + " ," + g + "," + b + ")";
-
+      */
       if (i > 1 + config.MapPoints) {
         diff = Math.abs(+datamap[i - config.MapPoints].time - +datamap[i].time);
         //console.log(diff );
@@ -143,7 +139,7 @@ export function mapfnc() {
           var pointB = new L.LatLng(lat2, lon2);
           var pointList = [pointA, pointB];
           var line = new L.Polyline(pointList, {
-            color: color,
+            color: "rgb(0,0,0)", // set color 
             weight: 5,
             smoothFactor: 1
           })
@@ -157,6 +153,9 @@ export function mapfnc() {
 
 
 }
+
+
+// fucntion to call to set the start and end marker on the map
 var markerStart = {};
 var markerEnd = {};
 var markerPosition = {};
@@ -192,7 +191,7 @@ export function setmapview(data) {
   //Add a marker to show where you clicked.
   //theMarker = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude]).addTo(map); 
 }
-
+//remove markers
 export function removemapview() {
   if (markerEnd != undefined) {
     map.removeLayer(markerStart);
@@ -200,7 +199,7 @@ export function removemapview() {
   };
 }
 
-
+//export function to set marker on click location in charts
 export function showpoint(time) {
     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
     var dataFilter = datamap.filter(function (d) { return formatTime(d.time) == formatTime(time)})

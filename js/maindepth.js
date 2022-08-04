@@ -4,7 +4,11 @@ import * as depthJS from './depthchart.js';
 
 var hours = 48;
 
-var data;
+/*
+handles chart page over pressure
+
+initializes query and subsequent queries
+*/
 function initial() {
 	var end;
 	var start;
