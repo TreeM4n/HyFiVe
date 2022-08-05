@@ -44,7 +44,7 @@ function initial() {
 		sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
 		sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
 
-		//--------------------------------------
+					//--------------------------------------
 		queryJS.query().then(response => {
 			var data = [];
 			/*
@@ -71,7 +71,9 @@ function initial() {
 			sessionStorage.setItem("response", JSON.stringify(data));
 			*/
 			//console.log((response))
+			
 			sessionStorage.setItem("response", JSON.stringify(response));
+			//chartJS.resetCharts()
 			mapJS.mapfnc();
 			chartJS.create()
 

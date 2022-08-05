@@ -6,7 +6,7 @@ export var  initialhours = 48;
 //------------MULTIPLECHARTS-----------------------
 // values that should not get an chart / or are renamed and therefore double
 export var chartblacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
-"MS5837Press", "Longitude", "Latitude", "Speed", "Course"]
+"MS5837Press", "Longitude", "Latitude", "Speed", "Course","Conducitvity"]
 
 // begins at start if no more are declared
 export const chartcolor = d3.scaleOrdinal()
@@ -18,7 +18,7 @@ export const chartcolor = d3.scaleOrdinal()
 // for threshhold and labeling
 // ----------------!IMPORTANT all arrays need the same length with at least empty strings-------------------------------
 // name / property
-export var thresholdProp = ["Temperature","Pressure","Conducitvity","Oxygen","Salinity"]
+export var thresholdProp = ["Temperature","Pressure","Conductivity","Oxygen","Salinity"]
 // in order the thresholds
 export var thresholdValues = [["-20","18"],["",""],["",""],["",""],["",""]] 
 // in order the units

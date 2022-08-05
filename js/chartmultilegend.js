@@ -46,9 +46,9 @@ export function create() {
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
-    d.Pressure = +d.MS5837Press;
-    d.Conducitvity = +d.Conducitvity / 1000;
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity, +d.TSYTemperatrue, +d.Pressure);
+    d.Pressure =(+d.MS5837Press);
+    d.Conductivity = +d.Conducitvity / 1000;
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.TSYTemperatrue, +d.MS5837Press);
     //console.log(+d.Salinity, +d.Conducitvity,+d.TSYTemperatrue, +d.Pressure )
 
 
@@ -250,8 +250,10 @@ function createsmallmultiple(data) {
       var min = d3.min(d[1], function (d) { return +d.value; })
       var max = d3.max(d[1], function (d) { return +d.value; })
 
+       
+       
       var mapY = d3.scaleLinear()
-        .domain([min * 5 / 6, max * 7 / 6])
+        .domain([min * 5 /6, max * 7 /6])
         .range([height, 0])
 
       var lineGen = d3.line()
@@ -533,8 +535,8 @@ export function resetCharts() {
   d3.selectAll('svg').remove();
   d3.selectAll('option').remove();
   d3.selectAll('li').remove();
-
-  create();
+ 
+  
 }
 
 

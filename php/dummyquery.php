@@ -1,6 +1,6 @@
 <?php
  // path to your JSON file
-$file = 'data2.json'; 
+$file = 'data3.json'; 
 // put the content of the file in a variable
 $data = file_get_contents($file); 
 // JSON decode

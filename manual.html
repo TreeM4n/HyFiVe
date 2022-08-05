@@ -39,8 +39,8 @@
          <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
 
         <div id="navbar-right">
-            <a href="./index.html">Vertical profile</a>
-            <a href="./depthprofil.html">Depth profile</a>
+            <a href="./index.html">Horizontal Profile</a>
+            <a href="./depthprofil.html">Vertical Profile</a>
             <a class="active" href="./manual.html">Manual</a>
             <a id="darkmode">Darkmode</a>
         </div>
@@ -50,15 +50,61 @@
             <div id = "chapters">
                 <h1>Manual</h1>
                 <p><em>Want an explanation of how this works?<br />&rarr; <a></a></em></p>
-                <section id="Lorem-ipsum">
-                    <h2>Lorem ipsum</h2>
-                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
-                        dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                        sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                        justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-                        ipsum dolor sit amet.</p>
+                <p id="query"></p>
+                <section >
+                    <h2 id="dataquery">Getting to your data</h2>
+                     <section >
+                        <h3>How to send queries to InfluxDb</h3>
+                    <p >When first visiting the website an query is automaticly sent. By default this query includes the last 48h. 
+                    To select specific start- and end-dates use the given "datepicker". Click on show to send the query.
+                    //image datepicker open
+                    </p>
+                    
+                     <p>
+                     The selected dates are measured in days and it can take some time to get a response from the database. All time is measured in UTC!
+                     In case of trawls going over midnight the query end at 0pm and the real end of the trawl can not be shown.
+                    </p>
+                    </section>
+
+                       <section id="listid">
+                        <h3>How to find a specific trawl</h3>
+                    <p>After the query finished the list will be filled with IDs of trawls. Each element in the list shows the start of measuring and the end.
+                    Initially all of the data is displayed and can later on still be viewed by clicking on the first element in the list.
+                    //image first list element
+                    </p>
+                     <p>
+                     Clicking on a specific ID inside the list will zoom into the charts.
+                     The x- and y- axis of all charts will be adjusted to that timeframe of the trawl. 
+                     //image id select with adjusted charts
+                    </p>
+                    </section>
+
+                          <section id="brushing">
+                        <h3>How to zoom inside charts</h3>
+                    <p> You can zoom into a timeframe by "brushing" over a single chart.
+                    By releasing your touchscreen or click all charts will be updated to show the marked timeframe.
+                    //image brush
+                    </p>
+                     <p>
+                     Zooming back out can easily be done by selecting an element inside the ID-list
+                    </p>
+                    </section>
+
+                    
+                          <section id="mapusage">
+                        <h3>How use the map effectively</h3>
+                    <p> After each query the map draws lines to disply trawls. By clicking on a line the trawls ID will be shown.
+
+                    //image map with id 
+                    </p>
+                     <p>
+                     By clicking on an ID inside the list the map will also show up- and downcast position.
+                     Where blue marks the last coordinates measured of that trawl and Orange marks the downcast..
+                     If the trawl was between to days it shows the last coordinates inside the query.
+                     // image marker of casts
+                    </p>
+                    </section>
+
                 </section>
 
                 <section id="Lorem--ipsum">
@@ -80,9 +126,9 @@
                     </section>
 
                 </section>
-                <section id="links">
+                <section >
                     <h2>Links</h2>
-                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+                    <p id="links">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
                         ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
                         dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
                         sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
@@ -106,7 +152,14 @@
                     <li><a></a> </li>
                     <li><a> </a></li>
                
-                    <li><a href="#Lorem-ipsum">Lorem ipsum</a></li>
+                    <li><a href="#dataquery">Getting to your data</a></li>
+                    <ul>
+                        
+                        <li class=""><a href="#query">&rarr;How to send queries</a></li>
+                        <li class=""><a href="#listid">&rarr;Selecting trawls</a></li>
+                        <li class=""><a href="#brushing">&rarr;Zoom for charts</a></li>
+                        <li class=""><a href="#mapusage">&rarr;Using the map</a></li>
+                         </ul>
                     <li><a href="#Lorem-ipsum">Lorem ipsum</a>
                     <ul>
                         <li class=""><a href="#Lorem--ipsum">Lorem ipsum</a></li>

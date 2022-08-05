@@ -26,9 +26,11 @@ export function depthchart() {
 
   var depthdata = sessionStorage.getItem("response");
   depthdata = JSON.parse(depthdata)
-
+  var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
   // format the data
   //console.log(result)
+
+
 
   depthdata.forEach(function (d) {
 
@@ -37,29 +39,52 @@ export function depthchart() {
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
-    d.Conducitvity = +d.Conducitvity / 1000;
     d.Conductivity = +d.Conducitvity / 1000;
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity, +d.TSYTemperatrue, +d.Pressure);
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity/1000, +d.TSYTemperatrue, +d.Pressure);
 
     //d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
+
+     var prevID = 0;
+        var castStatus = 0;
+        var startStatus;
+        var endStatus;
+        var times;
+     
 
     //shorten data
     for (var prop in d) {
       var a = [prop];
       var y = prop,
         value = +d[prop];
+      
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
       if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
+      //check for deployment changes
+      if (prevID != d.deployment) {
+          prevID = d.deployment;
+          times = depthdata.filter(function (d) { return d.deployment == prevID });
+          times = (times.map(d => d.time))
+         // console.log(times)
+          startStatus = (times[0]);
+          endStatus = parseTime(times[times.length-1]);
 
+      }
+      //start and and end is needed to determine id
+      if (endStatus != null && startStatus != null)
+      {
+      //assign status for current element
+      castStatus = getStatus(startStatus.getTime(),endStatus.getTime(),d.time.getTime());
+      console.log(castStatus)
       data_long.push({
         y: d.MS5837Press,
         time: d.time,
         value: +value,
         x: y,
-        depl: d.deployment
+        depl: d.deployment,
+        status: castStatus
       });
-
+      }
     }
 
     //console.log(depthdata)
@@ -69,7 +94,7 @@ export function depthchart() {
   });
   depthdata = data_long;
   // List of groups (here I have one group per column)
-  // console.log(depthdata)
+   //console.log(depthdata)
 
   //  console.log(allGroup[Symbol.iterator]().next().value)
   createdepthchart(depthdata)
@@ -259,15 +284,15 @@ export function depthchart() {
       line
 
         .attr("fill", "none")
-        .attr("stroke", "#69b3a2")
+           .attr("stroke", "#69b3a2")
         .attr("stroke-width", 1.5)
         .transition()
         .duration(1000)
         .attr("d", function (d) {
-          console.log(d);
+          //console.log(d);
           var value = d[1][1].x;
           var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
-          console.log(dataFilter2)
+          //console.log(dataFilter2)
           var min = d3.min(dataFilter2, function (d) { return +d.value; })
           var max = d3.max(dataFilter2, function (d) { return +d.value; })
           var miny = d3.min(dataFilter2, function (d) { return +d.y; })
@@ -286,7 +311,7 @@ export function depthchart() {
             //.x(function (d) { return x(d.x); })
             .curve(d3.curveBasis)
             .x(d => {
-              console.log(mapY(+d.value));
+              //console.log(mapY(+d.value));
               return mapX(+d.value);
             })
             .y(d => {//console.log(mapY(+d.value)); 
@@ -320,4 +345,26 @@ export function depthchart() {
 
   }
 
+}
+
+
+//returns based on minute difference 1 to 3 where: 1 = downcast, 2 = horicantal profile and 3 = upcast
+var diffMin = 60000 * 5; //millisec 
+function getStatus(start,end,current)
+{
+    if (current - start < diffMin){return 1;}
+    else if (end - current < diffMin ) {return 3;}
+    else {return 2;}
+    //console.log(start,end,current)
+   
+}
+
+
+
+//test coloring
+function colorful(status) {
+    console.log(status)
+    if (status == 1 ){return 'orange';}
+    else if (status == 3){return 'blue';}
+    else {return 'black';}
 }
