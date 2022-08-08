@@ -79,7 +79,7 @@ export function mapfnc() {
 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
-  console.log(dataquery)
+  //console.log(dataquery)
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
     d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
@@ -144,7 +144,7 @@ export function mapfnc() {
             weight: 5,
             smoothFactor: 1
           })
-            .bindPopup(datamap[i].depl);
+            .bindPopup("ID:"+datamap[i].depl);
           line.addTo(map);
         }
       }
@@ -161,7 +161,7 @@ var markerStart = {};
 var markerEnd = {};
 var markerPosition = {};
 export function setmapview(data) {
-
+try {
   var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
   //console.log(dataFilter)
 
@@ -191,6 +191,10 @@ export function setmapview(data) {
 
   //Add a marker to show where you clicked.
   //theMarker = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude]).addTo(map); 
+} catch (error) {
+  
+}
+ 
 }
 //remove markers
 export function removemapview() {

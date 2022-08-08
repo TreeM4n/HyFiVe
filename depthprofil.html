@@ -16,7 +16,7 @@
   <!-- Load D3 to draw data graphs -->
   <script src="./lib/d3.js"></script>
   <script src="./lib/d3.min.js"></script>
- 
+
   <script src="./js/jsquery.js" type="module"></script>
   <!-- Load node js and query api scripts -->
   <!-- Load leaflet to draw map -->
@@ -24,61 +24,81 @@
   <link rel="stylesheet" type="text/css" href="./css/hyfive.css">
   <link rel="stylesheet" href="./css/hyfive.css" />
   <script src="./lib/leaflet.js"></script>
- <!-- Load own scripts -->
- <script src="./js/config.js" type="module"></script>
- <script src="./js/map.js"  type="module"></script>
- <script src="./js/jsquery.js" type="module"></script>
- <script src="./js/depthchart.js"  type="module"></script>
- <script src="./js/maindepth.js" type="module"></script>
- <script src="./js/ui.js"  type="module"></script>
- <script src="./js/selection.js" type="module"></script>
+  <!-- Load own scripts -->
+  <script src="./js/config.js" type="module"></script>
+  <script src="./js/map.js" type="module"></script>
+  <script src="./js/jsquery.js" type="module"></script>
+  <script src="./js/depthchart.js" type="module"></script>
+  <script src="./js/maindepth.js" type="module"></script>
+  <script src="./js/ui.js" type="module"></script>
+  <script src="./js/selection.js" type="module"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
 
   <style>
-  
+
   </style>
 </head>
 
 <body>
-  
+
   <div id="navbar">
     <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
-    
+
     <div id="navbar-right">
-      <a  href="./index.html">Horizontal Profile</a>
+      <a href="./index.html">Horizontal Profile</a>
       <a class="active" href="./depthprofil.html">Vertical Profile</a>
       <a href="./manual.html">Manual</a>
-      <a id = "darkmode" >Darkmode</a>
+      <a id="darkmode">Darkmode</a>
     </div>
   </div>
 
-  <div id = "whole">
+  <div id="whole">
     <!-- <button onclick="create()">JSON request</button> -->
     <p><b> From : <input type="date" name="field1" id="field1" />
-    To : <input type="date" name="field2" id="field2" />
+        To : <input type="date" name="field2" id="field2" />
 
-    <input type="button" defer id="reload" value="Show" />
-  </b></p>
+        <input type="button" defer id="reload" value="Show" />
+      </b></p>
     <div class="row">
-     
 
-      <div class="row" id = "row2" >
-        
+
+      <div class="row" id="row2">
+
         <div class="column2">
-          
+
           <nav id="UList">
-            <ul  id="list">
+            <ul id="list">
             </ul>
           </nav>
-            <div id="idselectlabel" class="selected" align=center>
+          <div id="idselectlabel" class="selected" align=center>
             Select an ID
+          </div>
+          <div  id = "switch2">
+            <ul >
+              <li>
+                <input id="s1" type="checkbox" class="switch" >
+                <label for="s1">Whole cast</label>
+              </li>
+              <li>
+                <input id="s2" type="checkbox" class="switch">
+                <label for="s2">Downcast</label>
+              </li>
+              <li>
+                <input id="s3" type="checkbox" class="switch">
+                <label for="s3">Midcast</label>
+              </li>
+              <li>
+                <input id="s4" type="checkbox" class="switch">
+                <label for="s4">Upcast</label>
+              </li>
+            </ul>
           </div>
         </div>
 
         <div class="column2">
           <div id="map"></div>
-          
+
 
         </div>
 

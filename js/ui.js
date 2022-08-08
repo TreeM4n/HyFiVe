@@ -37,7 +37,7 @@ function scrollFunction() {
   }
 }
 try {
-  //on click ID list show selected data 
+  //on click ID list show selected data and marked blue
   document.querySelector('#list').addEventListener('click', function (e) {   // 1.
     var selected;
     //console.log(e.target.tagName )
@@ -52,9 +52,10 @@ try {
 }
 catch (e) {
 }
+
+
 var toggle2 = true;
 //error log / map slider
-
 try {
 $(document).ready(function () {
   $("#switch").click(function () {
@@ -103,6 +104,8 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 catch(e){}
 
+
+//annoy mobile users by rotating 
 function doOnOrientationChange() {
   
   document.getElementById("switch").textContent = window.orientation;
@@ -132,6 +135,8 @@ function doOnOrientationChange() {
 window.addEventListener('orientationchange', doOnOrientationChange);  
 
 
+
+// beta
 try {
   //on click ID list show selected data 
   document.querySelector('#brushover').addEventListener('click', function (e) {   // 1.
