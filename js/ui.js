@@ -136,7 +136,7 @@ window.addEventListener('orientationchange', doOnOrientationChange);
 
 
 
-// beta
+// test for selection of charts and enabling /disabling
 try {
   //on click ID list show selected data 
   document.querySelector('#brushover').addEventListener('click', function (e) {   // 1.

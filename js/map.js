@@ -62,7 +62,7 @@ else {
 }
 
 //---------------------------------------------------------- PART 2 ---------------------------------------------------
-
+// parse time
 var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 var diff = 0;
 
@@ -204,7 +204,7 @@ export function removemapview() {
   };
 }
 
-//export function to set marker on click location in charts
+//export function to set marker on click location in charts || unimplemented
 export function showpoint(time) {
     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
     var dataFilter = datamap.filter(function (d) { return formatTime(d.time) == formatTime(time)})

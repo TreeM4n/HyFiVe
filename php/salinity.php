@@ -1,5 +1,6 @@
 
 <?php
+// too slow .. translated to JS 
 include_once "./TEOS10/TEOS10_gsw_oceanographic_toolbox.php";
 include_once "./TEOS10/TEOS10_gsw_saar.php";
 $TEOS10 = new TEOS10_gsw_oceanographic_toolbox();

@@ -454,7 +454,7 @@ function createdepthchart(data) {
 
 
 //returns based on minute difference 1 to 3 where: 1 = downcast, 2 = horicantal profile and 3 = upcast
-var diffMin = 60000 * 5; //millisec 
+var diffMin = 60000 * 10; //millisec 
 function getStatus(start, end, current) {
   if (current - start < diffMin) { return 1; }
   else if (end - current < diffMin) { return 3; }

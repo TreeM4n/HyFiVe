@@ -1,6 +1,7 @@
 <?php
 /**
  * Shows how to use forward compatibility APIs from InfluxDB 1.8.
+ * tuned to hyfive prototype
  */
 
 require __DIR__ . '/vendor/autoload.php';
