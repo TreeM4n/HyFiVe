@@ -48,7 +48,8 @@ export function create() {
     d.MS5837Press = +d.MS5837Press;
     d.Pressure =(+d.MS5837Press);
     d.Conductivity = +d.Conducitvity / 1000;
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.TSYTemperatrue, +d.MS5837Press);
+      if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0){
+    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
     //console.log(+d.Salinity, +d.Conducitvity,+d.TSYTemperatrue, +d.Pressure )
 
 
@@ -282,7 +283,7 @@ function createsmallmultiple(data) {
   //----------------------------------- PART 3 ---------------------------------------------------
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
-    var dataFilter = data;
+    var dataFilter = 0;
     // What are the selected boundaries?
     var extent = event.selection;
     // console.log(x.invert(extent[0]))
@@ -291,7 +292,7 @@ function createsmallmultiple(data) {
     if (!extent) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
       //x.domain(d3.extent(data, function(d) { return d.year; }))
-      x.range([0, width]);
+      //x.range([0, width]);
 
 
     } else {
@@ -304,15 +305,15 @@ function createsmallmultiple(data) {
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
 
     }
-
+    if (dataFilter != 0) {
     // Update axis and line position
     xAxis
       .transition()
       .duration(1000)
       .call(d3.axisBottom(x).ticks(4));
 
-    //just to be safe , probably unnecarsy
-    if (dataFilter != 0) {
+   
+    
       yAxis
         .transition()
         .duration(1000)
@@ -322,7 +323,7 @@ function createsmallmultiple(data) {
           var min = d3.min(dataFilter2, function (d) { return +d.value; })
           var max = d3.max(dataFilter2, function (d) { return +d.value; })
           var y2 = d3.scaleLinear()
-            .domain([min * 5 / 6, max * 7 / 6])
+            .domain([min , max ])// i dont know why but this doesnt need to be multiplied
             .range([height, 0]);
           var svg1 = d3.select(this);
 
