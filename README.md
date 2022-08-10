@@ -18,6 +18,11 @@ https://github.com/influxdata/influxdb-client-php#queries
 https://thisinterestsme.com/json-data-javascript-php/
 https://github.com/influxdata/influxdb-client-php/blob/master/examples/InfluxDB_18_Example.php \
 
+#js query \
+
+https://github.com/influxdata/influxdb-client-js/blob/master/examples/influxdb-1.8.ts \
+https://github.com/influxdata/influxdb-client-js\
+
 #multiple grap 
 https://blog.scottlogic.com/2017/04/05/interactive-responsive-small-multiples.html \
 https://bl.ocks.org/ColinEberhardt/3c780088c363d1515403f50a87a87121 \
@@ -55,6 +60,10 @@ https://nil.pro.np/xampp-windows-localhost-domain/ \
 https://www.studytonight.com/post/create-modern-navigation-bar-with-icons-using-html-css-and-hover-effect \ 
 https://stackoverflow.com/questions/30624709/css-html-navigation-and-logo-on-same-line \
 
+#Apache \
+https://www.liquidweb.com/kb/configure-apache-virtual-hosts-ubuntu-18-04/ \
+https://gist.github.com/TheSunMan/4008088 \
+https://opensource.com/article/18/2/apache-web-server-configuration \
 
 
 #IOW links
