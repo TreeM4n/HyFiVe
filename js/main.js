@@ -47,7 +47,7 @@ function initial() {
 					//--------------------------------------
 		queryJS.query().then(response => {
 			var data = [];
-			
+			/*
 			var i = 0 ; 
 			//console.log(response)
 			var allGroup = d3.group(response, d => d.time)
@@ -67,8 +67,9 @@ function initial() {
 				dataObject = {};
 				//console.log(data)
 			});
-			
-			sessionStorage.setItem("response", JSON.stringify(data));
+			response = data;
+			*/
+			sessionStorage.setItem("response", JSON.stringify(response));
 			
 			//console.log((response))
 			

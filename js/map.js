@@ -35,23 +35,26 @@ var online = navigator.onLine;
 online = false;
 
 if (online) {
+    
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     {
       attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>',
       maxZoom: 21,
       minZoom: 4
     }).addTo(map);
+    
 }
-else {
+if(!online) {
+    
   var myGeoJSONPath = './assets/custom.geo.json';
   var myCustomStyle = {
     stroke: false,
     fill: true,
-    fillColor: '#fff',
+    fillColor: 'green',
     fillOpacity: 1
   }
   $.getJSON(myGeoJSONPath, function (data) {
-
+      
 
     L.geoJson(data, {
       clickable: false,

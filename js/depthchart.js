@@ -43,8 +43,8 @@ export function depthchart() {
     if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0){
     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
     
-    console.log(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure)
-    console.log(d.Salinity)
+    //console.log(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure)
+    //console.log(d.Salinity)
     
 
     //d.Pressure = +d.MS5837Press;
@@ -274,7 +274,7 @@ function createdepthchart(data) {
 
 
       })
-    // leaving this in since its an easy up and downcast detector based on time
+    // leaving this in since its another easy up and downcast detector based on time
     /*
     var minutesToAdd=15;
     //console.log(dataFilter[0].time.getTime() -dataFilter[dataFilter.length-1].time.getTime())
@@ -464,7 +464,8 @@ function getStatus(start, end, current) {
 }
 
 //------------------------------------ cast toggles---------------------
-// its ugly
+// its ugly and it works
+// adjust states of all toggles and corresponding lines based on old state
 document.getElementById("s1").checked = true;
 document.getElementById("s2").checked = false;
 document.getElementById("s3").checked = false;
@@ -624,11 +625,3 @@ d3.select("#s4").on("click", function (event, d) {
 
 
 
-
-//test coloring
-function colorful(status) {
-  console.log(status)
-  if (status == 1) { return 'orange'; }
-  else if (status == 3) { return 'blue'; }
-  else { return 'black'; }
-}

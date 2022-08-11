@@ -235,6 +235,7 @@ function createsmallmultiple(data) {
   const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
     .extent([[0, 0], [width, height]])  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
     .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
+    
 
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g')
@@ -287,13 +288,26 @@ function createsmallmultiple(data) {
     // What are the selected boundaries?
     var extent = event.selection;
     // console.log(x.invert(extent[0]))
-    //console.log(extent);
+    console.log(x.invert(d3.pointer(event)[0]));
+    console.log(d3.pointer(event)[0])
+
+    /*
+    //ok retard make this only happen with no brush than find out how to get leftist x
+       var time = x.invert(d3.pointer(event)[0]);
+  
+     var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+    var dataFilter = data.filter(function (d) { return formatTime(d.x) == formatTime(time)})
+    //console.log(dataFilter[0])
+    document.getElementById('stats').textContent = dataFilter[0].y + dataFilter[0].depl;
+      mapJS.showpoint(x.invert(d3.pointer(event)[0]))
+     
+    */
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
       //x.domain(d3.extent(data, function(d) { return d.year; }))
       //x.range([0, width]);
-
+    
 
     } else {
 
@@ -449,6 +463,7 @@ function createsmallmultiple(data) {
       .style("opacity", 0.8)
   })
 
+  
 
   //---------------mooseover end
 
