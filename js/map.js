@@ -31,6 +31,8 @@ var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
 
 // function so an online and offline map exists
 var online = navigator.onLine;
+//comment line below to use better map
+online = false;
 
 if (online) {
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',

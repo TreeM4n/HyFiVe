@@ -47,7 +47,7 @@ function initial() {
 					//--------------------------------------
 		queryJS.query().then(response => {
 			var data = [];
-			/*
+			
 			var i = 0 ; 
 			//console.log(response)
 			var allGroup = d3.group(response, d => d.time)
@@ -69,10 +69,10 @@ function initial() {
 			});
 			
 			sessionStorage.setItem("response", JSON.stringify(data));
-			*/
+			
 			//console.log((response))
 			
-			sessionStorage.setItem("response", JSON.stringify(response));
+			//sessionStorage.setItem("response", JSON.stringify(response));
 			//chartJS.resetCharts()
 			mapJS.mapfnc();
 			chartJS.create()

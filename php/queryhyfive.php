@@ -4,7 +4,7 @@
  * tuned to hyfive prototype
  */
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . './vendor/autoload.php';
 
 use InfluxDB2\Client;
 use InfluxDB2\Point;
@@ -25,6 +25,22 @@ if(isset($_POST['end']))
     // Do whatever you want with the $uid
 }
 
+$username = 'hyfive';
+$password = 'hyfive';
+
+$database = 'localhyfive';
+$retentionPolicy = 'autogen';
+
+$bucket = "$database/$retentionPolicy";
+
+$client = new Client([
+    "url" => "localhost:8086",
+    "token" => "$username:$password",
+    "bucket" => $bucket,
+    "org" => "-",
+    "precision" => InfluxDB2\Model\WritePrecision::S
+]);
+/*
 $username = 'admin';
 $password = 'hyfive0815';
 
@@ -40,7 +56,7 @@ $client = new Client([
     "org" => "-",
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
-/*
+
 
 SELECT time, TSYTemperatrue, MS5837Temperature,
 MS5837Press, Conducitvity FROM cabin

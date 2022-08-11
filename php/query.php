@@ -3,7 +3,7 @@
  * Shows how to use forward compatibility APIs from InfluxDB 1.8.
  */
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . './vendor/autoload.php';
 
 use InfluxDB2\Client;
 use InfluxDB2\Point;
