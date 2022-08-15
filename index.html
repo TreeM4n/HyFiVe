@@ -25,12 +25,12 @@
   <script src="./js/config.js" type="module"></script>
   <script src="./js/salinity.js" type="module"></script>
   <script src="./js/map.js" type="module"></script>
-  
+
   <script src="./js/chartmultilegend.js" type="module"></script>
   <script src="./js/jsquery.js" type="module"></script>
   <script src="./js/main.js" type="module"></script>
   <script src="./js/ui.js" type="module"></script>
-  <script src="./js/selection.js" type="module"></script>
+
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
@@ -42,19 +42,19 @@
 
 <body>
 
-  <div id="navbar">
-    <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
-  
-    <div id="navbar-right">
-      <a class="active" href="#home">Horizontal Profile</a>
-      <a href="./depthprofil.html">Vertical Profile</a>
-      <a href="./manual.html">Manual</a>
-      <a id="darkmode">Darkmode</a>
-    </div>
-  </div>
+
 
   <div id="whole">
+    <div id="navbar">
+      <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
 
+      <div id="navbar-right">
+        <a class="active" href="#home">Horizontal Profile</a>
+        <a href="./depthprofil.html">Vertical Profile</a>
+        <a href="./manual.html">Manual</a>
+        <a id="darkmode">Darkmode</a>
+      </div>
+    </div>
     <div class="row">
       <div class="row">
         <!-- <button onclick="create()">JSON request</button> -->
@@ -62,7 +62,7 @@
             To : <input type="date" name="field2" id="field2" />
 
             <input type="button" defer id="reload" value="Show" />
-            
+
           </b>
 
         </p>
@@ -98,7 +98,7 @@
 
       </div>
       <div class="column">
-
+        <!-- <div class="loader" id ="loader"></div> -->
         <div id="my_dataviz"></div>
       </div>
 

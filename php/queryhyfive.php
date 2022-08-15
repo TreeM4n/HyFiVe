@@ -24,7 +24,7 @@ if(isset($_POST['end']))
 
     // Do whatever you want with the $uid
 }
-
+/*
 $username = 'hyfive';
 $password = 'hyfive';
 
@@ -40,7 +40,8 @@ $client = new Client([
     "org" => "-",
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
-/*
+*/
+
 $username = 'admin';
 $password = 'hyfive0815';
 
@@ -57,7 +58,7 @@ $client = new Client([
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
 
-
+/*
 SELECT time, TSYTemperatrue, MS5837Temperature,
 MS5837Press, Conducitvity FROM cabin
 WHERE time >= '2022-04-07T07:38:00Z' 
@@ -87,6 +88,7 @@ foreach ($tables as $table) {
 }
 */
 $array = [];
+
 foreach ($tables as $table) {
     foreach ($table->records as $record) {
         $time = $record->getTime();
@@ -95,6 +97,7 @@ foreach ($tables as $table) {
         $field = $record->getField();
         $innerarray = (object) ['time' => $time, 'prop' => $field, 'value' => $value];
         array_push($array,$innerarray);
+       
         //print "$innerarray\n";
        
     }

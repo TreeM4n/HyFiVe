@@ -5,12 +5,8 @@ import * as config from './config.js';
 
 /*
 Main initializer for "homepage" 
-
 manages initiale query and execution of charts and map 
-
 handles subqequent qeuries
-
-
 */
 var hours = config.initialhours;
 
@@ -30,9 +26,7 @@ function initial() {
 		document.getElementById('field2').value = (end);
 		document.getElementById('field1').value = (start);
 
-		//-----------------
-		mapJS.mapfnc();
-		chartJS.create()
+		
 	}
 	else {
 		end = new Date();
@@ -44,44 +38,18 @@ function initial() {
 		sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
 		sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
 
-					//--------------------------------------
-		queryJS.query().then(response => {
-			var data = [];
-			/*
-			var i = 0 ; 
-			//console.log(response)
-			var allGroup = d3.group(response, d => d.time)
-			allGroup.forEach(element => {
-				
-				
-				var dataObject = {};
-				//console.log(element)
-				element.forEach(element2 =>{
-					
-					dataObject[element2.prop] = element2.value;
-					dataObject.time = element2.time.toString();
-				} )
-				data[i] = dataObject;
-				//console.log(dataObject);
-				i++;
-				dataObject = {};
-				//console.log(data)
-			});
-			response = data;
-			*/
-			sessionStorage.setItem("response", JSON.stringify(response));
-			
-			//console.log((response))
-			
-			//sessionStorage.setItem("response", JSON.stringify(response));
-			//chartJS.resetCharts()
-			mapJS.mapfnc();
-			chartJS.create()
-
-		});
+		//--------------------------------------
 
 	}
 
+	if (sessionStorage.getItem("response")) {
+		//-----------------
+		mapJS.mapfnc();
+		chartJS.create();
+	}
+	else {
+		initialquery();
+	}
 
 
 	//today = parseToday(today).toString(); -> query(today)
@@ -94,6 +62,50 @@ function initial() {
 }
 
 initial();
+//sperated function for 
+
+function initialquery() {
+	queryJS.query().then(response => {
+		var data = [];
+
+		var i = 0;
+
+		var allGroup = d3.group(response, d => d.time)
+		//console.log(allGroup)
+		allGroup.forEach(element => {
+
+			//if (a.some(r => config.mainblacklist.indexOf(r) >= 0)) { return; }
+			var dataObject = {};
+			//console.log(element)
+			element.forEach(element2 => {
+				var a = [element2.prop];
+				console.log(a)
+				if (a.some(r => config.mainblacklist.indexOf(r) >= 0)) { return; }
+				dataObject[element2.prop] = element2.value;
+				dataObject.time = element2.time.toString();
+			})
+			data[i] = dataObject;
+			//console.log(dataObject);
+			i++;
+			dataObject = {};
+			//console.log(data)
+		});
+		response = data;
+
+		sessionStorage.setItem("response", JSON.stringify(response));
+
+
+		//console.log((response))
+		if (response) {
+
+			//sessionStorage.setItem("response", JSON.stringify(response));
+			chartJS.resetCharts()
+			mapJS.mapfnc();
+			chartJS.create()
+		}
+
+	});
+}
 
 document.getElementById('list').addEventListener('click', chartJS.console)
 
@@ -111,15 +123,51 @@ export function reload() {
 	else {
 		sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
 		sessionStorage.setItem("sessionfield2", document.getElementById('field2').value);
+
 		queryJS.query().then(response => {
-			console.log(response)
+			var data = [];
+
+			var i = 0;
+
+			var allGroup = d3.group(response, d => d.time)
+			//console.log(allGroup)
+			allGroup.forEach(element => {
+
+				//if (a.some(r => config.mainblacklist.indexOf(r) >= 0)) { return; }
+				var dataObject = {};
+				//console.log(element)
+				element.forEach(element2 => {
+					var a = [element2.prop];
+					//console.log(a)
+					if (a.some(r => config.mainblacklist.indexOf(r) >= 0)) {return; }
+					dataObject[element2.prop] = element2.value;
+					dataObject.time = element2.time.toString();
+				})
+				data[i] = dataObject;
+				//console.log(dataObject);
+				i++;
+				dataObject = {};
+				//console.log(data)
+			});
+			response = data;
+
 			sessionStorage.setItem("response", JSON.stringify(response));
-			chartJS.resetCharts();
+
+
+			//console.log((response))
+			if (response) {
+
+				//sessionStorage.setItem("response", JSON.stringify(response));
+				chartJS.resetCharts()
+				mapJS.mapfnc();
+				chartJS.create()
+			}
 
 		});
 
 	}
+
+
 }
 
 document.querySelector('#reload').addEventListener('click', reload)
-

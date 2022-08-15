@@ -17,7 +17,8 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 
 // format the date / time
 //2022-05-12T07:28:47.000Z
-var formatTime = d3.timeFormat("%Y-%m-%d %H:%M:%S");
+var formatTime = d3.utcFormat("%Y-%m-%d %H:%M:%S");
+var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
 
 //var to determine name of parameter
@@ -26,12 +27,14 @@ var sumstat;
 //-----------------------PART 1 ---------------------------------------
 //initial function to format data from query
 export function create() {
-
+  
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
+  //console.log(data)
 
-  var parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ");
-  //var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+  var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
+  var parseTime2 = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
+  
   // format the data
   var data_long = [];
 
@@ -41,17 +44,21 @@ export function create() {
     //--------------------- define parameters and their name
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
     //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
-    d.time = parseTime(d.time);
+    d.time = parseTime2(d.time);
+    
+    //d.time = formatTime(d.time);
+    //d.time = parseTime2(d.time)
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
     d.Pressure =(+d.MS5837Press);
-    d.Conductivity = +d.Conducitvity / 1000;
-      if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0){
+    d.Conductivity = +d.Conducitvity / 1000; //micro to milli
+    // check if exist and not null
+      if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0 && +d.Conducitvity  && +d.TSYTemperatrue && +d.Pressure){
     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
-    //console.log(+d.Salinity, +d.Conducitvity,+d.TSYTemperatrue, +d.Pressure )
-
+    
+   
 
 
     //---------------------example for new parameter based on existing data:------------------------
@@ -65,13 +72,15 @@ export function create() {
       var y = prop,
         value = +d[prop];
       //time cant be undefined or null and so 
-      if (d.time === null || d.depl === null || value === null || value === 0) { continue; }
+      
+      if (d.time === null || d.depl === null || value === null || value === 0 || isNaN(value)) { continue; }
       //threshhold function
       if (config.thresholdProp.indexOf(prop) != -1 && config.thresholdValues[config.thresholdProp.indexOf(prop)][0] != "") {
 
         if (config.thresholdValues[config.thresholdProp.indexOf(prop)][0] > value
           || config.thresholdValues[config.thresholdProp.indexOf(prop)][1] < value) {
-          var timeStorage = formatTime(d.time);
+          var timeStorage = formatTime2(d.time);
+          
 
           d3.select("#ULerror")
             .selectAll('myOptions')
@@ -101,12 +110,12 @@ export function create() {
         value: +value,
         depl: d.deployment
       });
-      //console.log(data_long)
+      
 
     }
   });
   data = data_long;
-  //console.log(data)
+  console.log(data)
   // add an  all-options to the list
   var text_node = d3.select("#list")
     .selectAll('allOption')
@@ -156,11 +165,11 @@ function createsmallmultiple(data) {
     .attr('tabindex', 1)
     .append('li')
     //get start date 
-    .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime(start[0].x) })
+    .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime2(start[0].x); })
     .attr("value", -1) // corresponding value returned by the button
     .append('li')
     // get end date 
-    .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime(end[end.length - 1].x) })
+    .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime2(end[end.length - 1].x); })
     .attr("value", -1) // corresponding value returned by the button
 
 
@@ -228,14 +237,15 @@ function createsmallmultiple(data) {
     .append("svg:rect")
     .attr("width", width)
     .attr("height", height)
+    
     .attr("x", 0)
     .attr("y", 0);
-
+  
   // Add brushing
   const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
     .extent([[0, 0], [width, height]])  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
     .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
-    
+   
 
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g')
@@ -279,18 +289,23 @@ function createsmallmultiple(data) {
     .call(brush);
 
   // A function that set idleTimeOut to null
-  let idleTimeout
-  function idled() { idleTimeout = null; }
+  let idleTimeout = null;
+  function idled() {
+    
+    
+     idleTimeout = null; }
   //----------------------------------- PART 3 ---------------------------------------------------
   // A function that update the chart for given boundaries after brushing
   function updateChart(event, d) {
     var dataFilter = 0;
     // What are the selected boundaries?
     var extent = event.selection;
+    /*
     // console.log(x.invert(extent[0]))
-    console.log(x.invert(d3.pointer(event)[0]));
-    console.log(d3.pointer(event)[0])
-
+    console.log(d);
+    console.log(x.invert(d3.pointer(event)[0]),idleTimeout);
+    console.log(extent)
+    */
     /*
     //ok retard make this only happen with no brush than find out how to get leftist x
        var time = x.invert(d3.pointer(event)[0]);
@@ -307,20 +322,27 @@ function createsmallmultiple(data) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
       //x.domain(d3.extent(data, function(d) { return d.year; }))
       //x.range([0, width]);
-    
+      
+      
+     
+      
 
     } else {
 
       x.domain([x.invert(extent[0]), x.invert(extent[1])])
-
+      
       dataFilter = data.filter(function (d) { return d.x >= x.invert(extent[0]) })
       dataFilter = dataFilter.filter(function (d) { return d.x <= x.invert(extent[1]) })
       //datafilter here is broken, shortens the start and end time
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+      
+      
 
     }
+  
     if (dataFilter != 0) {
     // Update axis and line position
+    
     xAxis
       .transition()
       .duration(1000)
@@ -349,6 +371,7 @@ function createsmallmultiple(data) {
 
         })
     }
+   
     //update line 
     line
       .select('.line')
@@ -377,6 +400,7 @@ function createsmallmultiple(data) {
         return lineGen
 
       })
+      
   }
 
   //------------------------------------------end Brushing-------------------------------

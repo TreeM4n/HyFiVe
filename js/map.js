@@ -68,7 +68,7 @@ if(!online) {
 
 //---------------------------------------------------------- PART 2 ---------------------------------------------------
 // parse time
-var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
 var diff = 0;
 
 // Read markers data from data.csv
@@ -81,20 +81,20 @@ var data_longmap = [];
 
 
 export function mapfnc() {
-
+ 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
   //console.log(dataquery)
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
+    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
     d.time = parseTime(d.time);
 
     //d.time = +d.time
     d.TSYTemperatrue = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;
-    //    console.log(d.time);
+     // console.log(d.time);
 
 
     for (var prop in d) {
@@ -102,7 +102,7 @@ export function mapfnc() {
       // console.log("por")
       if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
 
-      if (d.Latitude === null || d.Longitude === null) { continue; }
+      if (d.Latitude === null || d.Longitude === null || d.Latitude === undefined  || d.Longitude  ===undefined) { continue; }
       
       data_longmap.push({
         time: d.time,
@@ -120,7 +120,12 @@ export function mapfnc() {
   //console.log(datamap)
 // --------------------------------------------------- PART 3 --------------------------------------------------------------
  // focus map on first coordinate
+ try {
   map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
+ } catch (error) {
+  
+ }
+ 
   //flyTo
   for (var i in datamap) {
 

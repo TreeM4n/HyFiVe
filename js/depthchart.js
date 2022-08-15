@@ -26,7 +26,7 @@ export function depthchart() {
 
   var depthdata = sessionStorage.getItem("response");
   depthdata = JSON.parse(depthdata)
-  var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
+  var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   // format the data
   //console.log(result)
 
@@ -34,7 +34,7 @@ export function depthchart() {
 
   depthdata.forEach(function (d) {
 
-    d.time = new Date(d.time);
+    d.time = parseTime(d.time);
     d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
     d.MS5837Press = +d.MS5837Press;

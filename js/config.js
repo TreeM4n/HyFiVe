@@ -1,9 +1,10 @@
 //------------MAIN PAGE--------------------------------
 // "now - initialhours":start date of query 
 export var  initialhours = 48;
+// values never never and not stored after query
+export var mainblacklist = ["Speed", "Course","device","value"]
 
-
-//------------MULTIPLECHARTS-----------------------
+//------------HORIZONTAL CHARTS-----------------------
 // values that should not get an chart / or are renamed and therefore double
 export var chartblacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course","Conducitvity"]
@@ -20,7 +21,7 @@ export const chartcolor = d3.scaleOrdinal()
 // name / property
 export var thresholdProp = ["Temperature","Pressure","Conductivity","Oxygen","Salinity"]
 // in order the thresholds
-export var thresholdValues = [["-20","18"],["",""],["",""],["",""],["",""]] 
+export var thresholdValues = [["",""],["",""],["",""],["",""],["",""]] 
 // in order the units
 export var thresholdUnits = [["'C"],["mbar"],["mS/cm"],["\u00B5g/L"],["g/kg"]] 
 
@@ -38,7 +39,7 @@ export var MapDim = 2
 export var MapPoints = 2;
 
 
-//---------DEPTHCHART-------------------
+//---------VERTICAL CHARTS-------------------
 //values which arent important for dephtchart
 export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","time", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity", "Pressure"]
