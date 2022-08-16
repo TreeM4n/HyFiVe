@@ -20,6 +20,8 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 var formatTime = d3.utcFormat("%Y-%m-%d %H:%M:%S");
 var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
+//svg holding all elements
+  var svg;
 
 //var to determine name of parameter
 var sumstat;
@@ -147,8 +149,7 @@ function createsmallmultiple(data) {
   // group the data: I want to draw one line per group
   sumstat = d3.group(data, d => d.y) // nest function allows to group the calculation per level of a factor
 
-  //svg holding all elements
-  var svg;
+  
   //d3.select('svg').remove();
 
   // List of groups (here I have one group per column)
@@ -178,7 +179,9 @@ function createsmallmultiple(data) {
     .selectAll("uniqueChart")
     .data(sumstat)
     .enter()
+    .append("class", "chart")
     .append("svg")
+    
     .attr("id", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -572,7 +575,9 @@ function createsmallmultiple(data) {
 
 
 export function resetCharts() {
-  d3.selectAll('svg').remove();
+ // svg.selectAll("svg").remove();
+  d3.select("#my_dataviz")
+    .selectAll("svg").remove();
   d3.selectAll('option').remove();
   d3.selectAll('li').remove();
  

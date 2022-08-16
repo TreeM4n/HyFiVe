@@ -34,7 +34,7 @@ var online = navigator.onLine;
 //comment line below to use better map
 online = false;
 
-if (online) {
+  if (online) {
     
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     {
@@ -65,6 +65,7 @@ if(!online) {
     }).addTo(map);
   })
 }
+
 
 //---------------------------------------------------------- PART 2 ---------------------------------------------------
 // parse time
@@ -161,6 +162,7 @@ export function mapfnc() {
     }
     //console.log(data[i])
   }
+
 
 
 }

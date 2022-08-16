@@ -20,7 +20,7 @@
   <!-- Load leaflet to draw map -->
   <link rel="stylesheet" href="./css/leaflet.css" />
   <link rel="stylesheet" href="./css/hyfive.css" />
-
+   <!-- load order is important e.g config is loaded first and cant "see" salinity -easily- -->
   <!-- Load own scripts  type="text/javascript"-->
   <script src="./js/config.js" type="module"></script>
   <script src="./js/salinity.js" type="module"></script>
@@ -42,8 +42,8 @@
 
 <body>
 
-
-
+    <!-- body describes the form of visible elements-->
+     <!-- navigation bar-->
   <div id="whole">
     <div id="navbar">
       <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
@@ -55,6 +55,7 @@
         <a id="darkmode">Darkmode</a>
       </div>
     </div>
+     <!-- 2 buttons with start and stop date -->
     <div class="row">
       <div class="row">
         <!-- <button onclick="create()">JSON request</button> -->
@@ -69,6 +70,7 @@
       </div>
       
     </div>
+     <!-- forms 3 columns where the first 2 have a quarter of view width and the 3 half of view width -->
     <div class="row">
 
 
@@ -84,7 +86,7 @@
             Select an ID
           </div>
         </div>
-
+         <!-- map and list of error share the same space but are technically vertically aligned -->
         <div class="column2">
           <div id="map"></div>
           <div id="switch" align=center class="selected">ᐱᐱ Switch to log ᐱᐱ</div>
@@ -98,6 +100,7 @@
 
       </div>
       <div class="column">
+       <!-- dataviz holds all charts -->
         <!-- <div class="loader" id ="loader"></div> -->
         <div id="my_dataviz"></div>
       </div>

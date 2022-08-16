@@ -101,6 +101,8 @@ function initialquery() {
 	});
 }
 
+/*
+// unnecessary
 //update session resources
 export function timeselected() {
 	sessionStorage.setItem("sessionfield1", document.getElementById('field1').value);
@@ -110,7 +112,7 @@ export function timeselected() {
 document.querySelector('#field1').addEventListener('onchange', timeselected)
 document.querySelector('#field2').addEventListener('onchange', timeselected)
 
-
+*/
 
 // reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
