@@ -4,7 +4,7 @@
  * tuned to hyfive prototype
  */
 
-require __DIR__ . './vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use InfluxDB2\Client;
 use InfluxDB2\Point;
