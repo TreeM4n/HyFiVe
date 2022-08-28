@@ -41,23 +41,38 @@ Horizontal charts : line 9 "export var chartblacklist"\
 Vertical charts : line 44 "export var dcblacklist" \
 Map : line 33 export var mapblacklistmap \
 
-##### charts can be furtmore customized by:
-##### adding a unit behind the label : 
+##### charts can be furthermore customized by:
+1. adding a unit behind the label : 
 line 26 export var thresholdUnits \
-do not forget to edit the other threshold var 
-##### setting min and max values which will get sorted out 
-line 24 export var thresholdValues 
-##### chaniging colors of line and label 
+do not forget to edit the other threshold vars
+2. setting min and max values which will get sorted out 
+line 24 export var thresholdValues \
+the values in the array correspind to them slot of var thresholdProp 
+3. changing colors of line and label 
 line 13-15 export const chartcolor \
 similar to threshold the first parameter gets the first color \
 but the first parameter here is the first charst which is drawn not which is first in \
 line 22 
 
 ##### the map can be furthermore customized by: 
-##### changing the time which is needed to seperate two lines 
+1.  changing the time before it seperates two paths 
 line 37 export var MapDim 
-##### changing how many points are taken to draw the lines 
+2. changing the amount of path-coordinats which are displayed 
 line 39 export var MapPoints \
 the default is 2 which means 50 % are drawn aka. every second one \
 2 is the minima and increasing the value also increases map performance and lowers accuracy 
+
+#### ./js/map.js
+
+##### toggle between online and offline map 
+map.js has an inbuild switch for a higher resolution online map \
+currently disabled to save mobile data on ships without stable connections \
+this can be changed in line 35 \
+commenting out: enable online/offline based on connection status \
+online = false : enables only offline map \
+online = true : enables only online map from naturalearthdata.com 
+
+
+
+ 
 
