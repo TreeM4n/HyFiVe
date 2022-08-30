@@ -15,7 +15,7 @@ Configurations here are only intended for data which is never needed
 
 #### ./php/queryhyfive.php
 Changes in InfluxDb Login can lead to denied accesses \
-Changing Client API this can be circumvented \
+Changing Client API this can be circumvented by changing the following client settings\
 $username = 'admin'; \
 $password = 'hyfive0815'; \
 
