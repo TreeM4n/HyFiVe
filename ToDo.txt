@@ -73,3 +73,9 @@ https://git.io-warnemuende.de/bjoerner/MultiParamterLogger/src/branch/master
 
 #commands
 Hold down Ctrl and press F5. - hard refresh 
+
+
+#Install apache-php
+
+sudo a2dismod mpm_event 
+sudo a2enmod php8.1
