@@ -68,13 +68,22 @@ export function depthchart() {
       //check for deployment changes
       if (prevID != d.deployment) {
         prevID = d.deployment;
+
+
+        var deplData = depthdata.filter(function (d) { return d.deployment == prevID })
+        var halfWayIndex = Math.ceil(deplData.length / 2)
+        var firstHalfOfArray = deplData.slice(0, halfWayIndex)
+        var secondHalfOfArray = deplData.slice(halfWayIndex)
+        /*
         times = depthdata.filter(function (d) { return d.deployment == prevID });
         times = (times.map(d => d.time))
         // console.log(times)
         startStatus = (times[0]);
         endStatus = parseTime(times[times.length - 1]);
+        */
 
       }
+      /*
       //start and and end is needed to determine id
       if (endStatus != null && startStatus != null) {
         //assign status for current element
@@ -89,6 +98,16 @@ export function depthchart() {
           status: castStatus
         });
       }
+      */
+     castStatus = 
+      data_long.push({
+        y: d.MS5837Press,
+        time: d.time,
+        value: +value,
+        x: y,
+        depl: d.deployment,
+        status: castStatus
+      });
     }
 
     //console.log(depthdata)
@@ -624,4 +643,4 @@ d3.select("#s4").on("click", function (event, d) {
 })
 
 
-
+function getStatusbyaverage()
