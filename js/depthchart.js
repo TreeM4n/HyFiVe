@@ -55,7 +55,7 @@ export function depthchart() {
     var startStatus;
     var endStatus;
     var times;
-
+    
 
     //shorten data
     for (var prop in d) {
@@ -66,14 +66,24 @@ export function depthchart() {
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
       if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
       //check for deployment changes
+      var avg;
+      var firstHalfOfArray;
+      var secondHalfOfArray;
+      var halfWayIndex;
+      var toggle;
+      var i;
       if (prevID != d.deployment) {
         prevID = d.deployment;
 
 
         var deplData = depthdata.filter(function (d) { return d.deployment == prevID })
-        var halfWayIndex = Math.ceil(deplData.length / 2)
-        var firstHalfOfArray = deplData.slice(0, halfWayIndex)
-        var secondHalfOfArray = deplData.slice(halfWayIndex)
+        deplData=(deplData.map(d => d.MS5837Press))
+         halfWayIndex = Math.ceil(deplData.length / 2)
+         firstHalfOfArray = deplData.slice(0, halfWayIndex)
+         secondHalfOfArray = deplData.slice(halfWayIndex)
+         avg = getStatusbyaverage(firstHalfOfArray,secondHalfOfArray)
+         i = 0;
+         toggle = true;
         /*
         times = depthdata.filter(function (d) { return d.deployment == prevID });
         times = (times.map(d => d.time))
@@ -99,7 +109,33 @@ export function depthchart() {
         });
       }
       */
-     castStatus = 
+     // caststatus logic on average depth 
+     // maybe as seperate function
+
+     var press = d.MS5837Press;
+
+     if (i < halfWayIndex){
+      
+      if (press < avg[1] && toggle){
+        castStatus = 1;
+      }
+      else {
+        castStatus = 2;
+        toggle = false;
+      }
+      i++;
+     }
+     else {
+      if (press > avg[2] ){
+        castStatus = 2;
+      }
+      else {
+        castStatus = 3;
+        
+      }
+     }
+
+
       data_long.push({
         y: d.MS5837Press,
         time: d.time,
@@ -643,4 +679,19 @@ d3.select("#s4").on("click", function (event, d) {
 })
 
 
-function getStatusbyaverage()
+function getStatusbyaverage(first, second)
+{
+  
+  var int = 0; 
+  var int2 = 0;
+  var l = first.length; 
+  var l2 = second.length
+  first.forEach(function (d, i) {
+      int = int + +d.value
+  });
+  second.forEach(function (d, i) {
+    int2 = int2 + +d.value
+});
+var re = [(int / l),(int2/l2)]
+  return re;
+}
