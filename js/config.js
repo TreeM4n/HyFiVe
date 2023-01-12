@@ -23,7 +23,7 @@ export var thresholdProp = ["Temperature","Pressure","Conductivity","Oxygen","Sa
 // in order the thresholds
 export var thresholdValues = [["",""],["",""],["",""],["",""],["",""]] 
 // in order the units
-export var thresholdUnits = [["'C"],["mbar"],["mS/cm"],["\u00B5g/L"],["g/kg"]] 
+export var thresholdUnits = [["'C"],["mbar"],["mS/cm"],["mg/l"],["g/kg"]] 
 
 // \u00B5S = mycro
 
@@ -42,4 +42,4 @@ export var MapPoints = 2;
 //---------VERTICAL CHARTS-------------------
 //values which arent important for dephtchart
 export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","time", "MS5837Temperature",
-"MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Oxygen", "Conducitvity", "Pressure"]
+"MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Conducitvity", "Pressure"]
