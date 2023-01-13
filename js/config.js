@@ -2,7 +2,7 @@
 // "now - initialhours":start date of query 
 export var  initialhours = 48;
 // values never never and not stored after query
-export var mainblacklist = ["Speed", "Course","device","value"]
+export var mainblacklist = ["Speed", "Course","device","value", "TSYK0", "TSYK1", "TSYK2", "TSYK3", "TSYK4"]
 
 //------------HORIZONTAL CHARTS-----------------------
 // values that should not get an chart / or are renamed and therefore double
