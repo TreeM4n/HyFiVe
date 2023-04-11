@@ -30,16 +30,21 @@ $password = 'hyfive';
 
 $database = 'localhyfive';
 $retentionPolicy = 'autogen';
-
-$bucket = "$database/$retentionPolicy";
+//§url = 'localhost:8086';
+//$bucket = "$database/$retentionPolicy";
+$bucket = 'hyfive';
 
 $client = new Client([
-    "url" => "localhost:8086",
-    "token" => "$username:$password",
-    "bucket" => $bucket,
-    "org" => "-",
+    "url" => "hyfive.info:8086",
+    //"token" => "$username:$password",
+    "token" => "pD7hE8gVEAkEU2ewamqMCTNzoBOFuv3Qmyu6-awH5uaHhHc8ArgRgIkWGzFf_k0KYyVQ3XFIX7eed2uq27AdjQ==",
+   // "bucket" => $bucket,
+    "org" => "HyFive",
+    //"org" => "-",
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
+
+
 /*
 
 $username = 'admin';
@@ -91,6 +96,7 @@ $array = [];
 
 foreach ($tables as $table) {
     foreach ($table->records as $record) {
+        // print "$record\n";
         $time = $record->getTime();
         $measurement = $record->getMeasurement();
         $value = $record->getValue();
