@@ -117,7 +117,7 @@ export function create() {
     }
   });
   data = data_long;
-  console.log(data)
+  //console.log(data)
   // add an  all-options to the list
   var text_node = d3.select("#list")
     .selectAll('allOption')

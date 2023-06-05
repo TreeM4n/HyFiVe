@@ -6,7 +6,7 @@ export var mainblacklist = ["Speed", "Course","device","value", "TSYK0", "TSYK1"
 
 //------------HORIZONTAL CHARTS-----------------------
 // values that should not get an chart / or are renamed and therefore double
-export var chartblacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment", "MS5837Temperature",
+export var chartblacklist = ["TSYTemperatrue", "MS5837Press", "time", "deployment","deplyoment", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course","Conducitvity"]
 
 // begins at start if no more are declared

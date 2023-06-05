@@ -3,6 +3,7 @@ import * as queryJS from './jsquery.js';
 import * as chartJS from './chartmultilegend.js';
 import * as config from './config.js';
 
+
 /*
 Main initializer for "homepage" 
 manages initiale query and execution of charts and map 
@@ -26,7 +27,7 @@ function initial() {
 		document.getElementById('field2').value = (end);
 		document.getElementById('field1').value = (start);
 
-		
+
 	}
 	else {
 		end = new Date();
@@ -41,8 +42,9 @@ function initial() {
 		//--------------------------------------
 
 	}
-
-	if (sessionStorage.getItem("response")) {
+	initialquery();
+	//console.log(dataQuery)
+	/*if (sessionStorage.getItem("response")) {
 		//-----------------
 		mapJS.mapfnc();
 		chartJS.create();
@@ -50,8 +52,8 @@ function initial() {
 	else {
 		initialquery();
 	}
-
-
+	*/
+	//queryJS.JSquery()
 	//today = parseToday(today).toString(); -> query(today)
 	//.toISOString() 
 	//console.log(formatData(last48h))
@@ -64,7 +66,15 @@ function initial() {
 initial();
 //sperated function for 
 
-function initialquery() {
+async function initialquery() {
+
+	var dataquery = queryJS.JSquery()
+
+	chartJS.resetCharts()
+		mapJS.mapfnc();
+		chartJS.create()
+
+	/*
 	queryJS.query().then(response => {
 		var data = [];
 
@@ -95,7 +105,7 @@ function initialquery() {
 		sessionStorage.setItem("response", JSON.stringify(response));
 
 
-		//console.log((response))
+		console.log((response))
 		if (response) {
 
 			//sessionStorage.setItem("response", JSON.stringify(response));
@@ -105,13 +115,23 @@ function initialquery() {
 		}
 
 	});
+
+	*/
 }
 
 document.getElementById('list').addEventListener('click', chartJS.console)
 
 // reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
-export function reload() {
+
+export async function reload() {
+	var dataquery = queryJS.JSquery()
+	
+	chartJS.resetCharts()
+		mapJS.mapfnc();
+		chartJS.create()
+
+	/*
 	var date1 = parseDate(document.getElementById('field1').value);
 	var date2 = parseDate(document.getElementById('field2').value);
 	//document.getElementById('Temperature').style.display = none;
@@ -149,10 +169,11 @@ export function reload() {
 				dataObject = {};
 				//console.log(data)
 			});
+			console.log(data)
 			response = data;
 
 			sessionStorage.setItem("response", JSON.stringify(response));
-
+			
 
 			//console.log((response))
 			if (response) {
@@ -166,7 +187,7 @@ export function reload() {
 		});
 
 	}
-
+ */
 
 }
 
