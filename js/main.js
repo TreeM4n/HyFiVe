@@ -124,7 +124,7 @@ document.getElementById('list').addEventListener('click', chartJS.console)
 // reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
 
-export async function reload() {
+export function reload() {
 	var dataquery = queryJS.JSquery()
 	
 	chartJS.resetCharts()

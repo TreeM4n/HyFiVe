@@ -27,7 +27,7 @@ function initial() {
 
 
 
-		
+
 	}
 	else {
 		end = new Date();
@@ -43,7 +43,7 @@ function initial() {
 	}
 
 
-	
+
 	if (sessionStorage.getItem("response")) {
 		//-----------------
 		mapJS.mapfnc();
@@ -52,13 +52,19 @@ function initial() {
 	else {
 		initialquery();
 	}
-	
+
 
 
 
 }
 initial();
 function initialquery() {
+	var dataquery = queryJS.JSquery()
+
+	chartJS.resetCharts()
+	mapJS.mapfnc();
+	depthJS.depthchart()
+	/*
 	queryJS.query().then(response => {
 		var data = [];
 
@@ -88,7 +94,7 @@ function initialquery() {
 
 		sessionStorage.setItem("response", JSON.stringify(response));
 
-
+		
 		//console.log((response))
 		if (response) {
 
@@ -99,6 +105,8 @@ function initialquery() {
 		}
 
 	});
+
+	*/
 }
 
 /*
@@ -117,6 +125,12 @@ document.querySelector('#field2').addEventListener('onchange', timeselected)
 // reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
 export function reload() {
+	var dataquery = queryJS.JSquery()
+
+	 chartJS.resetCharts()
+	 mapJS.mapfnc();
+	 depthJS.depthchart()
+	/*
 	var date1 = parseDate(document.getElementById('field1').value);
 	var date2 = parseDate(document.getElementById('field2').value);
 	if (!date1 || !date2) {
@@ -168,6 +182,7 @@ export function reload() {
 
 		});
 	}
+	*/
 }
 
 document.querySelector('#reload').addEventListener('click', reload)

@@ -578,8 +578,8 @@ export function resetCharts() {
  // svg.selectAll("svg").remove();
   d3.select("#my_dataviz")
     .selectAll("svg").remove();
-  d3.selectAll('option').remove();
-  d3.selectAll('li').remove();
+  d3.select("#UList").selectAll('option').remove();
+  // d3.select("#Ulist").selectAll('li').remove();
  
   
 }

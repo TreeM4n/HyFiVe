@@ -41,5 +41,5 @@ export var MapPoints = 2;
 
 //---------VERTICAL CHARTS-------------------
 //values which arent important for dephtchart
-export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","time", "MS5837Temperature",
+export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","deplyoment","time", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Conducitvity", "Pressure"]
