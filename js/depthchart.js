@@ -31,7 +31,7 @@ export function depthchart() {
   //console.log(result)
 
 
-
+  var dataset = [];
   depthdata.forEach(function (d) {
 
     d.time = parseTime(d.time);
@@ -42,6 +42,11 @@ export function depthchart() {
     d.Conductivity = +d.Conducitvity / 1000;
     if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0){
     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
+    
+    if (d.deployment == 11) {
+      dataset.push(Math.ceil(+d.MS5837Press-1030)) 
+    }
+    
     
     //console.log(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure)
     //console.log(d.Salinity)
@@ -66,27 +71,29 @@ export function depthchart() {
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
       if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
       //check for deployment changes
+      
       if (prevID != d.deployment) {
         prevID = d.deployment;
         times = depthdata.filter(function (d) { return d.deployment == prevID });
-        times = (times.map(d => d.time))
+        times = (times.map(d => d.deployment))
         // console.log(times)
         startStatus = (times[0]);
         endStatus = parseTime(times[times.length - 1]);
 
       }
+      
       //start and and end is needed to determine id
-      if (endStatus != null && startStatus != null) {
+      if (/*endStatus != null && startStatus != null */ true) {
         //assign status for current element
-        castStatus = getStatus(startStatus.getTime(), endStatus.getTime(), d.time.getTime());
-        //console.log(castStatus)
+        //castStatus = getStatus(startStatus.getTime(), endStatus.getTime(), d.time.getTime());
+        //castStatus = getStatus2(d.deployment);
         data_long.push({
           y: d.MS5837Press,
           time: d.time,
           value: +value,
           x: y,
           depl: d.deployment,
-          status: castStatus
+          status: 1
         });
       }
     }
@@ -97,6 +104,10 @@ export function depthchart() {
 
   });
   depthdata = data_long;
+  const changePoints = detectChangePoints(dataset);
+  console.log(changePoints); // Output: [3, 6, 9, 11]
+
+
   // List of groups (here I have one group per column)
   //console.log(depthdata)
 
@@ -462,6 +473,30 @@ function getStatus(start, end, current) {
   //console.log(start,end,current)
 
 }
+// first 10 always down adn up , after that 
+var deployStatus=0;
+var dataStatus= [];
+function getStatus2(deployment, value) {
+  if(deployment!=deployStatus) {
+    deployStatus = deployment
+    dataStatus = [];
+    return 1;
+  }
+  else if (dataStatus.length < 120) {
+    
+    dataStatus.push(value);
+    return 1;
+  }
+  else if (true) {
+
+  }
+  else {
+
+  }
+  
+  
+
+}
 
 //------------------------------------ cast toggles---------------------
 // its ugly and it works
@@ -625,3 +660,50 @@ d3.select("#s4").on("click", function (event, d) {
 
 
 
+function detectChangePoints(dataset) {
+
+  try {
+    const changePoints = [];
+    console.log(dataset)
+  
+    // Calculate the mean of the dataset
+    const mean = dataset.reduce((sum, value) => sum + value) / dataset.length;
+    console.log(mean)
+  
+    // Calculate the standard deviation of the dataset
+    const standardDeviation = Math.sqrt(
+      dataset.reduce((sum, value) => sum + Math.pow(value - mean, 2)) / dataset.length
+    );
+    console.log(standardDeviation)
+  
+    // Determine the threshold for change detection
+    const threshold = standardDeviation * 1; // Adjust the multiplier as needed
+
+    var n = 10;
+    // Iterate over the dataset and detect change points
+    for (let i = 1; i < dataset.length - 1; i = i+ n) {
+      const current = dataset[i];
+      const prev = dataset[i - n];
+      const next = dataset[i + n];
+  
+      // Detect change point if the absolute difference between current and previous value
+      // is greater than the threshold
+      console.log(Math.abs(current - prev))
+      console.log(Math.abs(current - next))
+      if (Math.abs(current - prev) > threshold ) {
+        changePoints.push(i);
+      }
+  
+      // Detect change point if the absolute difference between current and next value
+      // is greater than the threshold
+      else if(Math.abs(current - next) > threshold) {
+        changePoints.push(i);
+      }
+    }
+  
+    return changePoints;
+  } catch (error) {
+    console.log (error)
+    return false;
+  }
+}

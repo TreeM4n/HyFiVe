@@ -27,7 +27,9 @@ var endIcon = L.icon({
 });
 
 
-var map = L.map('map').setView([54.17939750000001, 12.081335], 10);
+var map = L.map('map', {
+  preferCanvas: true
+}).setView([54.17939750000001, 12.081335], 10);
 
 // function so an online and offline map exists
 var online = navigator.onLine;
@@ -86,6 +88,7 @@ export function mapfnc() {
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
   //console.log(dataquery)
+  if (dataquery) {
   dataquery.forEach(function (d) {
     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
     //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
@@ -117,6 +120,7 @@ export function mapfnc() {
     datamap = data_longmap;
 
   });
+}
 
   //console.log(datamap)
 // --------------------------------------------------- PART 3 --------------------------------------------------------------

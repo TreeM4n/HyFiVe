@@ -21,7 +21,7 @@ export const chartcolor = d3.scaleOrdinal()
 // name / property
 export var thresholdProp = ["Temperature","Pressure","Conductivity","Oxygen","Salinity"]
 // in order the thresholds
-export var thresholdValues = [["",""],["",""],["",""],["",""],["",""]] 
+export var thresholdValues = [["",""],["",""],["",""],["-1",""],["",""]] 
 // in order the units
 export var thresholdUnits = [["'C"],["mbar"],["mS/cm"],["mg/l"],["g/kg"]] 
 

@@ -40,107 +40,112 @@ export function create() {
   // format the data
   var data_long = [];
 
-  //reform the tidy data form into long data form 
-  data.forEach(function (d) {
-
-    //--------------------- define parameters and their name
-    //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
-    d.time = parseTime2(d.time);
+ try {
+   //reform the tidy data form into long data form 
+   data.forEach(function (d) {
+ 
+     //--------------------- define parameters and their name
+     //2022-05-12T07:28:47.000Z: delete Z and T and milliS
+     //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
+     d.time = parseTime2(d.time);
+     
+     //d.time = formatTime(d.time);
+     //d.time = parseTime2(d.time)
+     d.TSYTemperatrue = +d.TSYTemperatrue;
+     d.Temperature = +d.TSYTemperatrue;
+     d.Oxygen = +d.Oxygen;
+     d.MS5837Press = +d.MS5837Press;
+     d.Pressure =(+d.MS5837Press);
+     d.Conductivity = +d.Conducitvity / 1000; //micro to milli
+     // check if exist and not null
+       if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0 && +d.Conducitvity  && +d.TSYTemperatrue && +d.Pressure){
+     d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
+     
     
-    //d.time = formatTime(d.time);
-    //d.time = parseTime2(d.time)
-    d.TSYTemperatrue = +d.TSYTemperatrue;
-    d.Temperature = +d.TSYTemperatrue;
-    d.Oxygen = +d.Oxygen;
-    d.MS5837Press = +d.MS5837Press;
-    d.Pressure =(+d.MS5837Press);
-    d.Conductivity = +d.Conducitvity / 1000; //micro to milli
-    // check if exist and not null
-      if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0 && +d.Conducitvity  && +d.TSYTemperatrue && +d.Pressure){
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
-    
-   
-
-
-    //---------------------example for new parameter based on existing data:------------------------
-    //d.Foo = +d.TSYTemperatrue;
-
-
-    for (var prop in d) {
-      var a = [prop];
-      //blacklist element check
-      if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
-      var y = prop,
-        value = +d[prop];
-      //time cant be undefined or null and so 
-      
-      if (d.time === null || d.depl === null || value === null || value === 0 || isNaN(value)) { continue; }
-      //threshhold function
-      if (config.thresholdProp.indexOf(prop) != -1 && config.thresholdValues[config.thresholdProp.indexOf(prop)][0] != "") {
-
-        if (config.thresholdValues[config.thresholdProp.indexOf(prop)][0] > value
-          || config.thresholdValues[config.thresholdProp.indexOf(prop)][1] < value) {
-          var timeStorage = formatTime2(d.time);
-          
-
-          d3.select("#ULerror")
-            .selectAll('myOptions')
-            .data([1])//to generate just one / it works
-            .enter()
-            .append('li')
-            //value and parameter
-            .text(function (d) { return "Threshold reached: " + prop + " was:" + value })
-            .style('padding', '4px')
-            .style('color', 'orange')
-            .attr("value", -1) // corresponding value returned by the button
-            //get start date 
-            .append('li')
-            .text(function (d) { return "at " + timeStorage + " UTC" })
-            .style('padding', '4px')
-            .style('color', 'orange')
-            .attr("value", -1) // corresponding value returned by the button
-
-          continue;
-        }
-      }
-
-      //for each entry of long data push x = time , y = parameter name, value = parameter value, depl = deployment id
-      data_long.push({
-        x: d.time,
-        y: y,
-        value: +value,
-        depl: d.deployment
-      });
-      
-
-    }
-  });
-  data = data_long;
-  //console.log(data)
-  // add an  all-options to the list
-  var text_node = d3.select("#list")
-    .selectAll('allOption')
-    .data([1])//to generate just one/ it works
-    .enter()
-    .append('option')
-    .attr("value", 0) // corresponding value returned by the button
-    .attr('tabindex', 1)
-    .attr("id", "option")
-    .text("Back to selected Dates")
-    .append('li')
-    .text("Start:            " + document.getElementById('field1').value)
-    .attr("value", -1) // corresponding value returned by the button
-    .append('li')
-    .text("End:            " + document.getElementById('field2').value)
-    .attr("value", -1) // corresponding value returned by the button
-
-
-
-  createsmallmultiple(data)
-
+ 
+ 
+     //---------------------example for new parameter based on existing data:------------------------
+     //d.Foo = +d.TSYTemperatrue;
+ 
+ 
+     for (var prop in d) {
+       var a = [prop];
+       //blacklist element check
+       if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
+       var y = prop,
+         value = +d[prop];
+       //time cant be undefined or null and so 
+       
+       if (d.time === null || d.depl === null || value === null || value === 0 || isNaN(value)) { continue; }
+       //threshhold function
+       if (config.thresholdProp.indexOf(prop) != -1 && config.thresholdValues[config.thresholdProp.indexOf(prop)][0] != "") {
+ 
+         if (config.thresholdValues[config.thresholdProp.indexOf(prop)][0] > value
+           || config.thresholdValues[config.thresholdProp.indexOf(prop)][1] < value) {
+           var timeStorage = formatTime2(d.time);
+           
+ 
+           d3.select("#ULerror")
+             .selectAll('myOptions')
+             .data([1])//to generate just one / it works
+             .enter()
+             .append('li')
+             //value and parameter
+             .text(function (d) { return "Threshold reached: " + prop + " was:" + value })
+             .style('padding', '4px')
+             .style('color', 'orange')
+             .attr("value", -1) // corresponding value returned by the button
+             //get start date 
+             .append('li')
+             .text(function (d) { return "at " + timeStorage + " UTC" })
+             .style('padding', '4px')
+             .style('color', 'orange')
+             .attr("value", -1) // corresponding value returned by the button
+ 
+           continue;
+         }
+       }
+ 
+       //for each entry of long data push x = time , y = parameter name, value = parameter value, depl = deployment id
+       data_long.push({
+         x: d.time,
+         y: y,
+         value: +value,
+         depl: d.deployment
+       });
+       
+ 
+     }
+   });
+   data = data_long;
+   //console.log(data)
+   // add an  all-options to the list
+   var text_node = d3.select("#list")
+     .selectAll('allOption')
+     .data([1])//to generate just one/ it works
+     .enter()
+     .append('option')
+     .attr("value", 0) // corresponding value returned by the button
+     .attr('tabindex', 1)
+     .attr("id", "option")
+     .text("Back to selected Dates")
+     .append('li')
+     .text("Start:            " + document.getElementById('field1').value)
+     .attr("value", -1) // corresponding value returned by the button
+     .append('li')
+     .text("End:            " + document.getElementById('field2').value)
+     .attr("value", -1) // corresponding value returned by the button
+ 
+ 
+ 
+   createsmallmultiple(data)
+ 
+ }
+ 
+  catch (error) {
+  console.log(error)
+ }
 }
-
 //------------------------------------ PART 2 ---------------------------------------------------------------
 function createsmallmultiple(data) {
   // used to define line generaiotns later on 
