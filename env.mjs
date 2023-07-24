@@ -12,6 +12,27 @@ const username = 'hyfive'
 /**InfluxDB password  */
 const password = 'hyfive'
 
+
+fetch('settings.json')
+  .then(response => response.json())
+  .then(data => {
+    // Do something with the JSON data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occur during the fetch
+    console.error('Error:', error);
+  });
+
+
+
+
+
+
+
+
+
+
 export {url, token, org, bucket, username, password}
 
 /*
