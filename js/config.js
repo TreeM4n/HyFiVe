@@ -43,3 +43,5 @@ export var MapPoints = 2;
 //values which arent important for dephtchart
 export var dcblacklist = ["TSYTemperatrue", "MS5837Press", "deployment","deplyoment","time", "MS5837Temperature",
 "MS5837Press", "Longitude", "Latitude", "Speed", "Course", "Conducitvity", "Pressure"]
+// this is important for Don and upcast detection
+export var dcshownGraphNumber = 5

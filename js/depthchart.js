@@ -32,6 +32,14 @@ export function depthchart() {
 
 
   var dataset = [];
+  
+    var castStatus = 0;
+    var startStatus;
+    var endStatus;
+    var times;
+    var counter = 0;
+    var changePoints;
+    var prevID;
   depthdata.forEach(function (d) {
 
     d.time = parseTime(d.time);
@@ -40,48 +48,72 @@ export function depthchart() {
     d.MS5837Press = +d.MS5837Press;
     d.Pressure = +d.MS5837Press;
     d.Conductivity = +d.Conducitvity / 1000;
-    if(+d.Conducitvity != 0 && +d.TSYTemperatrue!= 0 && +d.Pressure!= 0){
-    d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);}
-    
-    if (d.deployment == 11) {
-      dataset.push(Math.ceil(+d.MS5837Press-1030)) 
+    if (+d.Conducitvity != 0 && +d.TSYTemperatrue != 0 && +d.Pressure != 0) {
+      d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);
     }
-    
-    
+
+
+
+
     //console.log(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure)
     //console.log(d.Salinity)
-    
+
 
     //d.Pressure = +d.MS5837Press;
     d.Conducitvity = +d.Conducitvity;
 
-    var prevID = 0;
-    var castStatus = 0;
-    var startStatus;
-    var endStatus;
-    var times;
 
-
+    /*
+    if (prevID != d.deployment) {
+      prevID = d.deployment;
+      dataset.push(Math.ceil(+d.MS5837Press - 1030))
+    }
+    */
     //shorten data
     for (var prop in d) {
       var a = [prop];
       var y = prop,
         value = +d[prop];
 
+
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
       if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
       //check for deployment changes
-      
+      //console.log(prevID + "W" + d.deployment)
+
       if (prevID != d.deployment) {
+        
+        dataset = [];
         prevID = d.deployment;
         times = depthdata.filter(function (d) { return d.deployment == prevID });
-        times = (times.map(d => d.deployment))
-        // console.log(times)
-        startStatus = (times[0]);
-        endStatus = parseTime(times[times.length - 1]);
+        times = (times.map(d => d.MS5837Press))
+        for (var pressure in times) {
+          dataset.push(Math.ceil(times[pressure] - 1030))
+        }
+        changePoints = detectChangePoints(dataset);
+        counter = 0;
+        //console.log("lmao")
 
+        //startStatus = (times[0]);
+        //endStatus = parseTime(times[times.length - 1]);
+        castStatus = 1
       }
-      
+      else if (changePoints && changePoints.length > 1) {
+        if (counter/config.dcshownGraphNumber <= changePoints[0]) {
+          castStatus = 1
+        }
+        else if (counter/config.dcshownGraphNumber >= changePoints[changePoints.length - 1]) {
+          castStatus = 3
+        }
+        else {
+          castStatus = 2
+        }
+      }
+      else {
+        castStatus = 2;
+      }
+      counter++;
+      //console.log(counter +" + "+ castStatus )
       //start and and end is needed to determine id
       if (/*endStatus != null && startStatus != null */ true) {
         //assign status for current element
@@ -93,8 +125,9 @@ export function depthchart() {
           value: +value,
           x: y,
           depl: d.deployment,
-          status: 1
+          status: castStatus
         });
+        //console.log(y + +value)
       }
     }
 
@@ -104,8 +137,8 @@ export function depthchart() {
 
   });
   depthdata = data_long;
-  const changePoints = detectChangePoints(dataset);
-  console.log(changePoints); // Output: [3, 6, 9, 11]
+  //const changePoints = detectChangePoints(dataset);
+  //console.log(changePoints); // Output: [3, 6, 9, 11]
 
 
   // List of groups (here I have one group per column)
@@ -474,16 +507,16 @@ function getStatus(start, end, current) {
 
 }
 // first 10 always down adn up , after that 
-var deployStatus=0;
-var dataStatus= [];
+var deployStatus = 0;
+var dataStatus = [];
 function getStatus2(deployment, value) {
-  if(deployment!=deployStatus) {
+  if (deployment != deployStatus) {
     deployStatus = deployment
     dataStatus = [];
     return 1;
   }
   else if (dataStatus.length < 120) {
-    
+
     dataStatus.push(value);
     return 1;
   }
@@ -493,8 +526,8 @@ function getStatus2(deployment, value) {
   else {
 
   }
-  
-  
+
+
 
 }
 
@@ -516,7 +549,7 @@ d3.select("#s1").on("click", function (event, d) {
 
       for (i = 0; i < x.length; i++) {
         x[i].classList.remove("hidden");
-        
+
       }
       x = document.getElementsByClassName("down");
 
@@ -529,9 +562,9 @@ d3.select("#s1").on("click", function (event, d) {
         x[i].classList.remove("hidden");
       }
     } catch (error) {
-      
+
     }
-    
+
 
     document.getElementById("s2").checked = false;
     document.getElementById("s3").checked = false;
@@ -543,7 +576,7 @@ d3.select("#s1").on("click", function (event, d) {
 
     for (i = 0; i < x.length; i++) {
       x[i].classList.add("hidden");
-      
+
     }
     x = document.getElementsByClassName("down");
 
@@ -566,7 +599,7 @@ d3.select("#s2").on("click", function (event, d) {
       document.getElementById("s1").checked = false;
       document.getElementById("s3").checked = false;
       document.getElementById("s4").checked = false;
-      
+
       x = document.getElementsByClassName("up");
 
       for (i = 0; i < x.length; i++) {
@@ -599,7 +632,7 @@ d3.select("#s3").on("click", function (event, d) {
       document.getElementById("s1").checked = false;
       document.getElementById("s2").checked = false;
       document.getElementById("s4").checked = false;
-      
+
       x = document.getElementsByClassName("up");
 
       for (i = 0; i < x.length; i++) {
@@ -632,7 +665,7 @@ d3.select("#s4").on("click", function (event, d) {
       document.getElementById("s1").checked = false;
       document.getElementById("s3").checked = false;
       document.getElementById("s2").checked = false;
-      
+
       x = document.getElementsByClassName("down");
 
       for (i = 0; i < x.length; i++) {
@@ -664,46 +697,46 @@ function detectChangePoints(dataset) {
 
   try {
     const changePoints = [];
-    console.log(dataset)
-  
+    //console.log(dataset)
+
     // Calculate the mean of the dataset
     const mean = dataset.reduce((sum, value) => sum + value) / dataset.length;
-    console.log(mean)
-  
+    //console.log(mean)
+
     // Calculate the standard deviation of the dataset
     const standardDeviation = Math.sqrt(
       dataset.reduce((sum, value) => sum + Math.pow(value - mean, 2)) / dataset.length
     );
-    console.log(standardDeviation)
-  
+    //console.log(standardDeviation)
+
     // Determine the threshold for change detection
-    const threshold = standardDeviation * 1; // Adjust the multiplier as needed
+    const threshold = standardDeviation * 0.7; // Adjust the multiplier as needed
 
     var n = 10;
     // Iterate over the dataset and detect change points
-    for (let i = 1; i < dataset.length - 1; i = i+ n) {
+    for (let i = 1; i < dataset.length - 1; i = i + n) {
       const current = dataset[i];
       const prev = dataset[i - n];
       const next = dataset[i + n];
-  
+
       // Detect change point if the absolute difference between current and previous value
       // is greater than the threshold
-      console.log(Math.abs(current - prev))
-      console.log(Math.abs(current - next))
-      if (Math.abs(current - prev) > threshold ) {
+      //console.log(Math.abs(current - prev))
+      //console.log(Math.abs(current - next))
+      if (Math.abs(current - prev) > threshold) {
         changePoints.push(i);
       }
-  
+
       // Detect change point if the absolute difference between current and next value
       // is greater than the threshold
-      else if(Math.abs(current - next) > threshold) {
+      else if (Math.abs(current - next) > threshold) {
         changePoints.push(i);
       }
     }
-  
+
     return changePoints;
   } catch (error) {
-    console.log (error)
+    console.log(error)
     return false;
   }
 }

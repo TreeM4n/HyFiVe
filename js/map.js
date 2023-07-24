@@ -1,6 +1,8 @@
 import * as config from './config.js';
 
 
+
+
 /*
 split int 3 parts
 
@@ -29,25 +31,27 @@ var endIcon = L.icon({
 
 var map = L.map('map', {
   preferCanvas: true
-}).setView([54.17939750000001, 12.081335], 10);
+}).setView([54.17939750000001, 12.081335], 9);
+// OLD MAP Function
+/* 
 
 // function so an online and offline map exists
 var online = navigator.onLine;
 //comment line below to use better map
 online = false;
 
-  if (online) {
-    
+if (online) {
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     {
       attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>',
       maxZoom: 21,
       minZoom: 4
     }).addTo(map);
-    
+
 }
-if(!online) {
-    
+if (online) {
+
   var myGeoJSONPath = './assets/custom.geo.json';
   var myCustomStyle = {
     stroke: false,
@@ -56,7 +60,7 @@ if(!online) {
     fillOpacity: 1
   }
   $.getJSON(myGeoJSONPath, function (data) {
-      
+
 
     L.geoJson(data, {
       clickable: false,
@@ -65,9 +69,29 @@ if(!online) {
       maxZoom: 21,
       minZoom: 4
     }).addTo(map);
+
   })
+
+
 }
 
+
+
+L.tileLayer.mbTiles('../assets/Layer.mbtiles', {
+  maxZoom: 21,
+  minZoom: 4
+}).addTo(map);
+*/
+
+
+L.tileLayer("../assets/4uMaps/{z}/{x}/{y}.png", {
+  maxZoom: 10,
+  minZoom: 2,
+  //attribution: 'Tiles by <a href="www.4umaps.com">OpenStreetMaps</a>',
+  attribution: 'Tiles by OpenStreetMaps',
+  tileSize: 512,
+  zoomOffset: -1
+}).addTo(map);
 
 //---------------------------------------------------------- PART 2 ---------------------------------------------------
 // parse time
@@ -84,53 +108,53 @@ var data_longmap = [];
 
 
 export function mapfnc() {
- 
+
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
   //console.log(dataquery)
   if (dataquery) {
-  dataquery.forEach(function (d) {
-    //2022-05-12T07:28:47.000Z: delete Z and T and milliS
-    //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
-    d.time = parseTime(d.time);
+    dataquery.forEach(function (d) {
+      //2022-05-12T07:28:47.000Z: delete Z and T and milliS
+      //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
+      d.time = parseTime(d.time);
 
-    //d.time = +d.time
-    d.TSYTemperatrue = +d.TSYTemperatrue;
-    d.Oxygen = +d.Oxygen;
-    d.MS5837Press = +d.MS5837Press;
-     // console.log(d.time);
+      //d.time = +d.time
+      d.TSYTemperatrue = +d.TSYTemperatrue;
+      d.Oxygen = +d.Oxygen;
+      d.MS5837Press = +d.MS5837Press;
+      // console.log(d.time);
 
 
-    for (var prop in d) {
-      var a = [prop];
-      // console.log("por")
-      if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
+      for (var prop in d) {
+        var a = [prop];
+        // console.log("por")
+        if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
 
-      if (d.Latitude === null || d.Longitude === null || d.Latitude === undefined  || d.Longitude  ===undefined) { continue; }
-      
-      data_longmap.push({
-        time: d.time,
-        Latitude: d.Latitude,
-        Longitude: d.Longitude,
-        depl: d.deployment
-      });
-    
-    }
-    
-    datamap = data_longmap;
+        if (d.Latitude === null || d.Longitude === null || d.Latitude === undefined || d.Longitude === undefined) { continue; }
 
-  });
-}
+        data_longmap.push({
+          time: d.time,
+          Latitude: d.Latitude,
+          Longitude: d.Longitude,
+          depl: d.deployment
+        });
+
+      }
+
+      datamap = data_longmap;
+
+    });
+  }
 
   //console.log(datamap)
-// --------------------------------------------------- PART 3 --------------------------------------------------------------
- // focus map on first coordinate
- try {
-  map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
- } catch (error) {
-  
- }
- 
+  // --------------------------------------------------- PART 3 --------------------------------------------------------------
+  // focus map on first coordinate
+  try {
+    map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
+  } catch (error) {
+
+  }
+
   //flyTo
   for (var i in datamap) {
 
@@ -159,7 +183,7 @@ export function mapfnc() {
             weight: 5,
             smoothFactor: 1
           })
-            .bindPopup("ID:"+datamap[i].depl);
+            .bindPopup("ID:" + datamap[i].depl);
           line.addTo(map);
         }
       }
@@ -177,40 +201,40 @@ var markerStart = {};
 var markerEnd = {};
 var markerPosition = {};
 export function setmapview(data) {
-try {
-  var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
-  //console.log(dataFilter)
+  try {
+    var dataFilter = datamap.filter(function (d) { return d.depl == data[0].depl })
+    //console.log(dataFilter)
 
-  map.flyTo([dataFilter[0].Latitude, dataFilter[0].Longitude]);
+    map.flyTo([dataFilter[0].Latitude, dataFilter[0].Longitude]);
 
-  if (markerEnd != undefined) {
-    map.removeLayer(markerStart);
-    map.removeLayer(markerEnd);
-  };
+    if (markerEnd != undefined) {
+      map.removeLayer(markerStart);
+      map.removeLayer(markerEnd);
+    };
 
-  markerStart = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude], {
-    icon: startIcon,
-    opacity: 1,
-    color: 'red'
-  }).bindPopup("Downcast Position").addTo(map);
-
-
-  markerStart.addTo(map);
-  markerEnd = L.marker([dataFilter[dataFilter.length - 1].Latitude, dataFilter[dataFilter.length - 1].Longitude], {
-    icon: endIcon,
-    opacity: 1,
-    color: 'red'
-  }).bindPopup("Upcast Position").addTo(map);
+    markerStart = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude], {
+      icon: startIcon,
+      opacity: 1,
+      color: 'red'
+    }).bindPopup("Downcast Position").addTo(map);
 
 
+    markerStart.addTo(map);
+    markerEnd = L.marker([dataFilter[dataFilter.length - 1].Latitude, dataFilter[dataFilter.length - 1].Longitude], {
+      icon: endIcon,
+      opacity: 1,
+      color: 'red'
+    }).bindPopup("Upcast Position").addTo(map);
 
 
-  //Add a marker to show where you clicked.
-  //theMarker = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude]).addTo(map); 
-} catch (error) {
-  
-}
- 
+
+
+    //Add a marker to show where you clicked.
+    //theMarker = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude]).addTo(map); 
+  } catch (error) {
+
+  }
+
 }
 //remove markers
 export function removemapview() {
@@ -222,23 +246,23 @@ export function removemapview() {
 
 //export function to set marker on click location in charts || unimplemented
 export function showpoint(time) {
-    var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
-    var dataFilter = datamap.filter(function (d) { return formatTime(d.time) == formatTime(time)})
-   // console.log(dataFilter)
-    
-    if (dataFilter.length != 0 && dataFilter) {
-        //console.log(dataFilter)
+  var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
+  var dataFilter = datamap.filter(function (d) { return formatTime(d.time) == formatTime(time) })
+  // console.log(dataFilter)
+
+  if (dataFilter.length != 0 && dataFilter) {
+    //console.log(dataFilter)
     map.flyTo([dataFilter[0].Latitude, dataFilter[0].Longitude]);
 
     if (markerPosition != undefined) {
-    map.removeLayer(markerPosition);
-    
-  };
+      map.removeLayer(markerPosition);
+
+    };
     markerPosition = L.marker([dataFilter[0].Latitude, dataFilter[0].Longitude], {
-    icon: startIcon,
-    opacity: 1,
-    color: 'red'
-  }).bindPopup("Latitude:  " +dataFilter[0].Latitude +  "<br> Longitude: " + dataFilter[0].Longitude).addTo(map);
-    }
-    
+      icon: startIcon,
+      opacity: 1,
+      color: 'red'
+    }).bindPopup("Latitude:  " + dataFilter[0].Latitude + "<br> Longitude: " + dataFilter[0].Longitude).addTo(map);
+  }
+
 }
