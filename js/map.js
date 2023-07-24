@@ -29,6 +29,8 @@ var endIcon = L.icon({
 });
 
 
+
+
 var map = L.map('map', {
   preferCanvas: true
 }).setView([54.17939750000001, 12.081335], 9);
