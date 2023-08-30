@@ -2,6 +2,7 @@ import * as config from './config.js';
 import * as mapJS from './map.js';
 import * as salJS from './salinity.js'
 
+
 /*
 script is separated into 3 parts
 
@@ -32,14 +33,14 @@ export function depthchart() {
 
 
   var dataset = [];
-  
-    var castStatus = 0;
-    var startStatus;
-    var endStatus;
-    var times;
-    var counter = 0;
-    var changePoints;
-    var prevID;
+  var castStatus = 0;
+  var startStatus;
+  var endStatus;
+  var times;
+  var counter = 0;
+  var changePoints;
+  var prevID;
+
   depthdata.forEach(function (d) {
 
     d.time = parseTime(d.time);
@@ -82,7 +83,7 @@ export function depthchart() {
       //console.log(prevID + "W" + d.deployment)
 
       if (prevID != d.deployment) {
-        
+
         dataset = [];
         prevID = d.deployment;
         times = depthdata.filter(function (d) { return d.deployment == prevID });
@@ -99,10 +100,10 @@ export function depthchart() {
         castStatus = 1
       }
       else if (changePoints && changePoints.length > 1) {
-        if (counter/config.dcshownGraphNumber <= changePoints[0]) {
+        if (counter / config.dcshownGraphNumber <= changePoints[0]) {
           castStatus = 1
         }
-        else if (counter/config.dcshownGraphNumber >= changePoints[changePoints.length - 1]) {
+        else if (counter / config.dcshownGraphNumber >= changePoints[changePoints.length - 1]) {
           castStatus = 3
         }
         else {
@@ -150,14 +151,15 @@ export function depthchart() {
 //---------------------------------------- PART 2 -----------------------------------------------------
 function createdepthchart(data) {
 
-  // List of groups (here I have one group per column)
-  var allGroup = new Set(data.map(d => d.depl))
-
-  var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
   // group the data: I want to draw one line per group
   var sumstat = d3.group(data, d => d.x) // nest function allows to group the calculation per level of a factor
 
+  
+  // List of groups (here I have one group per column)
+  //var allGroup = new Set(data.map(d => d.depl))
+  //var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
   // add the options to the list
+  /*
   d3.select("#list")
     .selectAll('myOptions')
     .data(allGroup)
@@ -174,12 +176,14 @@ function createdepthchart(data) {
     // get end date 
     .text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "End: " + formatTime(end[end.length - 1].time) })
     .attr("value", -1) // corresponding value returned by the button
-
+  */
   // append the svg object to the body of the page
-  var svg = d3.select("#my_dataviz")
+  
+  var svg = d3.select("#my_dataviz2")
     .selectAll("uniqueChart")
     .data(sumstat)
     .enter()
+    .append("class", "vertical")
     .append("svg")
     .attr("id", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)
@@ -190,10 +194,11 @@ function createdepthchart(data) {
       `translate(${margin.left},${margin.top})`)
 
   // draw the first id on loading page but only the axis so on select a chart does not pop off out of nowhere
+  
   var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
 
   // Add X axis
-
+  
   var xAxis = svg
     .append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -201,7 +206,7 @@ function createdepthchart(data) {
       var min = d3.min(d[1], function (d) { return +d.value; })
       var max = d3.max(d[1], function (d) { return +d.value; })
       var x2 = d3.scaleLinear()
-        .domain([min * 5 / 6, max * 7 / 6])
+        .domain([min, max])
         .range([0, width]);
       var svg1 = d3.select(this);
 
@@ -219,7 +224,7 @@ function createdepthchart(data) {
       var min = d3.min(d[1], function (d) { return +d.y; })
       var max = d3.max(d[1], function (d) { return +d.y; })
       var y2 = d3.scaleLinear()
-        .domain([max * 7 / 6, min * 5 / 6])
+        .domain([max, min])
         .range([height, 0]);
       var svg1 = d3.select(this);
 
@@ -283,7 +288,7 @@ function createdepthchart(data) {
         var min = d3.min(dataFilter2, function (d) { return +d.value; })
         var max = d3.max(dataFilter2, function (d) { return +d.value; })
         var y2 = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
+          .domain([min, max])
           .range([0, width]);
         var svg1 = d3.select(this);
 
@@ -307,7 +312,7 @@ function createdepthchart(data) {
         var min = d3.min(dataFilter2, function (d) { return +d.y; })
         var max = d3.max(dataFilter2, function (d) { return +d.y; })
         var y2 = d3.scaleLinear()
-          .domain([max * 7 / 6, min * 5 / 6])
+          .domain([max, min])
           .range([height, 0]);
         var svg1 = d3.select(this);
 
@@ -365,7 +370,7 @@ function createdepthchart(data) {
           .domain([maxy * 7 / 6, miny * 5 / 6])
           .range([height, 0])
         var mapX = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
+          .domain([min, max])
           .range([0, width])
 
         var lineGen = d3.line()
@@ -409,7 +414,7 @@ function createdepthchart(data) {
           .domain([maxy * 7 / 6, miny * 5 / 6])
           .range([height, 0])
         var mapX = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
+          .domain([min, max])
           .range([0, width])
 
         var lineGen = d3.line()
@@ -453,7 +458,7 @@ function createdepthchart(data) {
           .domain([maxy * 7 / 6, miny * 5 / 6])
           .range([height, 0])
         var mapX = d3.scaleLinear()
-          .domain([min * 5 / 6, max * 7 / 6])
+          .domain([min, max])
           .range([0, width])
 
         var lineGen = d3.line()
@@ -479,7 +484,7 @@ function createdepthchart(data) {
 
 
   // When the list is changed, run the updateChart function
-  d3.select("#list").on("click", function (event, d) {
+  d3.select("#list").on("click.bar", function (event, d) {
     // recover the option that has been chosen
     const selectedOption = event.explicitOriginalTarget.value
 

@@ -1,3 +1,4 @@
+/*
 // dark mode switch
 var toggle = true;
 export function darkmode() {
@@ -17,6 +18,8 @@ export function darkmode() {
 
 }
 document.querySelector('#darkmode').addEventListener('click', darkmode)
+
+*/
 // When the user scrolls down 80px from the top of the document, resize the navbar's padding and the logo's font size
 window.onscroll = function () { scrollFunction() };
 
@@ -108,8 +111,8 @@ catch(e){}
 //annoy mobile users by rotating 
 function doOnOrientationChange() {
   
-  document.getElementById("switch").textContent = window.orientation;
-  switch (window.orientation) {
+  document.getElementById("switch").textContent = screen.orientation;
+  switch (screen.orientation) {
     
  
     case 180:
@@ -135,7 +138,7 @@ function doOnOrientationChange() {
 window.addEventListener('orientationchange', doOnOrientationChange);  
 
 
-
+/*
 // test for selection of charts and enabling /disabling
 try {
   //on click ID list show selected data 
@@ -146,3 +149,51 @@ try {
 }
 catch (e) {
 }
+*/
+
+
+//------------------------------------ cast toggles---------------------
+// its ugly and it works
+
+document.getElementById("s0").checked = false;
+
+
+
+d3.select("#s0").on("click", function (event, d) {
+  var x;
+  var i;
+
+  if (document.getElementById("s0").checked) {
+    try {
+      x = document.getElementsByClassName("horizontal");
+
+      for (i = 0; i < x.length; i++) {
+        x[i].classList.add("hidden");
+
+      }
+      x = document.getElementsByClassName("vertical");
+
+      for (i = 0; i < x.length; i++) {
+        x[i].classList.remove("hidden");
+      }
+      
+    } catch (error) {
+
+    }
+
+  }
+  else {
+    x = document.getElementsByClassName("horizontal");
+
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.remove("hidden");
+
+    }
+    x = document.getElementsByClassName("vertical");
+
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.add("hidden");
+    }
+  }
+
+})

@@ -41,6 +41,9 @@
   }
 }
 
+.hidden {
+  display: none;
+}
 
 * {
   box-sizing: border-box;
@@ -359,9 +362,7 @@ g {
   list-style-type: none;
 }
 
-.hidden {
-  display: none;
-}
+
 
 
 /* https://codepen.io/aaroniker/pen/ZEYoxEY */
@@ -379,7 +380,7 @@ g {
     -moz-appearance: none;
     height: 21px;
     outline: none;
-    display: inline-block;
+    /* display: inline-block; */
     vertical-align: top;
     position: relative;
     margin: 0;
@@ -433,7 +434,7 @@ g {
   input[type='checkbox'] + label, input[type='radio'] + label {
     font-size: 14px;
     line-height: 21px;
-    display: inline-block;
+    /* display: inline-block;*/
     vertical-align: top;
     cursor: pointer;
     margin-left: 4px;

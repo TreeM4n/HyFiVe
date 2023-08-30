@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<!-- php -S localhost:8000 -->
-<!-- php -S 0.0.0.0:8888 -->
-<!-- netstat -ano | findstr :8000 -->
-<!-- taskkill /PID . /F -->
-<!-- curl -sl -I http://localhost:8086/ping -->
-
 <head>
   <title>HyFiVe</title>
   <meta charset="UTF-8">
@@ -31,6 +25,8 @@
   <script src="./js/chartmultilegend.js" type="module"></script>
   <script src="./js/jsquery.js" type="module"></script>
   <script src="./js/main.js" type="module"></script>
+  
+  
   <script src="./js/ui.js" type="module"></script>
   
 
@@ -52,10 +48,11 @@
       <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
 
       <div id="navbar-right">
-        <a class="active" href="#home">Horizontal Profile</a>
-        <a href="./depthprofil.html">Vertical Profile</a>
+        <a class="active" href="#home">Charts</a>
+        <!-- <a href="./depthprofil.html">Vertical Profile</a>-->
         <a href="./manual.html">Manual</a>
-        <a id="darkmode">Darkmode</a>
+        <a href="./config.html">Config</a>
+        <!-- <a id="darkmode">Darkmode</a> -->
       </div>
     </div>
      <!-- 2 buttons with start and stop date -->
@@ -88,24 +85,52 @@
           <div id="idselectlabel" class="selected" align=center>
             Select an ID
           </div>
+             <!-- toggles -->
+             <div  id = "switch2">
+              <ul >
+                <li>
+                  <input id="s0" type="checkbox" class="switch" >
+                  <label for="s0">Horizontal/Vertical Casts</label>
+                </li>
+                <li>
+                  <input id="s1" type="checkbox" class="switch vertical hidden" >
+                  <label for="s1" class="vertical hidden">Whole cast</label>
+                </li>
+                <li>
+                  <input id="s2" type="checkbox" class="switch vertical hidden" >
+                  <label for="s2" class="vertical hidden">Down cast</label>
+                </li>
+                <li>
+                  <input id="s3" type="checkbox" class="switch vertical hidden" >
+                  <label for="s3" class="vertical hidden">Horizontal cast</label>
+                </li>
+                <li>
+                  <input id="s4" type="checkbox" class="switch vertical hidden" >
+                  <label for="s4"class="vertical hidden">Up cast</label>
+                </li>
+              </ul>
+            </div>
         </div>
          <!-- map and list of error share the same space but are technically vertically aligned -->
         <div class="column2">
-          <div id="map"></div>
+          <div id="map"></div> 
+          <!-- dont think validation was used -->
+          <!--
           <div id="switch" align=center class="selected">ᐱᐱ Switch to log ᐱᐱ</div>
           <div id="panel">
             <nav id="NAVerror">
               <ul id="ULerror">
               </ul>
             </nav>
-          </div>
+          </div> -->
         </div>
 
       </div>
       <div class="column">
        <!-- dataviz holds all charts -->
         <!-- <div class="loader" id ="loader"></div> -->
-        <div id="my_dataviz"></div>
+        <div id="my_dataviz" class="horizontal"></div>
+        <div id="my_dataviz2" class="vertical hidden"></div>
       </div>
 
     </div>

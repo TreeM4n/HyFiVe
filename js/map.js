@@ -87,7 +87,7 @@ L.tileLayer.mbTiles('../assets/Layer.mbtiles', {
 
 
 L.tileLayer("../assets/4uMaps/{z}/{x}/{y}.png", {
-  maxZoom: 10,
+  maxZoom: 8,
   minZoom: 2,
   //attribution: 'Tiles by <a href="www.4umaps.com">OpenStreetMaps</a>',
   attribution: 'Tiles by OpenStreetMaps',
@@ -109,7 +109,7 @@ var datamap;
 var data_longmap = [];
 
 
-export function mapfnc() {
+export async function mapfnc() {
 
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)

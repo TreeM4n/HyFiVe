@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Editor</title>
+</head>
+
+<body>
+    <h1>Configuration Editor</h1>
+    <h2>Warning, this will permanently change files serverside! </h2>
+    <form id="jsonForm">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url"><br>
+
+        <label for="token">Token:</label>
+        <input type="text" id="token" name="token"><br>
+
+        <label for="org">Organization:</label>
+        <input type="text" id="org" name="org"><br>
+
+        <label for="bucket">Bucket:</label>
+        <input type="text" id="bucket" name="bucket"><br>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br>
+
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password"><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <script>
+        // Create a new div element for the message
+        var messageDiv = document.createElement("div");
+
+        // Set the content of the message
+        messageDiv.innerHTML = "";
+
+        // Style the message (optional)
+        messageDiv.style.backgroundColor = "lightblue";
+        messageDiv.style.padding = "10px";
+        messageDiv.style.border = "1px solid #ccc";
+        messageDiv.style.textAlign = "center";
+
+        // Append the message to the body of the HTML document
+        document.body.appendChild(messageDiv);
+
+        // Get the JSON data and populate the form fields
+        fetch('./settings.json')
+            .then(response => response.json())
+            .then(data => {
+                // Work with the JSON data here
+                const jsonData = {
+                    "url": data.url,
+                    "token": data.token,
+                    "org": data.org,
+                    "bucket": data.bucket,
+                    "username": data.username,
+                    "password": data.password
+                };
+                const jsonForm = document.getElementById('jsonForm');
+                const inputs = jsonForm.elements;
+
+                for (const key in jsonData) {
+                    if (inputs[key]) {
+                        inputs[key].value = jsonData[key];
+                    }
+                }
+
+                // Handle form submission
+                jsonForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    // Create a new JSON object with the updated values
+                    const updatedData = {
+                        "url": inputs.url.value,
+                        "token": inputs.token.value,
+                        "org": inputs.org.value,
+                        "bucket": inputs.bucket.value,
+                        "username": inputs.username.value,
+                        "password": inputs.password.value
+                    };
+
+                    // You can now use the updatedData object as needed, e.g., send it to the server
+
+
+                    fetch('./update-config.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedData),
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data); // Server response message
+                            messageDiv.innerHTML = "Success updating JSON on the server";
+                        })
+                        .catch(error => {
+                            console.error('Error updating JSON on the server:', error);
+                            messageDiv.innerHTML = "Error updating JSON on the server:', "+ error;
+                        });
+                });
+
+            })
+            .catch(error => {
+                console.error('Error fetching JSON:', error);
+                messageDiv.innerHTML = "Error updating JSON on the server:', "+ error;
+            });
+        /*
+    const jsonData = {
+        "url": "http://hyfive.info:8086",
+        "token": "pD7hE8gVEAkEU2ewamqMCTNzoBOFuv3Qmyu6-awH5uaHhHc8ArgRgIkWGzFf_k0KYyVQ3XFIX7eed2uq27AdjQ==",
+        "org": "HyFive",
+        "bucket": "hyfive",
+        "username": "hyfive",
+        "password": "hyfive"
+    }; */
+
+    </script>
+</body>
+
+</html>

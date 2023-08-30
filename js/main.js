@@ -2,6 +2,8 @@ import * as mapJS from './map.js';
 import * as queryJS from './jsquery.js';
 import * as chartJS from './chartmultilegend.js';
 import * as config from './config.js';
+import * as depthJS from './depthchart.js';
+
 
 
 /*
@@ -66,13 +68,14 @@ function initial() {
 initial();
 //sperated function for 
 
-async function initialquery() {
+function initialquery() {
 
-	var dataquery = queryJS.JSquery()
-
+	//var dataquery = queryJS.JSquery()
+	queryJS.JSquery()
 	chartJS.resetCharts()
-		mapJS.mapfnc();
-		chartJS.create()
+	mapJS.mapfnc();
+	chartJS.create()
+	depthJS.depthchart();
 
 	/*
 	queryJS.query().then(response => {
@@ -119,17 +122,18 @@ async function initialquery() {
 	*/
 }
 
-document.getElementById('list').addEventListener('click', chartJS.console)
+//document.getElementById('list').addEventListener('click', chartJS.console)
 
 // reload for query
 var parseDate = d3.timeParse("%Y-%m-%d");
 
 export function reload() {
-	var dataquery = queryJS.JSquery()
-	
+	queryJS.JSquery()
+
 	chartJS.resetCharts()
-		mapJS.mapfnc();
-		chartJS.create()
+	mapJS.mapfnc();
+	chartJS.create()
+	//depthJS.depthchart();
 
 	/*
 	var date1 = parseDate(document.getElementById('field1').value);
@@ -191,4 +195,4 @@ export function reload() {
 
 }
 
-document.querySelector('#reload').addEventListener('click', reload)
+document.querySelector('#reload').addEventListener('click', initialquery)
