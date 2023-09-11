@@ -20,7 +20,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 // format the date / time
 //2022-05-12T07:28:47.000Z
 var formatTime = d3.utcFormat("%Y-%m-%d %H:%M:%S");
-var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M:%S");
+var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M");
 
 //svg holding all elements
 var svg;
@@ -125,22 +125,26 @@ export function create() {
     data = data_long;
     //console.log(data)
     // add an  all-options to the list
+    
     var text_node = d3.select("#list")
       .selectAll('allOption')
       .data([1])//to generate just one/ it works
       .enter()
       .append('option')
+      .classed("horizontal",true)
+      .classed("selected",true)
       .attr("value", 0) // corresponding value returned by the button
       .attr('tabindex', 1)
       .attr("id", "option")
-      .text("Back to selected Dates")
+      .text("Whole Selection")
+      /*
       .append('li')
       .text("Start:            " + document.getElementById('field1').value)
       .attr("value", -1) // corresponding value returned by the button
       .append('li')
       .text("End:            " + document.getElementById('field2').value)
       .attr("value", -1) // corresponding value returned by the button
-
+     */
 
 
     createsmallmultiple(data)
@@ -164,7 +168,7 @@ function createsmallmultiple(data) {
   
     // List of groups (here I have one group per column)
     var allGroup = new Set(data.map(d => d.depl))
-  
+    allGroup.delete(undefined) // just remove undefined values
     // add the options to the list
     d3.select("#list")
       .selectAll('myOptions')
@@ -172,12 +176,13 @@ function createsmallmultiple(data) {
       .enter()
       .append('option')
       .text(function (d) { return "ID:" + d; }) // text showed in the menu
+      .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "" + formatTime2(start[0].x); })
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
       .attr('tabindex', 1)
       .append('li')
       //get start date 
-      .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "Start: " + formatTime2(start[0].x); })
-      .attr("value", -1) // corresponding value returned by the button
+      //.text(function (d) { return "ID:" + d; }) // text showed in the menu
+      //.attr("value", -1) // corresponding value returned by the button
       // .append('li')
       // get end date 
       //.text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime2(end[end.length - 1].x); })
@@ -188,9 +193,7 @@ function createsmallmultiple(data) {
   svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
     .data(sumstat)
-    .enter()
-    .append("class", "chart")
-    .append("class", "horizontal")
+    .enter()    
     .append("svg")
     .attr("id", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)

@@ -1,0 +1,336 @@
+@media (min-width: 624px) {
+    html {
+      font-size: 9px;
+    }
+  }
+  
+  @media (min-width: 702px) {
+    html {
+      font-size: 10px;
+    }
+  }
+  @media (max-width: 623px) {
+    html {
+      font-size: 8px;
+    }
+  }
+  @media (min-width: 702px) {
+    html {
+      font-size: 10px;
+    }
+  }
+  @media (min-width: 780px) {
+    html {
+      font-size: 11px;
+    }
+  }
+  @media (min-width: 858px) {
+    html {
+      font-size: 12px;
+    }
+  }
+  
+  
+  @media (min-width: 950px) {
+    html {
+      font-size: 14px;
+    }
+  }
+  @media (min-width: 1079px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    padding: 0px;
+    background-color: white;
+    color: black;
+    
+    margin-left: 0%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+   
+    line-height: 1.42857143;
+    color: #333;
+  }
+  
+  .dark-mode {
+    background-color: black;
+    color: white;
+  }
+  
+  .row {
+  
+    display: flex;
+  }
+  
+  /* Create two equal columns that sits next to each other */
+  .column {
+  
+    width: 45vw;
+    position: flex;
+    padding: 5px;
+  }
+  
+  .column2 {
+    position: sticky;
+    width: 25vw;
+    padding: 5px;
+  }
+  
+  #row2 {
+    display: 40%;
+    position: sticky;
+    top: 20px;
+    align-self: right;
+    align-items: flex-start;
+  
+  }
+  
+  #whole {
+    
+    align-items: flex-start
+  }
+  
+  #map {
+    width: 25vw;
+    height: 70vh;
+    position: sticky;
+    top: 0;
+    transition: 0.4s;
+  
+    display: inline-block;
+  
+    padding: 4px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  
+  
+  
+  
+  }
+  
+  #idselectlabel {
+    width: 20vw;
+    
+    border-radius: 6px;
+    font-weight: bold;
+    padding: 6px;
+  }
+  /* error log */
+  #switch {
+    width: 25vw;
+    
+    border-radius: 6px;
+    font-weight: bold;
+    padding: 6px;
+    cursor: pointer;
+  }
+  #NAVerror{
+    padding: 4px
+  }
+  #panel{
+    display:none;
+  }
+  /* list id*/
+  
+  #UList {
+    padding: 4px;
+    width: 20vw;
+  }
+  
+  
+  .selected {
+    text-shadow: 0 -1px 0 #286090;
+    background-image: linear-gradient(to bottom, #337ab7 0, #2b669a 100%);
+    background-repeat: repeat-x;
+    border-color: #2b669a;
+    background: dodgerblue;
+    color: white;
+  }
+  
+  
+      /* navbar */
+  
+      /* Create a sticky/fixed navbar */
+      #navbar {
+        overflow: hidden;
+        background-color: #f1f1f1;
+        font-size: 18px;
+        /* Large padding which will shrink on scroll (using JS) */
+        transition: 0.4s;
+        /* Adds a transition effect when the padding is decreased */
+        position: fixed;
+        /* Sticky/fixed navbar */
+        width: 100%;
+        
+        top: 0;
+        /* At the top */
+        z-index: 99;
+      }
+  
+      /* Style the navbar links */
+      #navbar a {
+        float: left;
+        color: black;
+        text-align: center;
+        padding: 12px;
+        text-decoration: none;
+        
+        line-height: 25px;
+        border-radius: 4px;
+      }
+  
+      /* Style the logo */
+      #navbar #logo {
+        
+        font-weight: bold;
+        transition: 0.4s;
+  
+      }
+  
+      #darkmode {
+        cursor: pointer;
+      }
+  
+      /* Links on mouse-over */
+      #navbar a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+  
+      /* Style the active/current link */
+      #navbar a.active {
+        background-color: dodgerblue;
+        color: white;
+      }
+  
+      /* Display some links to the right */
+      #navbar-right {
+        float: right;
+        height: 0%;
+      }
+  
+      /* Add responsiveness - on screens less than 580px wide, display the navbar vertically instead of horizontally */
+      @media screen and (max-width: 580px) {
+        #navbar {
+          padding: 20px 10px !important;
+          /* Use !important to make sure that JavaScript doesn't override the padding on small screens */
+        }
+  
+        #navbar a {
+          float: none;
+          display: block;
+          text-align: left;
+        }
+  
+        #navbar-right {
+          float: none;
+        }
+      }
+  
+      #logo{
+    max-width:6%;
+      max-height:6%;
+      width:auto;
+      height:auto;
+  }
+  
+      /* navbar end */
+  
+  
+      /* about page */
+  
+      
+  
+  
+  
+     /* 1. Enable smooth scrolling */
+  html {
+      scroll-behavior: smooth;
+  }
+  
+  /* 2. Make nav sticky */
+  main > nav {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+  }
+  
+  /* 3. ScrollSpy active styles (see JS tab for activation) */
+  .section-nav li.active > a {
+      color: #333;
+      font-weight: 500;
+  }
+  
+  /* Sidebar Navigation */
+  .section-nav {
+      padding-left: 0;
+      border-left: 1px solid #efefef;
+  }
+  
+  .section-nav a {
+      text-decoration: none;
+      display: block;
+      padding: .125rem 0;
+      color: #ccc;
+      transition: all 50ms ease-in-out; /* 💡 This small transition makes setting of the active state smooth */
+  }
+  
+  .section-nav a:hover,
+  .section-nav a:focus {
+      color: #666;
+  }
+  
+  /** Poor man's reset **/
+  * {
+      box-sizing: border-box;
+  }
+  
+  html, body {
+      background: #fff;
+  }
+  
+  
+  ul, ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+  }
+  li {
+      margin-left: 1rem;
+  }
+  
+  h1 {
+      font-weight: 300;
+  }
+  
+  /** page layout **/
+  main {
+      display: grid;
+      grid-template-columns: 1fr 15em;
+      max-width: 100em;
+      width: 90%;
+      margin: 0 auto;
+    padding-top: 10vh;
+  }
+  
+  /** enlarge the sections for this demo, so that we have a long scrollable page **/
+  section {
+      padding-bottom: 4rem;
+  }
+  
+  #chapters{
+    width: 65vw;
+  }
+  
+  /* end about */
+  
+  
+  

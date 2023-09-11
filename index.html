@@ -16,7 +16,7 @@
   <!-- Load leaflet to draw map -->
   <link rel="stylesheet" href="./css/leaflet.css" />
   <link rel="stylesheet" href="./css/hyfive.css" />
-   <!-- load order is important e.g config is loaded first and cant "see" salinity -easily- -->
+  <!-- load order is important e.g config is loaded first and cant "see" salinity -easily- -->
   <!-- Load own scripts  type="text/javascript"-->
   <script src="./js/config.js" type="module"></script>
   <script src="./js/salinity.js" type="module"></script>
@@ -25,10 +25,10 @@
   <script src="./js/chartmultilegend.js" type="module"></script>
   <script src="./js/jsquery.js" type="module"></script>
   <script src="./js/main.js" type="module"></script>
-  
-  
+
+
   <script src="./js/ui.js" type="module"></script>
-  
+
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,11 +41,17 @@
 
 <body>
 
-    <!-- body describes the form of visible elements-->
-     <!-- navigation bar-->
+  <!-- body describes the form of visible elements-->
+  <!-- navigation bar-->
   <div id="whole">
     <div id="navbar">
       <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
+      <div id="navbar-settings"> From : <input type="date" name="field1" id="field1" />
+        To : <input type="date" name="field2" id="field2" />
+        <input type="button" defer id="reload" value="Show" />
+      </div>
+
+
 
       <div id="navbar-right">
         <a class="active" href="#home">Charts</a>
@@ -55,65 +61,51 @@
         <!-- <a id="darkmode">Darkmode</a> -->
       </div>
     </div>
-     <!-- 2 buttons with start and stop date -->
-    <div class="row">
-      <div class="row">
-        <!-- <button onclick="create()">JSON request</button> -->
-        <p><b> From : <input type="date" name="field1" id="field1" />
-            To : <input type="date" name="field2" id="field2" />
 
-            <input type="button" defer id="reload" value="Show" />
-
-          </b>
-
-        </p>
-      </div>
-      
-    </div>
-     <!-- forms 3 columns where the first 2 have a quarter of view width and the 3 half of view width -->
+    <!-- forms 3 columns where the first 2 have a quarter of view width and the 3 half of view width -->
     <div class="row">
 
 
       <div class="row" id="row2">
 
         <div class="column2">
-
+          <div id="idselectlabel" class="selected" align=center>
+            Select an ID
+          </div>
           <nav id="UList">
             <ul id="list">
             </ul>
           </nav>
-          <div id="idselectlabel" class="selected" align=center>
-            Select an ID
+
+          <!-- toggles -->
+          <div id="switch2">
+            <ul>
+              <li>
+                <input id="s0" type="checkbox" class="switch">
+                <label for="s0">Horizontal/Vertical Casts</label>
+              </li>
+              <li>
+                <input id="s1" type="checkbox" class="switch vertical hidden">
+                <label for="s1" class="vertical hidden">Whole cast</label>
+              </li>
+              <li>
+                <input id="s2" type="checkbox" class="switch vertical hidden">
+                <label for="s2" class="vertical hidden">Down cast</label>
+              </li>
+              <li>
+                <input id="s3" type="checkbox" class="switch vertical hidden">
+                <label for="s3" class="vertical hidden">Horizontal cast</label>
+              </li>
+              <li>
+                <input id="s4" type="checkbox" class="switch vertical hidden">
+                <label for="s4" class="vertical hidden">Up cast</label>
+              </li>
+            </ul>
           </div>
-             <!-- toggles -->
-             <div  id = "switch2">
-              <ul >
-                <li>
-                  <input id="s0" type="checkbox" class="switch" >
-                  <label for="s0">Horizontal/Vertical Casts</label>
-                </li>
-                <li>
-                  <input id="s1" type="checkbox" class="switch vertical hidden" >
-                  <label for="s1" class="vertical hidden">Whole cast</label>
-                </li>
-                <li>
-                  <input id="s2" type="checkbox" class="switch vertical hidden" >
-                  <label for="s2" class="vertical hidden">Down cast</label>
-                </li>
-                <li>
-                  <input id="s3" type="checkbox" class="switch vertical hidden" >
-                  <label for="s3" class="vertical hidden">Horizontal cast</label>
-                </li>
-                <li>
-                  <input id="s4" type="checkbox" class="switch vertical hidden" >
-                  <label for="s4"class="vertical hidden">Up cast</label>
-                </li>
-              </ul>
-            </div>
         </div>
-         <!-- map and list of error share the same space but are technically vertically aligned -->
+        <!-- map and list of error share the same space but are technically vertically aligned -->
         <div class="column2">
-          <div id="map"></div> 
+          <div id="map"></div>
           <!-- dont think validation was used -->
           <!--
           <div id="switch" align=center class="selected">ᐱᐱ Switch to log ᐱᐱ</div>
@@ -127,7 +119,7 @@
 
       </div>
       <div class="column">
-       <!-- dataviz holds all charts -->
+        <!-- dataviz holds all charts -->
         <!-- <div class="loader" id ="loader"></div> -->
         <div id="my_dataviz" class="horizontal"></div>
         <div id="my_dataviz2" class="vertical hidden"></div>

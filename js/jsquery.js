@@ -121,7 +121,7 @@ export async function JSquery() {
     ,
   })
 
-  //return o;
+  return result;
 };
 
 

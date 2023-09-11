@@ -87,8 +87,8 @@ L.tileLayer.mbTiles('../assets/Layer.mbtiles', {
 
 
 L.tileLayer("../assets/4uMaps/{z}/{x}/{y}.png", {
-  maxZoom: 8,
-  minZoom: 2,
+  maxZoom: 10,
+  minZoom: 3,
   //attribution: 'Tiles by <a href="www.4umaps.com">OpenStreetMaps</a>',
   attribution: 'Tiles by OpenStreetMaps',
   tileSize: 512,
