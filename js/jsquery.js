@@ -1,5 +1,7 @@
 import * as config from './config.js';
-
+import * as chartJS from './chartmultilegend.js';
+import * as depthJS from './depthchart.js';
+import * as mapJS from './map.js';
 
 //#!./node_modules/.bin/esr
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -8,7 +10,18 @@ import * as config from './config.js';
 //////////////////////////////////////////
 import { InfluxDB, Point, flux } from '../node_modules/@influxdata/influxdb-client-browser/dist/index.browser.mjs'
 
+/*
 
+{
+    "url": "http:\/\/hyfive.info:8086",
+    "token": "pD7hE8gVEAkEU2ewamqMCTNzoBOFuv3Qmyu6-awH5uaHhHc8ArgRgIkWGzFf_k0KYyVQ3XFIX7eed2uq27AdjQ==",
+    "org": "HyFive",
+    "bucket": "hyfive",
+    "username": "hyfive",
+    "password": "hyfive"
+}
+
+*/
 //import {InfluxDB, flux, fluxDuration} from '../@influxdata/influxdb-client'
 import {
   url,
@@ -17,10 +30,92 @@ import {
   bucket,
   username,
   password,
-  fetchSettings 
+  fetchSettings
 } from '../env.mjs'
 
+// Function to format date as required
+function formatDate(date) {
+  const formatData = d3.timeFormat("%Y-%m-%dT%H:%M:%SZ");
+  return formatData(date);
+}
 
+// Function to perform the InfluxDB query
+async function performQuery(start, end) {
+  return new Promise(async (resolve, reject) => {
+    // hyfive.inf0 = bucket:hyfive measurement. CLUPEA
+    const fluxQuery = `from(bucket:"localhyfive") |> range(start: ${start}, stop: ${end}) |> filter(fn: (r) => r._measurement == "netcdf")`;
+    const influxDB = new InfluxDB({ url, token });
+    const queryApi = influxDB.getQueryApi(org);
+
+    const result = [];
+
+    try {
+      await queryApi.queryRows(fluxQuery, {
+        next(row, tableMeta) {
+          const o = tableMeta.toObject(row);
+          const data = { "time": o._time, "value": o._value, "prop": o._field };
+          result.push(data);
+        },
+        error(error) {
+          console.log('QUERY FAILED', error);
+          reject(error); // Reject the promise on error
+        },
+        complete() {
+          resolve(result); // Resolve the promise when the query is complete
+        }
+      });
+    } catch (error) {
+      console.error('Error in queryApi.queryRows:', error);
+      reject(error); // Reject the promise on error
+    }
+  });
+}
+
+
+// Function to process the query result
+function processData(result) {
+  const data = [];
+  let i = 0;
+
+  const allGroup = d3.group(result, (d) => d.time);
+
+  allGroup.forEach((element) => {
+    const dataObject = {};
+
+    element.forEach((element2) => {
+      const a = [element2.prop];
+      if (a.some((r) => config.mainblacklist.indexOf(r) >= 0)) {
+        return;
+      }
+      dataObject[element2.prop] = element2.value;
+      dataObject.time = element2.time.toString();
+    });
+
+    data[i] = dataObject;
+    i++;
+  });
+
+  return data;
+}
+
+// Main function to orchestrate the entire process
+export async function JSquery() {
+  await fetchSettings();
+  const end = formatDate(new Date(document.getElementById('field2').value));
+  const start = formatDate(new Date(document.getElementById('field1').value));
+
+  const result = await performQuery(start, end);
+  const processedData = processData(result);
+
+  sessionStorage.setItem("response", JSON.stringify(processedData));
+  //console.log(processedData)
+  mapJS.mapfnc(),
+    chartJS.create(),
+    depthJS.depthchart()
+  return processedData;
+}
+
+/*
 //48 h zuerst
 // get from and to date and convert them to query useable format
 export async function JSquery() {
@@ -53,7 +148,7 @@ export async function JSquery() {
       value: "",
       prop: ""
 
-  }; */
+  }; 
   var result = [];
   //console.log(result)
   var index = 0;
@@ -78,7 +173,7 @@ export async function JSquery() {
         // default output
         console.log(JSON.stringify(o, null, 2))
       }
-      */
+      
     },
     error(error) {
       console.log('QUERY FAILED', error)
@@ -125,4 +220,4 @@ export async function JSquery() {
 };
 
 
-
+*/

@@ -1,8 +1,8 @@
 {
-    "url": "http:\/\/hyfive.info:8086",
-    "token": "pD7hE8gVEAkEU2ewamqMCTNzoBOFuv3Qmyu6-awH5uaHhHc8ArgRgIkWGzFf_k0KYyVQ3XFIX7eed2uq27AdjQ==",
-    "org": "HyFive",
-    "bucket": "hyfive",
+    "url": "192.168.178.55:8086",
+    "token": "VRkqK2w8Jp2TNQ8P_DbsS5HZ0q3qqJO50sHV-UOxnG6Pe3MnBtEEnUV8Hjoya7TewpDuIwpME3OqMK0jujT0RQ==",
+    "org": "hyfive",
+    "bucket": "localhyfive",
     "username": "hyfive",
     "password": "hyfive"
 }

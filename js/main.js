@@ -77,15 +77,13 @@ function initial() {
 initial();
 //sperated function for 
 
-function initialquery() {
-	chartJS.resetCharts();
-	//var dataquery = queryJS.JSquery()
-	var result = queryJS.JSquery()
-	result.then(
-		mapJS.mapfnc(),
-		chartJS.create(),
-		depthJS.depthchart()
-		)
+async function initialquery() {
+	await chartJS.resetCharts();
+	
+	await queryJS.JSquery()
+	
+	//console.log(result)
+
 }
 
 //document.getElementById('list').addEventListener('click', chartJS.console)
