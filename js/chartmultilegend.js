@@ -54,14 +54,16 @@ export function create() {
       //d.time = formatTime(d.time);
       //d.time = parseTime2(d.time)
       d.TSYTemperatrue = +d.TSYTemperatrue;
-      d.Temperature = +d.TSYTemperatrue;
+      //d.Temperature = +d.TSYTemperatrue;
+      
       d.Oxygen = +d.Oxygen;
-      d.MS5837Press = +d.MS5837Press;
-      d.Pressure = (+d.MS5837Press);
-      d.Conductivity = +d.Conducitvity / 1000; //micro to milli
+      //d.MS5837Press = +d.MS5837Press;
+      //d.Pressure = (+d.MS5837Press);
+      //d.Conductivity = +d.Conducitvity / 1000; //micro to milli
+      d.Conductivity = +d.Conductivity / 1000; //micro to milli
       // check if exist and not null
-      if (+d.Conducitvity != 0 && +d.TSYTemperatrue != 0 && +d.Pressure != 0 && +d.Conducitvity && +d.TSYTemperatrue && +d.Pressure) {
-        d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);
+      if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
+        d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
       }
 
 

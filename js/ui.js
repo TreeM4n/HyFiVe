@@ -60,61 +60,61 @@ catch (e) {
 var toggle2 = true;
 //error log / map slider
 try {
-$(document).ready(function () {
-  $("#switch").click(function () {
+  $(document).ready(function () {
+    $("#switch").click(function () {
 
 
-    if (toggle2) {
-      document.getElementById("switch").textContent = "˅˅ Switch to map ˅˅";
+      if (toggle2) {
+        document.getElementById("switch").textContent = "˅˅ Switch to map ˅˅";
 
-      $("#panel").slideToggle("1000");
-      $("#map").slideToggle("1000");
-      toggle2 = false;
-    }
-    else {
-      document.getElementById("switch").textContent = "⌃⌃ Switch to log ⌃⌃";
-      $("#map").slideToggle("1000");
-      $("#panel").slideToggle("1000");
-      toggle2 = true;
-    }
-  });
-});
-} 
-catch(e){
-
-}
-try {
-//credits https://www.bram.us/2020/01/10/smooth-scrolling-sticky-scrollspy-navigation/
-window.addEventListener('DOMContentLoaded', () => {
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const id = entry.target.getAttribute('id');
-      if (entry.intersectionRatio > 0) {
-        document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.add('active');
-      } else {
-        document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.remove('active');
+        $("#panel").slideToggle("1000");
+        $("#map").slideToggle("1000");
+        toggle2 = false;
+      }
+      else {
+        document.getElementById("switch").textContent = "⌃⌃ Switch to log ⌃⌃";
+        $("#map").slideToggle("1000");
+        $("#panel").slideToggle("1000");
+        toggle2 = true;
       }
     });
   });
-
-  // Track all sections that have an `id` applied
-  document.querySelectorAll('section[id]').forEach((section) => {
-    observer.observe(section);
-  });
-
-});
 }
-catch(e){}
+catch (e) {
+
+}
+try {
+  //credits https://www.bram.us/2020/01/10/smooth-scrolling-sticky-scrollspy-navigation/
+  window.addEventListener('DOMContentLoaded', () => {
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        if (entry.intersectionRatio > 0) {
+          document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.add('active');
+        } else {
+          document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.remove('active');
+        }
+      });
+    });
+
+    // Track all sections that have an `id` applied
+    document.querySelectorAll('section[id]').forEach((section) => {
+      observer.observe(section);
+    });
+
+  });
+}
+catch (e) { }
 
 
 //annoy mobile users by rotating 
 function doOnOrientationChange() {
-  
+
   document.getElementById("switch").textContent = screen.orientation;
   switch (screen.orientation) {
-    
- 
+
+
     case 180:
       document.getElementsByTagName('body')[0].style.transform = "rotate(-90deg)";
       break;
@@ -123,7 +123,7 @@ function doOnOrientationChange() {
       document.getElementById("landscape").style.display = "block";
       break;
     case 90:
-      
+
       document.getElementsByTagName('body')[0].style.transform = "rotate(0deg)";
       document.getElementById("landscape").style.display = "block";
       break;
@@ -135,7 +135,7 @@ function doOnOrientationChange() {
 }
 
 //Listen to orientation change
-window.addEventListener('orientationchange', doOnOrientationChange);  
+window.addEventListener('orientationchange', doOnOrientationChange);
 
 
 /*
@@ -154,46 +154,48 @@ catch (e) {
 
 //------------------------------------ cast toggles---------------------
 // its ugly and it works
+try {
+  document.getElementById("s0").checked = false;
+  d3.select("#s0").on("click", function (event, d) {
+    var x;
+    var i;
 
-document.getElementById("s0").checked = false;
+    if (document.getElementById("s0").checked) {
+      try {
+        x = document.getElementsByClassName("horizontal");
 
+        for (i = 0; i < x.length; i++) {
+          x[i].classList.add("hidden");
 
+        }
+        x = document.getElementsByClassName("vertical");
 
-d3.select("#s0").on("click", function (event, d) {
-  var x;
-  var i;
+        for (i = 0; i < x.length; i++) {
+          x[i].classList.remove("hidden");
+        }
 
-  if (document.getElementById("s0").checked) {
-    try {
+      } catch (error) {
+
+      }
+
+    }
+    else {
       x = document.getElementsByClassName("horizontal");
 
       for (i = 0; i < x.length; i++) {
-        x[i].classList.add("hidden");
+        x[i].classList.remove("hidden");
 
       }
       x = document.getElementsByClassName("vertical");
 
       for (i = 0; i < x.length; i++) {
-        x[i].classList.remove("hidden");
+        x[i].classList.add("hidden");
       }
-      
-    } catch (error) {
-
     }
 
-  }
-  else {
-    x = document.getElementsByClassName("horizontal");
+  })
+}
 
-    for (i = 0; i < x.length; i++) {
-      x[i].classList.remove("hidden");
+catch (error) {
 
-    }
-    x = document.getElementsByClassName("vertical");
-
-    for (i = 0; i < x.length; i++) {
-      x[i].classList.add("hidden");
-    }
-  }
-
-})
+}

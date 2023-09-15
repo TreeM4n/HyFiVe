@@ -29,7 +29,7 @@ export function depthchart() {
   depthdata = JSON.parse(depthdata)
   var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   // format the data
-  //console.log(result)
+  console.log(depthdata)
 
 
   var dataset = [];
@@ -44,15 +44,16 @@ export function depthchart() {
   depthdata.forEach(function (d) {
 
     d.time = parseTime(d.time);
-    d.Temperature = +d.TSYTemperatrue;
+    //d.Temperature = +d.TSYTemperatrue;
     d.Oxygen = +d.Oxygen;
-    d.MS5837Press = +d.MS5837Press;
-    d.Pressure = +d.MS5837Press;
-    d.Conductivity = +d.Conducitvity / 1000;
-    if (+d.Conducitvity != 0 && +d.TSYTemperatrue != 0 && +d.Pressure != 0) {
-      d.Salinity = salJS.gsw_sp_from_c(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure);
+    //d.MS5837Press = +d.MS5837Press;
+    //d.Pressure = +d.MS5837Press;
+    //d.Conductivity = +d.Conducitvity / 1000;
+    d.Conductivity = +d.Conductivity / 1000;
+    if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
+      d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
     }
-
+    d.Pressure = (+d.Pressure-1013)/100
 
 
 
@@ -60,8 +61,7 @@ export function depthchart() {
     //console.log(d.Salinity)
 
 
-    //d.Pressure = +d.MS5837Press;
-    d.Conducitvity = +d.Conducitvity;
+    //d.Pressure = +d.MS5837Press;  
 
 
     /*
@@ -78,7 +78,7 @@ export function depthchart() {
 
 
       if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
-      if (d.MS5837Press == null || d.Temperature == null || d.MS5837Press == 0 || d.Temperature == 0) { continue; }
+      if (d.Pressure == null || d.Temperature == null || d.Pressure == 0 || d.Temperature == 0) { continue; }
       //check for deployment changes
       //console.log(prevID + "W" + d.deployment)
 
@@ -87,7 +87,7 @@ export function depthchart() {
         dataset = [];
         prevID = d.deployment;
         times = depthdata.filter(function (d) { return d.deployment == prevID });
-        times = (times.map(d => d.MS5837Press))
+        times = (times.map(d => d.Pressure))
         for (var pressure in times) {
           dataset.push(Math.ceil(times[pressure] - 1030))
         }
@@ -121,7 +121,7 @@ export function depthchart() {
         //castStatus = getStatus(startStatus.getTime(), endStatus.getTime(), d.time.getTime());
         //castStatus = getStatus2(d.deployment);
         data_long.push({
-          y: d.MS5837Press,
+          y: d.Pressure,
           time: d.time,
           value: +value,
           x: y,
@@ -227,6 +227,7 @@ function createdepthchart(data) {
         .domain([max, min])
         .range([height, 0]);
       var svg1 = d3.select(this);
+            
 
       svg1.call(d3.axisLeft(y2).ticks(6));
 
