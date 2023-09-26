@@ -60,7 +60,7 @@ export function create() {
       //d.MS5837Press = +d.MS5837Press;
       //d.Pressure = (+d.MS5837Press);
       //d.Conductivity = +d.Conducitvity / 1000; //micro to milli
-      d.Conductivity = +d.Conductivity / 1000; //micro to milli
+      d.Conductivity = +d.Conductivity; //micro to milli
       // check if exist and not null
       if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
         d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
