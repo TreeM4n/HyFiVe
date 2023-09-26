@@ -49,7 +49,7 @@ export function depthchart() {
     //d.MS5837Press = +d.MS5837Press;
     //d.Pressure = +d.MS5837Press;
     //d.Conductivity = +d.Conducitvity / 1000;
-    d.Conductivity = +d.Conductivity / 1000;
+    d.Conductivity = +d.Conductivity;
     if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
       d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
     }
