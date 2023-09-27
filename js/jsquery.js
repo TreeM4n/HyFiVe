@@ -101,8 +101,15 @@ function processData(result) {
 // Main function to orchestrate the entire process
 export async function JSquery() {
   await fetchSettings();
-  const end = formatDate(new Date(document.getElementById('field2').value));
-  const start = formatDate(new Date(document.getElementById('field1').value));
+  var end = new Date(document.getElementById('field2').value); 
+  console.log(end)
+  end = end.setDate(end.getDate() + 1)
+  console.log(end)
+  end = formatDate(end) // take the next day instead
+
+  var start = formatDate(new Date(document.getElementById('field1').value));
+
+
 
   const result = await performQuery(start, end);
   const processedData = processData(result);
