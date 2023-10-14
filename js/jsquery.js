@@ -43,7 +43,12 @@ function formatDate(date) {
 async function performQuery(start, end) {
   return new Promise(async (resolve, reject) => {
     // hyfive.inf0 = bucket:hyfive measurement. CLUPEA
-    const fluxQuery = `from(bucket:"localhyfive") |> range(start: ${start}, stop: ${end}) |> filter(fn: (r) => r._measurement == "netcdf")`;
+    var interval = document.getElementById('field_interval').value
+    const fluxQuery = `from(bucket:"localhyfive") 
+                    |> range(start: ${start}, stop: ${end}) 
+                    |> filter(fn: (r) => r._measurement == "netcdf")
+                    |> window(every: ${interval})
+                    |> mean()`;
     const influxDB = new InfluxDB({ url, token });
     const queryApi = influxDB.getQueryApi(org);
 
@@ -53,7 +58,7 @@ async function performQuery(start, end) {
       await queryApi.queryRows(fluxQuery, {
         next(row, tableMeta) {
           const o = tableMeta.toObject(row);
-          const data = { "time": o._time, "value": o._value, "prop": o._field };
+          const data = { "time": o._start, "value": o._value, "prop": o._field };
           result.push(data);
         },
         error(error) {
@@ -101,10 +106,10 @@ function processData(result) {
 // Main function to orchestrate the entire process
 export async function JSquery() {
   await fetchSettings();
-  var end = new Date(document.getElementById('field2').value); 
-  console.log(end)
+  var end = new Date(document.getElementById('field2').value);
+  //console.log(end)
   end = end.setDate(end.getDate() + 1)
-  console.log(end)
+  //console.log(end)
   end = formatDate(end) // take the next day instead
 
   var start = formatDate(new Date(document.getElementById('field1').value));

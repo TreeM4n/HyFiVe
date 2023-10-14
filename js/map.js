@@ -86,11 +86,11 @@ L.tileLayer.mbTiles('../assets/Layer.mbtiles', {
 */
 
 
-L.tileLayer("../assets/4uMaps/{z}/{x}/{y}.png", {
-  maxZoom: 10,
+L.tileLayer("../assets/OSM-baltic/{z}/{x}/{y}.png", {
+  maxZoom: 15,
   minZoom: 3,
   //attribution: 'Tiles by <a href="www.4umaps.com">OpenStreetMaps</a>',
-  attribution: 'Tiles by OpenStreetMaps',
+  attribution: 'Tiles by OpenSeaMaps and 4UMaps',
   tileSize: 512,
   zoomOffset: -1
 }).addTo(map);

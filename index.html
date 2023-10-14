@@ -46,9 +46,18 @@
   <div id="whole">
     <div id="navbar">
       <img src="./assets/ProjectLogo.png" alt="ProjectLogo" id="logo"></img>
-      <div id="navbar-settings"> From : <input type="date" name="field1" id="field1" />
-        To : <input type="date" name="field2" id="field2" />
-        <input type="button" defer id="reload" value="Show" />
+      <div id="navbar-settings"> 
+        <a>From: <input type="date" name="field1" id="field1" /></a> 
+        <a>To: <input type="date" name="field2" id="field2" /></a> 
+        <a><input type="button" defer id="reload" value="Show" /></a> 
+        <a>Interval:   <select name="field_interval" id="field_interval">
+          <option value="2s">2s</option>
+          <option value="5s">5s</option>
+          <option value="10s">10s</option>
+          <option value="30s">30s</option>
+          <option value="60s">60s</option>
+          
+        </select> </a>
       </div>
 
 

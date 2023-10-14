@@ -205,6 +205,7 @@ nav ul {
     max-height:6%;
     width:auto;
     height:auto;
+    float: left;
 }
 #BMEL{
   max-width:6%;

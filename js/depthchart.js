@@ -29,7 +29,7 @@ export function depthchart() {
   depthdata = JSON.parse(depthdata)
   var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
   // format the data
-  console.log(depthdata)
+  //console.log(depthdata)
 
 
   var dataset = [];
@@ -89,7 +89,7 @@ export function depthchart() {
         times = depthdata.filter(function (d) { return d.deployment == prevID });
         times = (times.map(d => d.Pressure))
         for (var pressure in times) {
-          dataset.push(Math.ceil(times[pressure] - 1030))
+          dataset.push(Math.ceil(times[pressure]))
         }
         changePoints = detectChangePoints(dataset);
         counter = 0;
@@ -100,10 +100,10 @@ export function depthchart() {
         castStatus = 1
       }
       else if (changePoints && changePoints.length > 1) {
-        if (counter / config.dcshownGraphNumber <= changePoints[0]) {
+        if (counter  <= changePoints[0]) {
           castStatus = 1
         }
-        else if (counter / config.dcshownGraphNumber >= changePoints[changePoints.length - 1]) {
+        else if (counter  >= changePoints[changePoints.length - 1]) {
           castStatus = 3
         }
         else {
@@ -143,7 +143,7 @@ export function depthchart() {
 
 
   // List of groups (here I have one group per column)
-  //console.log(depthdata)
+  console.log(depthdata)
 
   //  console.log(allGroup[Symbol.iterator]().next().value)
   createdepthchart(depthdata)
@@ -746,3 +746,19 @@ function detectChangePoints(dataset) {
     return false;
   }
 }
+
+/*
+
+def downcast_dataframe(profile):
+    downcast_startid = -1
+    for index, row in profile[5:-5].iterrows():
+        # print(row['MS5837Press'])
+        if (row['MS5837Press'] - profile['MS5837Press'][index + 5] < -50) and \
+                (abs(row['MS5837Press'] - profile['MS5837Press'][index - 5]) < 30):
+            downcast_startid = index
+            break
+
+    downcast_stopid = (profile.index[profile['MS5837Press'] == max(profile.MS5837Press)].tolist())[0]
+    return profile.iloc[downcast_startid:downcast_stopid, :]
+
+    */
