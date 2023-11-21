@@ -78,7 +78,7 @@ initial();
 //sperated function for 
 
 async function initialquery() {
-	await chartJS.resetCharts();
+	//await chartJS.resetCharts();
 	
 	await queryJS.JSquery()
 	

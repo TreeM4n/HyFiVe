@@ -1,6 +1,6 @@
 {
-    "url": "http://192.168.178.55:8086",
-    "token": "VRkqK2w8Jp2TNQ8P_DbsS5HZ0q3qqJO50sHV-UOxnG6Pe3MnBtEEnUV8Hjoya7TewpDuIwpME3OqMK0jujT0RQ==",
+    "url": "http:\/\/192.168.178.55:8086",
+    "token": "YAidOdm0RQyKEI6_wJUARR3UhenpGVAoJkWZ693qq6uvz4bZERYxo3epbJtv1h-10CgaTjR4nNEfUzQIXS4nSQ==",
     "org": "hyfive",
     "bucket": "localhyfive",
     "username": "hyfive",

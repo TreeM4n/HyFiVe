@@ -47,7 +47,7 @@ try {
     if (e.target.tagName === 'OPTION') {                                      // 2.
       selected = document.querySelector('option.selected');
       //console.log(selected )
-      if (selected) selected.className = '';                               // "
+      if (selected) selected.classList.remove("selected");                               // "
       e.target.className = 'selected';                                    // 2b.
     }
 

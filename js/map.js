@@ -107,10 +107,14 @@ var datamap;
 
 // format the data
 var data_longmap = [];
-
+var rows = ["latitude", "longitude", "deployment_id", "time"]
+var line
+var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M");
+var parseTime2 = d3.timeParse("%Y-%m-%dT%H:%M:%SZ");
 
 export async function mapfnc() {
-
+  data_longmap = []
+  //map.removeLayer(line)
   var dataquery = sessionStorage.getItem("response")
   dataquery = JSON.parse(dataquery)
   //console.log(dataquery)
@@ -119,26 +123,17 @@ export async function mapfnc() {
       //2022-05-12T07:28:47.000Z: delete Z and T and milliS
       //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
       d.time = parseTime(d.time);
-
-      //d.time = +d.time
-      d.TSYTemperatrue = +d.TSYTemperatrue;
-      d.Oxygen = +d.Oxygen;
-      d.MS5837Press = +d.MS5837Press;
-      // console.log(d.time);
-
-
       for (var prop in d) {
-        var a = [prop];
-        // console.log("por")
-        if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
+        //if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
+        if (rows.includes(prop)) { } else { continue; }
+        if (d.latitude < -90 || d.longitude < -180 || d.latitude > 90 || d.longitude > 180 ) {continue;}
 
-        if (d.Latitude === null || d.Longitude === null || d.Latitude === undefined || d.Longitude === undefined) { continue; }
 
         data_longmap.push({
           time: d.time,
-          Latitude: d.Latitude,
-          Longitude: d.Longitude,
-          depl: d.deployment
+          Latitude: d.latitude,
+          Longitude: d.longitude,
+          depl: d.deployment_id
         });
 
       }
@@ -152,7 +147,7 @@ export async function mapfnc() {
   // --------------------------------------------------- PART 3 --------------------------------------------------------------
   // focus map on first coordinate
   try {
-    map.setView([datamap[1].Latitude, datamap[1].Longitude], 13);
+    map.setView([datamap[1].Latitude, datamap[1].Longitude]);
   } catch (error) {
 
   }
@@ -170,24 +165,20 @@ export async function mapfnc() {
       color = "rgb(" + r + " ," + g + "," + b + ")";
       */
       if (i > 1 + config.MapPoints) {
-        diff = Math.abs(+datamap[i - config.MapPoints].time - +datamap[i].time);
-        //console.log(diff );
-        if (diff < 60000 * config.MapDim) {
-          var lat1 = datamap[i].Latitude;
-          var lat2 = datamap[i - config.MapPoints].Latitude;
-          var lon1 = datamap[i].Longitude;
-          var lon2 = datamap[i - config.MapPoints].Longitude;
-          var pointA = new L.LatLng(lat1, lon1);
-          var pointB = new L.LatLng(lat2, lon2);
-          var pointList = [pointA, pointB];
-          var line = new L.Polyline(pointList, {
-            color: "rgb(0,0,0)", // set color 
-            weight: 5,
-            smoothFactor: 1
-          })
-            .bindPopup("ID:" + datamap[i].depl);
-          line.addTo(map);
-        }
+        var lat1 = datamap[i].Latitude;
+        var lat2 = datamap[i - config.MapPoints].Latitude;
+        var lon1 = datamap[i].Longitude;
+        var lon2 = datamap[i - config.MapPoints].Longitude;
+        var pointA = new L.LatLng(lat1, lon1);
+        var pointB = new L.LatLng(lat2, lon2);
+        var pointList = [pointA, pointB];
+        line = new L.Polyline(pointList, {
+          color: "rgb(0,0,0)", // set color 
+          weight: 5,
+          smoothFactor: 1
+        })
+          .bindPopup("Time:" + (formatTime2(parseTime2(datamap[i].time))));
+        line.addTo(map);
       }
     }
     //console.log(data[i])
@@ -241,11 +232,25 @@ export function setmapview(data) {
 //remove markers
 export function removemapview() {
   if (markerEnd != undefined) {
+    //map.removeLayer(line)
     map.removeLayer(markerStart);
     map.removeLayer(markerEnd);
   };
 }
 
+export async function clearMap() {
+  for(var i in map._layers) {
+      if(map._layers[i]._path != undefined) {
+          try {
+            map.removeLayer(map._layers[i]);
+          }
+          catch(e) {
+              console.log("problem with " + e + map._layers[i]);
+          }
+      }
+  }
+}
+/*
 //export function to set marker on click location in charts || unimplemented
 export function showpoint(time) {
   var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
@@ -268,3 +273,4 @@ export function showpoint(time) {
   }
 
 }
+*/

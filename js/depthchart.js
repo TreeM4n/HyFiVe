@@ -18,18 +18,21 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
   height = window.innerWidth / 10 * 2 - margin.top - margin.bottom;
 
 var data_long = [];
-
+var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
 
 //----------------------------------- PART 1 -----------------------------------------
 //Read the data
-export function depthchart() {
-
+export async function depthchart() {
+  data_long = []
 
   var depthdata = sessionStorage.getItem("response");
   depthdata = JSON.parse(depthdata)
-  var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
+  var attributes = sessionStorage.getItem("attributes");
+  attributes = JSON.parse(attributes)
+  attributes = attributes.filter(e => e !== 'pressure');
+
   // format the data
-  //console.log(depthdata)
+  // console.log(depthdata)
 
 
   var dataset = [];
@@ -45,48 +48,43 @@ export function depthchart() {
 
     d.time = parseTime(d.time);
     //d.Temperature = +d.TSYTemperatrue;
-    d.Oxygen = +d.Oxygen;
+    //d.Oxygen = +d.Oxygen;
     //d.MS5837Press = +d.MS5837Press;
     //d.Pressure = +d.MS5837Press;
     //d.Conductivity = +d.Conducitvity / 1000;
-    d.Conductivity = +d.Conductivity;
-    if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
-      d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
+    d.pressure = (+d.pressure - 1013) / 100
+    try {
+      if (+d.conductivity != 0 && +d.temperature != 0 && +d.pressure != 0) {
+        d.salinity = salJS.gsw_sp_from_c(+d.conductivity, +d.temperature, +d.pressure);
+      }
+    } catch (error) {
+      console.log(error)
     }
-    d.Pressure = (+d.Pressure-1013)/100
 
-
-
-    //console.log(+d.Conducitvity / 1000, +d.TSYTemperatrue, +d.Pressure)
-    //console.log(d.Salinity)
-
-
-    //d.Pressure = +d.MS5837Press;  
-
-
-    /*
-    if (prevID != d.deployment) {
-      prevID = d.deployment;
-      dataset.push(Math.ceil(+d.MS5837Press - 1030))
-    }
-    */
     //shorten data
     for (var prop in d) {
-      var a = [prop];
+      var a = prop;
+
+      if (attributes.includes(a)) { } else { continue; }
+      //if (d.latitude < -90 || d.longitude < -180 || d.latitude > 90 || d.longitude > 180) { continue; }
       var y = prop,
         value = +d[prop];
+      //time cant be undefined or null and so 
+
+      if (d.time === null || value === null || value === 0 || isNaN(value)) { continue; }
 
 
-      if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
-      if (d.Pressure == null || d.Temperature == null || d.Pressure == 0 || d.Temperature == 0) { continue; }
+      //if (a.some(r => config.dcblacklist.indexOf(r) >= 0)) { continue; }
+      //if (d.Pressure == null || d.Temperature == null || d.Pressure == 0 || d.Temperature == 0) { continue; }
       //check for deployment changes
       //console.log(prevID + "W" + d.deployment)
 
-      if (prevID != d.deployment) {
+      if (false //prevID != d.deployment_id
+      ) {
 
         dataset = [];
-        prevID = d.deployment;
-        times = depthdata.filter(function (d) { return d.deployment == prevID });
+        prevID = d.deployment_id;
+        times = depthdata.filter(function (d) { return d.deployment_id == prevID });
         times = (times.map(d => d.Pressure))
         for (var pressure in times) {
           dataset.push(Math.ceil(times[pressure]))
@@ -100,10 +98,10 @@ export function depthchart() {
         castStatus = 1
       }
       else if (changePoints && changePoints.length > 1) {
-        if (counter  <= changePoints[0]) {
+        if (counter <= changePoints[0]) {
           castStatus = 1
         }
-        else if (counter  >= changePoints[changePoints.length - 1]) {
+        else if (counter >= changePoints[changePoints.length - 1]) {
           castStatus = 3
         }
         else {
@@ -121,11 +119,11 @@ export function depthchart() {
         //castStatus = getStatus(startStatus.getTime(), endStatus.getTime(), d.time.getTime());
         //castStatus = getStatus2(d.deployment);
         data_long.push({
-          y: d.Pressure,
+          y: d.pressure,
           time: d.time,
           value: +value,
           x: y,
-          depl: d.deployment,
+          depl: d.deployment_id,
           status: castStatus
         });
         //console.log(y + +value)
@@ -143,18 +141,37 @@ export function depthchart() {
 
 
   // List of groups (here I have one group per column)
-  console.log(depthdata)
+  //console.log(depthdata)
 
   //  console.log(allGroup[Symbol.iterator]().next().value)
   createdepthchart(depthdata)
 }
 //---------------------------------------- PART 2 -----------------------------------------------------
-function createdepthchart(data) {
+async function createdepthchart(data) {
 
   // group the data: I want to draw one line per group
   var sumstat = d3.group(data, d => d.x) // nest function allows to group the calculation per level of a factor
 
-  
+
+  //add a Note if nothing can be visualized
+  if (data.length == 0) {
+
+    d3.select("#my_dataviz2")
+      .append("text")
+      .attr("text-anchor", "start")
+      .append("class", "vertical")
+      .attr("y", -5)
+      .attr("x", 0)
+      .text(function (d) {return "No valid Data"      
+      })  
+      
+  }
+  else {
+    d3.select("#my_dataviz2")
+    .selectAll("text").remove();
+  }
+
+
   // List of groups (here I have one group per column)
   //var allGroup = new Set(data.map(d => d.depl))
   //var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
@@ -178,7 +195,7 @@ function createdepthchart(data) {
     .attr("value", -1) // corresponding value returned by the button
   */
   // append the svg object to the body of the page
-  
+
   var svg = d3.select("#my_dataviz2")
     .selectAll("uniqueChart")
     .data(sumstat)
@@ -194,11 +211,12 @@ function createdepthchart(data) {
       `translate(${margin.left},${margin.top})`)
 
   // draw the first id on loading page but only the axis so on select a chart does not pop off out of nowhere
-  
-  var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
 
+  var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
+  console.log(dataFilter)
+  console.log(sumstat)
   // Add X axis
-  
+
   var xAxis = svg
     .append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -227,7 +245,7 @@ function createdepthchart(data) {
         .domain([max, min])
         .range([height, 0]);
       var svg1 = d3.select(this);
-            
+
 
       svg1.call(d3.axisLeft(y2).ticks(6));
 
@@ -251,6 +269,207 @@ function createdepthchart(data) {
     .attr("stroke", "#69b3a2")
     .attr("stroke-width", 1.5)
     .attr("class", "mid")
+
+  xAxis
+    .transition()
+    .duration(1000)
+    .each(function (d, i) {
+      var value = d[1][1].x;
+      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+      var min = d3.min(dataFilter2, function (d) { return +d.value; })
+      var max = d3.max(dataFilter2, function (d) { return +d.value; })
+      var y2 = d3.scaleLinear()
+        .domain([min, max])
+        .range([0, width]);
+      var svg1 = d3.select(this);
+
+      svg1
+        .transition()
+        .duration(1000)
+        .call(d3.axisBottom(y2).ticks(6));
+
+
+    })
+
+
+  //update yAxis
+  yAxis
+    .transition()
+    .duration(1000)
+    .each(function (d, i) {
+      //console.log(d)
+      var value = d[1][1].x;
+      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+      var min = d3.min(dataFilter2, function (d) { return +d.y; })
+      var max = d3.max(dataFilter2, function (d) { return +d.y; })
+      var y2 = d3.scaleLinear()
+        .domain([max, min])
+        .range([height, 0]);
+      var svg1 = d3.select(this);
+
+      svg1
+        .transition()
+        .duration(1000)
+        .call(d3.axisLeft(y2).ticks(6));
+
+
+    })
+  // leaving this in since its another easy up and downcast detector based on time
+  /*
+  var minutesToAdd=15;
+  //console.log(dataFilter[0].time.getTime() -dataFilter[dataFilter.length-1].time.getTime())
+  var downcasttime = new Date(dataFilter[0].time.getTime() + minutesToAdd*60000);
+  var upcasttime = new Date(dataFilter[dataFilter.length-1].time.getTime() - minutesToAdd*60000);
+  line
+    .datum(dataFilter)
+    .attr("fill", "none")
+    .attr("stroke", "#69b3a2")
+    .attr("stroke-width", 1.5)
+    .transition()
+    .duration(1000)
+    .attr("d", d3.line()
+      .defined(function (d) { 
+ 
+     
+         return ((d.time.getTime() > dataFilter[0].time.getTime()  && d.time.getTime() < downcasttime ) || 
+         (d.time.getTime() > upcasttime && d.time.getTime() < dataFilter[dataFilter.length-1].time.getTime() ))  })
+      .curve(d3.curveBasis)
+      .x(d => x(d.x))
+      .y(d => y(d.y))
+    )
+        */
+  //update lines
+  linedownC
+
+    .attr("fill", "none")
+    .attr("stroke", "#ea6c15") //orange
+    .attr("stroke-width", 1.5)
+    .transition()
+    .duration(1000)
+    .attr("d", function (d) {
+      //console.log(d);
+      var value = d[1][1].x;
+      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+      //console.log(dataFilter2)
+      var min = d3.min(dataFilter2, function (d) { return +d.value; })
+      var max = d3.max(dataFilter2, function (d) { return +d.value; })
+      var miny = d3.min(dataFilter2, function (d) { return +d.y; })
+      var maxy = d3.max(dataFilter2, function (d) { return +d.y; })
+
+
+      var mapY = d3.scaleLinear()
+        .domain([maxy * 7 / 6, miny * 5 / 6])
+        .range([height, 0])
+      var mapX = d3.scaleLinear()
+        .domain([min, max])
+        .range([0, width])
+
+      var lineGen = d3.line()
+        .defined(function (d) { return d.x == value && d.value != 0 && d.status == 1; })
+        //.x(function (d) { return x(d.x); })
+        .curve(d3.curveBasis)
+        .x(d => {
+          //console.log(mapY(+d.value));
+          return mapX(+d.value);
+        })
+        .y(d => {//console.log(mapY(+d.value)); 
+          return mapY(+d.y);
+        })
+
+        (d[1])
+      //console.log(lineGen)
+      return lineGen
+
+    })
+
+
+  linemidC
+
+    .attr("fill", "none")
+    .attr("stroke", "#3bbe2c") //posion green
+    .attr("stroke-width", 1.5)
+    .transition()
+    .duration(1000)
+    .attr("d", function (d) {
+      //console.log(d);
+      var value = d[1][1].x;
+      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+      //console.log(dataFilter2)
+      var min = d3.min(dataFilter2, function (d) { return +d.value; })
+      var max = d3.max(dataFilter2, function (d) { return +d.value; })
+      var miny = d3.min(dataFilter2, function (d) { return +d.y; })
+      var maxy = d3.max(dataFilter2, function (d) { return +d.y; })
+
+
+      var mapY = d3.scaleLinear()
+        .domain([maxy * 7 / 6, miny * 5 / 6])
+        .range([height, 0])
+      var mapX = d3.scaleLinear()
+        .domain([min, max])
+        .range([0, width])
+
+      var lineGen = d3.line()
+        .defined(function (d) { return d.x == value && d.value != 0 && d.status == 2; })
+        //.x(function (d) { return x(d.x); })
+        .curve(d3.curveBasis)
+        .x(d => {
+          //console.log(mapY(+d.value));
+          return mapX(+d.value);
+        })
+        .y(d => {//console.log(mapY(+d.value)); 
+          return mapY(+d.y);
+        })
+
+        (d[1])
+      //console.log(lineGen)
+      return lineGen
+
+    })
+
+
+  lineupC
+
+    .attr("fill", "none")
+    .attr("stroke", "#2c2ebe ") // blue
+    .attr("stroke-width", 1.5)
+    .transition()
+    .duration(1000)
+    .attr("d", function (d) {
+
+      //console.log(d);
+      var value = d[1][1].x;
+      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+      //console.log(dataFilter2)
+      var min = d3.min(dataFilter2, function (d) { return +d.value; })
+      var max = d3.max(dataFilter2, function (d) { return +d.value; })
+      var miny = d3.min(dataFilter2, function (d) { return +d.y; })
+      var maxy = d3.max(dataFilter2, function (d) { return +d.y; })
+
+
+      var mapY = d3.scaleLinear()
+        .domain([maxy * 7 / 6, miny * 5 / 6])
+        .range([height, 0])
+      var mapX = d3.scaleLinear()
+        .domain([min, max])
+        .range([0, width])
+
+      var lineGen = d3.line()
+        .defined(function (d) { return d.x == value && d.value != 0 && d.status == 3; })
+        //.x(function (d) { return x(d.x); })
+        .curve(d3.curveBasis)
+        .x(d => {
+          //console.log(mapY(+d.value));
+          return mapX(+d.value);
+        })
+        .y(d => {//console.log(mapY(+d.value)); 
+          return mapY(+d.y);
+        })
+
+        (d[1])
+      //console.log(lineGen)
+      return lineGen
+
+    })
 
   // Add titles
   svg
@@ -445,6 +664,7 @@ function createdepthchart(data) {
       .transition()
       .duration(1000)
       .attr("d", function (d) {
+
         //console.log(d);
         var value = d[1][1].x;
         var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
@@ -487,7 +707,7 @@ function createdepthchart(data) {
   // When the list is changed, run the updateChart function
   d3.select("#list").on("click.bar", function (event, d) {
     // recover the option that has been chosen
-    const selectedOption = event.explicitOriginalTarget.value
+    const selectedOption = event.target.value
 
     if (selectedOption == -1) {
       // do nothing for description
@@ -699,11 +919,13 @@ d3.select("#s4").on("click", function (event, d) {
 
 
 
-function detectChangePoints(dataset) {
+function detectChangePoints(profile) {
 
   try {
+
+    /*
     const changePoints = [];
-    //console.log(dataset)
+    console.log(dataset)
 
     // Calculate the mean of the dataset
     const mean = dataset.reduce((sum, value) => sum + value) / dataset.length;
@@ -741,24 +963,38 @@ function detectChangePoints(dataset) {
     }
 
     return changePoints;
+    */
+
+    // this should work, but dont know if the threshholds are finetuned enough 
+    // does not work for very small cast
+    let downcastStartId = -1;
+
+    for (let index = 5; index < profile.length - 5; index++) {
+      let row = profile[index];
+      //console.log(row - profile[index + 5] +" + "+ Math.abs(row - profile[index - 5]))
+      //console.log(row - profile[index + 5] < -50 && Math.abs(row - profile[index - 5]) < 30)
+      if (row - profile[index + 5] < -50 && Math.abs(row - profile[index - 5]) < 30) {
+        downcastStartId = index;
+        break;
+      }
+    }
+
+    let maxPress = -Infinity;
+    let downcastStopId = -1;
+
+    for (let i = 0; i < profile.length; i++) {
+      if (profile[i] > maxPress) {
+        maxPress = profile[i];
+        downcastStopId = i;
+      }
+    }
+    //console.log([downcastStartId, downcastStopId + 1])
+    return [downcastStartId, downcastStopId + 1];
+
+
   } catch (error) {
     console.log(error)
     return false;
   }
 }
 
-/*
-
-def downcast_dataframe(profile):
-    downcast_startid = -1
-    for index, row in profile[5:-5].iterrows():
-        # print(row['MS5837Press'])
-        if (row['MS5837Press'] - profile['MS5837Press'][index + 5] < -50) and \
-                (abs(row['MS5837Press'] - profile['MS5837Press'][index - 5]) < 30):
-            downcast_startid = index
-            break
-
-    downcast_stopid = (profile.index[profile['MS5837Press'] == max(profile.MS5837Press)].tolist())[0]
-    return profile.iloc[downcast_startid:downcast_stopid, :]
-
-    */

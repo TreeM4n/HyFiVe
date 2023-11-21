@@ -20,7 +20,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 // format the date / time
 //2022-05-12T07:28:47.000Z
 var formatTime = d3.utcFormat("%Y-%m-%d %H:%M:%S");
-var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M");
+
 
 //svg holding all elements
 var svg;
@@ -30,14 +30,18 @@ var sumstat;
 
 //-----------------------PART 1 ---------------------------------------
 //initial function to format data from query
-export function create() {
-
+export async function create() {
+  
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
+  var attributes = sessionStorage.getItem("attributes");
+  attributes = JSON.parse(attributes)
+  attributes.push("depth")
+  attributes = attributes.filter(e => e !== 'pressure');
   //console.log(data)
 
   var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
-  var parseTime2 = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
+  var parseTime2 = d3.timeParse("%Y-%m-%dT%H:%M:%SZ");
 
   // format the data
   var data_long = [];
@@ -51,37 +55,36 @@ export function create() {
       //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
       d.time = parseTime2(d.time);
 
-      //d.time = formatTime(d.time);
-      //d.time = parseTime2(d.time)
-      d.TSYTemperatrue = +d.TSYTemperatrue;
+      d.depth = (+d.pressure - 1013) / 100
       //d.Temperature = +d.TSYTemperatrue;
-      
-      d.Oxygen = +d.Oxygen;
+
+
       //d.MS5837Press = +d.MS5837Press;
       //d.Pressure = (+d.MS5837Press);
       //d.Conductivity = +d.Conducitvity / 1000; //micro to milli
-      d.Conductivity = +d.Conductivity; //micro to milli
+      //d.Conductivity = +d.Conductivity; //micro to milli
       // check if exist and not null
-      if (+d.Conductivity != 0 && +d.Temperature != 0 && +d.Pressure != 0) {
-        d.Salinity = salJS.gsw_sp_from_c(+d.Conductivity, +d.Temperature, +d.Pressure);
+      try {
+        if (+d.conductivity != 0 && +d.temperature != 0 && +d.pressure != 0) {
+          d.salinity = salJS.gsw_sp_from_c(+d.conductivity, +d.temperature, +d.pressure);
+        }
+      } catch (error) {
+        console.log(error)
       }
 
-
-
-
-      //---------------------example for new parameter based on existing data:------------------------
-      //d.Foo = +d.TSYTemperatrue;
-
-
       for (var prop in d) {
-        var a = [prop];
+        var a = prop;
         //blacklist element check
-        if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
+        //if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
+       
+        //console.log(a + "+" + attributes)
+        //console.log(attributes.includes(a))
+        if (attributes.includes(a)){ } else { continue; }
         var y = prop,
           value = +d[prop];
         //time cant be undefined or null and so 
 
-        if (d.time === null || d.depl === null || value === null || value === 0 || isNaN(value)) { continue; }
+        if (d.time === null || value === null || value === 0 || isNaN(value)) { continue; }
         //threshhold function
         /*
         if (config.thresholdProp.indexOf(prop) != -1 && config.thresholdValues[config.thresholdProp.indexOf(prop)][0] != "") {
@@ -118,7 +121,7 @@ export function create() {
           x: d.time,
           y: y,
           value: +value,
-          depl: d.deployment
+          depl: d.deployment_id
         });
 
 
@@ -127,26 +130,27 @@ export function create() {
     data = data_long;
     //console.log(data)
     // add an  all-options to the list
-    
+    /*
     var text_node = d3.select("#list")
       .selectAll('allOption')
       .data([1])//to generate just one/ it works
       .enter()
       .append('option')
-      .classed("horizontal",true)
-      .classed("selected",true)
+      .classed("horizontal", true)
+      .classed("selected", true)
       .attr("value", 0) // corresponding value returned by the button
       .attr('tabindex', 1)
       .attr("id", "option")
       .text("Whole Selection")
-      /*
-      .append('li')
-      .text("Start:            " + document.getElementById('field1').value)
-      .attr("value", -1) // corresponding value returned by the button
-      .append('li')
-      .text("End:            " + document.getElementById('field2').value)
-      .attr("value", -1) // corresponding value returned by the button
-     */
+    */
+    /*
+    .append('li')
+    .text("Start:            " + document.getElementById('field1').value)
+    .attr("value", -1) // corresponding value returned by the button
+    .append('li')
+    .text("End:            " + document.getElementById('field2').value)
+    .attr("value", -1) // corresponding value returned by the button
+   */
 
 
     createsmallmultiple(data)
@@ -158,7 +162,7 @@ export function create() {
   }
 }
 //------------------------------------ PART 2 ---------------------------------------------------------------
-function createsmallmultiple(data) {
+async function createsmallmultiple(data) {
   // used to define line generaiotns later on 
   var diff = 0;
 
@@ -167,35 +171,37 @@ function createsmallmultiple(data) {
 
 
   //d3.select('svg').remove();
+  /*
+  // List of groups (here I have one group per column)
+  var allGroup = new Set(data.map(d => d.depl))
+  allGroup.delete(undefined) // just remove undefined values
+  // add the options to the list
   
-    // List of groups (here I have one group per column)
-    var allGroup = new Set(data.map(d => d.depl))
-    allGroup.delete(undefined) // just remove undefined values
-    // add the options to the list
-    d3.select("#list")
-      .selectAll('myOptions')
-      .data(allGroup)
-      .enter()
-      .append('option')
-      .text(function (d) { return "ID:" + d; }) // text showed in the menu
-      .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "" + formatTime2(start[0].x); })
-      .attr("value", function (d) { return d; }) // corresponding value returned by the button
-      .attr('tabindex', 1)
-      .append('li')
-      //get start date 
-      //.text(function (d) { return "ID:" + d; }) // text showed in the menu
-      //.attr("value", -1) // corresponding value returned by the button
-      // .append('li')
-      // get end date 
-      //.text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime2(end[end.length - 1].x); })
-      //.attr("value", -1) // corresponding value returned by the button
-  
+  d3.select("#list")
+    .selectAll('myOptions')
+    .data(allGroup)
+    .enter()
+    .append('option')
+    .text(function (d) { return "ID:" + d; }) // text showed in the menu
+    .text(function (d) { var selected = d; var start = data.filter(function (d) { return d.depl == selected }); return "" + formatTime2(start[0].x); })
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+    .attr('tabindex', 1)
+    .append('li')
+    */
+  //get start date 
+  //.text(function (d) { return "ID:" + d; }) // text showed in the menu
+  //.attr("value", -1) // corresponding value returned by the button
+  // .append('li')
+  // get end date 
+  //.text(function (d) { var selected = d; var end = data.filter(function (d) { return d.depl == selected }); return "   End: " + formatTime2(end[end.length - 1].x); })
+  //.attr("value", -1) // corresponding value returned by the button
+
 
   // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
   svg = d3.select("#my_dataviz")
     .selectAll("uniqueChart")
     .data(sumstat)
-    .enter()    
+    .enter()
     .append("svg")
     .attr("id", function (d) { return d[0]; })
     .attr("width", width + margin.left + margin.right)
@@ -205,14 +211,25 @@ function createsmallmultiple(data) {
     .attr("transform",
       `translate(${margin.left},${margin.top})`)
 
+  const view = svg.append("rect")
+    .attr("class", "view")
+    .attr("x", 0.5)
+    .attr("y", 0.5)
+    .attr("width", width - 1)
+    .attr("height", height - 1);
+
   // Add X axis --> it is a date format
   const x = d3.scaleTime()
     .domain(d3.extent(data, function (d) { return d.x; }))
     .range([0, width]);
+
+
   var xAxis = svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
+
     .call(d3.axisBottom(x).ticks(4));
+
 
   //Add Y axis
   var yAxis = svg
@@ -230,6 +247,9 @@ function createsmallmultiple(data) {
 
 
     })
+
+
+
 
   // Add titles
   svg
@@ -259,18 +279,12 @@ function createsmallmultiple(data) {
     .attr("x", 0)
     .attr("y", 0);
 
-  // Add brushing
-  const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
-    .extent([[0, 0], [width, height]])  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-    .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
-
-
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g')
-    .attr("clip-path", "url(#clip)")
+  // .attr("clip-path", "url(#clip)")
 
   // Draw the line
-  line.append("path")
+  var path = line.append("path")
     .attr("class", "line")
     .attr("fill", "none")
     .attr("stroke", function (d) { return config.chartcolor(d[0]) }) // config color function
@@ -297,10 +311,61 @@ function createsmallmultiple(data) {
     })
 
 
+  ////-------------------------------- zoom ---------------------
 
+
+
+  svg.call(d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed));
+
+
+  function zoomed({ transform }) {
+    line.attr("transform", transform);
+
+    //gX.call(xAxis.scale(transform.rescaleX(x)));
+    //gY.call(yAxis.scale(transform.rescaleY(y)));
+  }
+
+  /*
+    var zoomCallback = function () {
+      var newX = d3.transform.rescaleX(x);
+      //var newY = d3.transform.rescaleY(yAxis);
+  
+      xAxis.call(d3.axisBottom(newX));
+     // axLft.call(d3.axisLeft(newY));
+  
+      /*
+      d3.selectAll('#pointline')
+        .attr("d",
+          d3.line()
+            .x(function (d) { return newX(d[0]); })
+            .y(function (d) { return newY(d[1]); })
+            .curve(d3.curveMonotoneX)
+        );
+        
+    }
+  
+    let zoom = d3.zoom()
+      .scaleExtent([0.5, 3])
+      .extent([[0, 0], [width, height]])
+      .translateExtent([[0, 0], [width, height]])
+      .on('zoom', zoomCallback);
+  
+    d3.select('svg').call(zoom);
+    */
+  /////////////////////////////////
+
+  /*
 
   //----------------------------------- Brushing functionality ---------------
   // Add the brushing
+  // Add brushing
+  const brush = d3.brushX()                   // Add the brush feature using the d3.brush function
+    .extent([[0, 0], [width, height]])  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
+
   line
     .append("g")
     .attr("class", "brush")
@@ -324,9 +389,9 @@ function createsmallmultiple(data) {
     console.log(d);
     console.log(x.invert(d3.pointer(event)[0]),idleTimeout);
     console.log(extent)
-    */
+    //
     /*
-    //ok retard make this only happen with no brush than find out how to get leftist x
+   
        var time = x.invert(d3.pointer(event)[0]);
   
      var formatTime = d3.timeFormat("%Y-%m-%d %H:%M");
@@ -335,7 +400,7 @@ function createsmallmultiple(data) {
     document.getElementById('stats').textContent = dataFilter[0].y + dataFilter[0].depl;
       mapJS.showpoint(x.invert(d3.pointer(event)[0]))
      
-    */
+    //
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
@@ -421,9 +486,10 @@ function createsmallmultiple(data) {
       })
 
   }
-
+  */
   //------------------------------------------end Brushing-------------------------------
   //update function for deploy id
+  var chartsalreadycreate = false;
   function updateChart2(selectedGroup) {
 
     var dataFilter = data.filter(function (d) { return d.depl == selectedGroup })
@@ -490,6 +556,8 @@ function createsmallmultiple(data) {
 
   }
 
+  // idk where this broke, but mouseleave isnt noticed anymore
+  /*
   // --------- mouseover start
   //visual effect for single svg's
   svg.on("mouseover", function (d) {
@@ -506,21 +574,25 @@ function createsmallmultiple(data) {
       .style("opacity", 0.8)
   })
 
-
+*/
 
   //---------------mooseover end
 
 
 
-
+/*
   // When the button is changed, run the updateChart function to return to all-state
   d3.select("#list").on("click", function (event, d) {
     // recover the option that has been chosen
-    const selectedOption = event.explicitOriginalTarget.value
+
+
+
+
+    const selectedOption = event.target.value
 
     //console.log( event.explicitOriginalTarget)
     if (selectedOption == 0) {
-     
+
 
       x.domain(d3.extent(data, function (d) { ; return d.x; }))
       // Update axis and line position
@@ -553,7 +625,7 @@ function createsmallmultiple(data) {
 
           var min = d3.min(d[1], function (d) { return +d.value; })
           var max = d3.max(d[1], function (d) { return +d.value; })
-          
+
           var mapY = d3.scaleLinear()
             .domain([min, max])
             .range([height, 0])
@@ -586,7 +658,7 @@ function createsmallmultiple(data) {
 
   })
 
-
+*/
 
 }
 
@@ -595,6 +667,8 @@ export function resetCharts() {
   // svg.selectAll("svg").remove();
   d3.select("#my_dataviz")
     .selectAll("svg").remove();
+  d3.select("#my_dataviz2")
+    .selectAll("svg").remove();
   d3.select("#UList").selectAll('option').remove();
   // d3.select("#Ulist").selectAll('li').remove();
 
@@ -602,3 +676,13 @@ export function resetCharts() {
 }
 
 
+
+export function resetonlyCharts() {
+  // svg.selectAll("svg").remove();
+  d3.select("#my_dataviz")
+    .selectAll("svg").remove();
+  d3.select("#my_dataviz2")
+    .selectAll("svg").remove();
+
+
+}
