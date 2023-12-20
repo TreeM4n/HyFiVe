@@ -27,18 +27,28 @@ var svg;
 
 //var to determine name of parameter
 var sumstat;
+var units;
 
 //-----------------------PART 1 ---------------------------------------
 //initial function to format data from query
 export async function create() {
-  
+
   var data = sessionStorage.getItem("response");
   data = JSON.parse(data)
   var attributes = sessionStorage.getItem("attributes");
   attributes = JSON.parse(attributes)
   attributes.push("depth")
   attributes = attributes.filter(e => e !== 'pressure');
-  //console.log(data)
+  units = sessionStorage.getItem("units");
+  units = JSON.parse(units)
+  units = units.filter(e => e !== 'mbar');
+  units.push("m")
+
+  for (let index = 0; index < units.length; index++) {
+    units[index] = [units[index], attributes[index]];
+
+  }
+  //console.log(units)
 
   var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
   var parseTime2 = d3.timeParse("%Y-%m-%dT%H:%M:%SZ");
@@ -76,10 +86,10 @@ export async function create() {
         var a = prop;
         //blacklist element check
         //if (a.some(r => config.chartblacklist.indexOf(r) >= 0)) { continue; }
-       
+
         //console.log(a + "+" + attributes)
         //console.log(attributes.includes(a))
-        if (attributes.includes(a)){ } else { continue; }
+        if (attributes.includes(a)) { } else { continue; }
         var y = prop,
           value = +d[prop];
         //time cant be undefined or null and so 
@@ -212,41 +222,18 @@ async function createsmallmultiple(data) {
       `translate(${margin.left},${margin.top})`)
 
   const view = svg.append("rect")
-    .attr("class", "view")
+    .attr("id", "view")
     .attr("x", 0.5)
     .attr("y", 0.5)
     .attr("width", width - 1)
-    .attr("height", height - 1);
+    .attr("height", height - 1)
+    .style("fill", "white");
 
   // Add X axis --> it is a date format
   const x = d3.scaleTime()
     .domain(d3.extent(data, function (d) { return d.x; }))
-    .range([0, width]);
-
-
-  var xAxis = svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-
-    .call(d3.axisBottom(x).ticks(4));
-
-
-  //Add Y axis
-  var yAxis = svg
-    .append("g")
-    .each(function (d, i) {
-      //console.log(d)
-      var min = d3.min(d[1], function (d) { return +d.value; })
-      var max = d3.max(d[1], function (d) { return +d.value; })
-      var y2 = d3.scaleLinear()
-        .domain([min, max])
-        .range([height, 0]);
-      var svg1 = d3.select(this);
-
-      svg1.call(d3.axisLeft(y2).ticks(6));
-
-
-    })
+    .range([0, width])
+    .nice();
 
 
 
@@ -256,32 +243,53 @@ async function createsmallmultiple(data) {
     .append("text")
     .attr("text-anchor", "start")
 
-    .attr("y", -5)
+    .attr("y", 0)
     .attr("x", 0)
     .text(function (d) {
-      if (config.thresholdUnits[config.thresholdProp.indexOf(d[0])] != undefined) {
-        return (d[0] + "(" + config.thresholdUnits[config.thresholdProp.indexOf(d[0])]) + ")"
-      }
-      else {
-        return d[0]
-      }
+      return d[0]
+
     })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
+  /*
+    svg.append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", width)
+      .attr("y", height+20)
+      .text("UTC Time Zone");
+  */
 
 
+
+  svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -45)
+    .attr("x", 0)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text(function (d) {
+      for (let i = 0; i < units.length; i++) { //console.log(units[i][1] +"+"+d[0])
+        if (units[i][1] === d[0]) {
+          return units[i][0];
+        }
+      }
+      // Return a default value or handle the case when the target is not found
+      return null; // You can adjust this based on your specific needs})
+    })
   // Add a clipPath: everything out of this area won't be drawn.
   const clip = svg.append("defs").append("svg:clipPath")
     .attr("id", "clip")
     .append("svg:rect")
-    .attr("width", width)
-    .attr("height", height)
-
-    .attr("x", 0)
-    .attr("y", 0);
+    //.attr("x", 0.5)
+    //.attr("y", 0.5)
+    .attr("width", width - 1)
+    .attr("height", height - 1);
 
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g')
-  // .attr("clip-path", "url(#clip)")
+    .attr("z", 1); // Set a higher z value for the axis
+  //.attr("clip-path", "url(#clip)")
 
   // Draw the line
   var path = line.append("path")
@@ -289,6 +297,8 @@ async function createsmallmultiple(data) {
     .attr("fill", "none")
     .attr("stroke", function (d) { return config.chartcolor(d[0]) }) // config color function
     .attr("stroke-width", 1.9)
+    .attr("z", 1) // Set a lower z value for the line
+
     .attr("d", function (d) {
 
       var min = d3.min(d[1], function (d) { return +d.value; })
@@ -310,6 +320,30 @@ async function createsmallmultiple(data) {
 
     })
 
+  var xAxis = svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .attr("z", 1) // Set a higher z value for the axis
+    .call(d3.axisBottom(x).ticks(4));
+
+
+  //Add Y axis
+  var yAxis = svg
+    .append("g")
+    .attr("z", 2) // Set a higher z value for the axis
+    .each(function (d, i) {
+      //console.log(d)
+      var min = d3.min(d[1], function (d) { return +d.value; })
+      var max = d3.max(d[1], function (d) { return +d.value; })
+      var y2 = d3.scaleLinear()
+        .domain([min, max])
+        .range([height, 0])
+        .nice();
+      var svg1 = d3.select(this);
+
+      svg1.call(d3.axisLeft(y2).ticks(6));
+
+    })
 
   ////-------------------------------- zoom ---------------------
 
@@ -317,15 +351,41 @@ async function createsmallmultiple(data) {
 
   svg.call(d3.zoom()
     .extent([[0, 0], [width, height]])
-    .scaleExtent([1, 8])
+    .scaleExtent([1, 10])
     .on("zoom", zoomed));
 
 
   function zoomed({ transform }) {
     line.attr("transform", transform);
 
-    //gX.call(xAxis.scale(transform.rescaleX(x)));
-    //gY.call(yAxis.scale(transform.rescaleY(y)));
+    // Get the current zoom scale
+    const currentScale = transform.k;
+
+    // Calculate the scaled stroke width
+    const scaledStrokeWidth = 1.9 / currentScale;
+
+    // Set the new stroke width for the line
+    path.attr("stroke-width", scaledStrokeWidth);
+
+    // Get scaled x and y scales
+    const newXScale = transform.rescaleX(x);
+
+
+    xAxis.call(d3.axisBottom(newXScale).ticks(4));
+    yAxis.each(function (d, i) {
+      //console.log(d)
+      var min = d3.min(d[1], function (d) { return +d.value; })
+      var max = d3.max(d[1], function (d) { return +d.value; })
+      var y2 = d3.scaleLinear()
+        .domain([min, max])
+        .range([height, 0])
+        .nice();
+      var svg1 = d3.select(this);
+      const newYScale = transform.rescaleY(y2);
+      svg1.call(d3.axisLeft(newYScale).ticks(6));
+
+    })
+
   }
 
   /*
@@ -580,85 +640,85 @@ async function createsmallmultiple(data) {
 
 
 
-/*
-  // When the button is changed, run the updateChart function to return to all-state
-  d3.select("#list").on("click", function (event, d) {
-    // recover the option that has been chosen
-
-
-
-
-    const selectedOption = event.target.value
-
-    //console.log( event.explicitOriginalTarget)
-    if (selectedOption == 0) {
-
-
-      x.domain(d3.extent(data, function (d) { ; return d.x; }))
-      // Update axis and line position
-      xAxis
-        .transition()
-        .duration(1000)
-        .call(d3.axisBottom(x).ticks(4));
-
-      yAxis
-        .each(function (d, i) {
-          //console.log(d)
-          var min = d3.min(d[1], function (d) { return +d.value; })
-          var max = d3.max(d[1], function (d) { return +d.value; })
-          var y2 = d3.scaleLinear()
-            .domain([min, max])
-            .range([height, 0]);
-          var svg1 = d3.select(this);
-
-          svg1
-            .transition()
-            .duration(1000)
-            .call(d3.axisLeft(y2).ticks(6));
-
-
-        })
-      line
-        .select('.line')
-        .transition()
-        .attr("d", function (d) {
-
-          var min = d3.min(d[1], function (d) { return +d.value; })
-          var max = d3.max(d[1], function (d) { return +d.value; })
-
-          var mapY = d3.scaleLinear()
-            .domain([min, max])
-            .range([height, 0])
-
-          var lineGen = d3.line()
-            .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
-            .x(function (d) { return x(d.x); })
-            .y(d => { return mapY(+d.value); })
-
-            (d[1])
-
-          return lineGen
-
-        })
-      //removes map marker
-      mapJS.removemapview();
-
-    }
-    else if (selectedOption == -1) {
-      // do nothing for description
-    }
-    else if (selectedOption == undefined) {
-      // do nothing in case
-    }
-    else {
-      // run the updateChart function with this selected option
-      updateChart2(selectedOption)
-
-    }
-
-  })
-
-*/
+  /*
+    // When the button is changed, run the updateChart function to return to all-state
+    d3.select("#list").on("click", function (event, d) {
+      // recover the option that has been chosen
+  
+  
+  
+  
+      const selectedOption = event.target.value
+  
+      //console.log( event.explicitOriginalTarget)
+      if (selectedOption == 0) {
+  
+  
+        x.domain(d3.extent(data, function (d) { ; return d.x; }))
+        // Update axis and line position
+        xAxis
+          .transition()
+          .duration(1000)
+          .call(d3.axisBottom(x).ticks(4));
+  
+        yAxis
+          .each(function (d, i) {
+            //console.log(d)
+            var min = d3.min(d[1], function (d) { return +d.value; })
+            var max = d3.max(d[1], function (d) { return +d.value; })
+            var y2 = d3.scaleLinear()
+              .domain([min, max])
+              .range([height, 0]);
+            var svg1 = d3.select(this);
+  
+            svg1
+              .transition()
+              .duration(1000)
+              .call(d3.axisLeft(y2).ticks(6));
+  
+  
+          })
+        line
+          .select('.line')
+          .transition()
+          .attr("d", function (d) {
+  
+            var min = d3.min(d[1], function (d) { return +d.value; })
+            var max = d3.max(d[1], function (d) { return +d.value; })
+  
+            var mapY = d3.scaleLinear()
+              .domain([min, max])
+              .range([height, 0])
+  
+            var lineGen = d3.line()
+              .defined(function (d) { var i = d.x - diff; diff = d.x; return i <= 300000 && +d.value != 0; })
+              .x(function (d) { return x(d.x); })
+              .y(d => { return mapY(+d.value); })
+  
+              (d[1])
+  
+            return lineGen
+  
+          })
+        //removes map marker
+        mapJS.removemapview();
+  
+      }
+      else if (selectedOption == -1) {
+        // do nothing for description
+      }
+      else if (selectedOption == undefined) {
+        // do nothing in case
+      }
+      else {
+        // run the updateChart function with this selected option
+        updateChart2(selectedOption)
+  
+      }
+  
+    })
+  
+  */
 
 }
 

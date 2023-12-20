@@ -55,14 +55,15 @@ async function performQuery(deployment) {
     const fluxQuery = `from(bucket:"localhyfive") 
                     |> range(start: ${start}, stop: ${end}) 
                     |> filter(fn: (r) => r._measurement == "netcdf")
-                    |> filter(fn: (r) => r["deployment_id"] == "${deployment}")
+                    |> filter(fn: (r) => r["deployment_id"] == "${deployment}")    
+                    |> filter(fn: (r) => r._value != -99)                            
                     |> window(every: ${interval})
                     |> mean()`;
     const influxDB = new InfluxDB({ url, token });
     const queryApi = influxDB.getQueryApi(org);
 
     const result = [];
-
+    //console.log(fluxQuery)
     try {
       await queryApi.queryRows(fluxQuery, {
         next(row, tableMeta) {
@@ -75,6 +76,7 @@ async function performQuery(deployment) {
           reject(error); // Reject the promise on error
         },
         complete() {
+          //console.log(result)
           resolve(result); // Resolve the promise when the query is complete
         }
       });
@@ -125,6 +127,8 @@ export async function JSquery() {
   var deployment = await performdeploymentQuery(start, end);
   var deployment_ids = [];
   deploymentlist = [] // reset list
+  d3.select("#list")
+  .selectAll("option").remove();
   for (var i = 0; i < deployment.length; i++) {
     var deployment_first = await performdateQuery(deployment[i].value)
     //console.log(deployment_first)
@@ -153,7 +157,7 @@ export async function JSquery() {
         .data(deploymentlist[i])
         .enter()
         .append('option')
-        .text((formatTime2(parseTime2(deploymentlist[i][0].time)))) // text shown in the menu            
+        .text((formatTime2(parseTime2(deploymentlist[i][0].time)))+" || "+ deploymentlist[i][0].depl) // text shown in the menu            
         .attr("value", deploymentlist[i][0].depl) // corresponding value returned by the button
         .attr('tabindex', 1)
         .append('li')
@@ -288,10 +292,15 @@ export async function performDataQuery(deployment) {
 
   const result = await performQuery(deployment);
   const processedData = processData(result);
-  const attributes = await performattributeQuery(deployment) 
+  const attributeQuery = await performattributeQuery(deployment) 
+  const attributes = attributeQuery[0]
+  const units = attributeQuery[1]
+
+  //console.log(units)
 
   sessionStorage.setItem("response", JSON.stringify(processedData));
   sessionStorage.setItem("attributes", JSON.stringify(attributes));
+  sessionStorage.setItem("units", JSON.stringify(units));
 
   chartJS.resetonlyCharts()
   chartJS.create()
@@ -343,28 +352,70 @@ async function performattributeQuery(deployment) {
     end = formatDate(end) // take the next day instead
 
     var start = formatDate(new Date(document.getElementById('field1').value));
-    var interval = document.getElementById('field_interval').value
+    
     const fluxQuery = `from(bucket:"localhyfive") 
                     |> range(start: ${start}, stop: ${end}) 
                     |> filter(fn: (r) => r._measurement == "attributes")
-                    |> filter(fn: (r) => r["deployment_id"] == "${deployment}")                
-                    |> keyValues(keyColumns: ["parameter"])                    
+                    |> filter(fn: (r) => r["deployment_id"] == "${deployment}" )  
+                    |> filter(fn: (r) => r["_field"] == "unit")              
+                                    
                     |> group()
-                    |> pivot(rowKey: ["_value"], columnKey: ["_key"], valueColumn: "_value")`;
+                    `;
     const influxDB = new InfluxDB({ url, token });
     const queryApi = influxDB.getQueryApi(org);
 
     const result = ["salinity"];
+    const result_unit = ["mg/l"];
 
     try {
       await queryApi.queryRows(fluxQuery, {
         next(row, tableMeta) {
           const o = tableMeta.toObject(row);
-          //console.log(o.parameter)
+          //console.log(o)
           if(o.parameter !== "logger") {
             //const data = { "parameter": o.parameter};
             result.push(o.parameter);
+            result_unit.push(o._value);
+
           }          
+        },
+        error(error) {
+          console.log('QUERY FAILED', error);
+          reject(error); // Reject the promise on error
+        },
+        complete() {
+          resolve( [result, result_unit ]); // Resolve the promise when the query is complete
+        }
+      });
+    } catch (error) {
+      console.error('Error in queryApi.queryRows:', error);
+      reject(error); // Reject the promise on error
+    }
+  });
+}
+
+// Function to perform the InfluxDB query
+async function performparameterQuery(start, end,parameter) {
+  return new Promise(async (resolve, reject) => {
+    // hyfive.inf0 = bucket:hyfive measurement. CLUPEA
+    // var interval = document.getElementById('field_interval').value
+    const fluxQuery = `from(bucket:"localhyfive") 
+                    |> range(start: ${start}, stop: ${end}) 
+                    |> filter(fn: (r) => r._measurement == "attributes")
+                    |> filter(fn: (r) => r.parameter == ${parameter})
+                    |> filter(fn: (r) => r["_field"] == "unit" )                               
+                    `;
+    const influxDB = new InfluxDB({ url, token });
+    const queryApi = influxDB.getQueryApi(org);
+
+    const result = [];
+
+    try {
+      await queryApi.queryRows(fluxQuery, {
+        next(row, tableMeta) {
+          const o = tableMeta.toObject(row);
+          const data = { "time": o._start, "value": o._value, "prop": o._field };
+          result.push(data);
         },
         error(error) {
           console.log('QUERY FAILED', error);
@@ -380,8 +431,6 @@ async function performattributeQuery(deployment) {
     }
   });
 }
-
-
 
 /*
 //48 h zuerst

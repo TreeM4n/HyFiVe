@@ -28,7 +28,7 @@ var endIcon = L.icon({
   popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
 
-
+var linesArray = [];
 
 
 var map = L.map('map', {
@@ -91,6 +91,7 @@ L.tileLayer("../assets/OSM-baltic/{z}/{x}/{y}.png", {
   minZoom: 3,
   //attribution: 'Tiles by <a href="www.4umaps.com">OpenStreetMaps</a>',
   attribution: 'Tiles by OpenSeaMaps and 4UMaps',
+  errorTileUrl: '../assets/no-tile.png',  // source: https://github.com/ghybs/Leaflet.TileLayer.Fallback/blob/master/examples/no-tile.png
   tileSize: 512,
   zoomOffset: -1
 }).addTo(map);
@@ -109,7 +110,7 @@ var datamap;
 var data_longmap = [];
 var rows = ["latitude", "longitude", "deployment_id", "time"]
 var line
-var formatTime2 = d3.timeFormat("%Y-%m-%d %H:%M");
+var formatTime2 = d3.utcFormat("%Y-%m-%d %H:%M");
 var parseTime2 = d3.timeParse("%Y-%m-%dT%H:%M:%SZ");
 
 export async function mapfnc() {
@@ -120,20 +121,22 @@ export async function mapfnc() {
   //console.log(dataquery)
   if (dataquery) {
     dataquery.forEach(function (d) {
+      //console.log(d)
       //2022-05-12T07:28:47.000Z: delete Z and T and milliS
       //d.time = d.time.split("T")[0] + " " + d.time.split("T")[1].split("Z")[0]
       d.time = parseTime(d.time);
       for (var prop in d) {
         //if (a.some(r => config.mapblacklistmap.indexOf(r) >= 0)) { continue; }
         if (rows.includes(prop)) { } else { continue; }
-        if (d.latitude < -90 || d.longitude < -180 || d.latitude > 90 || d.longitude > 180 ) {continue;}
+        if (d.latitude == undefined || d.longitude == undefined) {continue}
+        if (d.latitude < -90 || d.longitude < -180 || d.latitude > 90 || d.longitude > 180) { continue; }
 
 
         data_longmap.push({
           time: d.time,
           Latitude: d.latitude,
           Longitude: d.longitude,
-          depl: d.deployment_id
+          //depl: d.deployment_id
         });
 
       }
@@ -151,7 +154,7 @@ export async function mapfnc() {
   } catch (error) {
 
   }
-
+  linesArray = [];
   //flyTo
   for (var i in datamap) {
 
@@ -177,11 +180,16 @@ export async function mapfnc() {
           weight: 5,
           smoothFactor: 1
         })
-          .bindPopup("Time:" + (formatTime2(parseTime2(datamap[i].time))));
+        //console.log(datamap[i])
+
+          .bindPopup("Time:" + (formatTime2(datamap[i].time))//+ " || Deployment ID:"+datamap[i].deply
+          );
         line.addTo(map);
+        // Store the reference to the line in the array
+        linesArray.push(line);
       }
     }
-    //console.log(data[i])
+    //console.log(datamap[i].time)
   }
 
 
@@ -239,16 +247,9 @@ export function removemapview() {
 }
 
 export async function clearMap() {
-  for(var i in map._layers) {
-      if(map._layers[i]._path != undefined) {
-          try {
-            map.removeLayer(map._layers[i]);
-          }
-          catch(e) {
-              console.log("problem with " + e + map._layers[i]);
-          }
-      }
-  }
+  linesArray.forEach(function (line) {
+    map.removeLayer(line);
+});
 }
 /*
 //export function to set marker on click location in charts || unimplemented

@@ -19,6 +19,7 @@ const margin = { top: 30, right: 0, bottom: 30, left: 50 },
 
 var data_long = [];
 var parseTime = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
+var units;
 
 //----------------------------------- PART 1 -----------------------------------------
 //Read the data
@@ -30,6 +31,15 @@ export async function depthchart() {
   var attributes = sessionStorage.getItem("attributes");
   attributes = JSON.parse(attributes)
   attributes = attributes.filter(e => e !== 'pressure');
+  units = sessionStorage.getItem("units");
+  units = JSON.parse(units)
+  units = units.filter(e => e !== 'mbar');
+
+  for (let index = 0; index < units.length; index++) {
+    units[index] = [units[index], attributes[index]];
+
+  }
+
 
   // format the data
   // console.log(depthdata)
@@ -37,12 +47,10 @@ export async function depthchart() {
 
   var dataset = [];
   var castStatus = 0;
-  var startStatus;
-  var endStatus;
-  var times;
   var counter = 0;
   var changePoints;
-  var prevID;
+  var prevID = true;
+
 
   depthdata.forEach(function (d) {
 
@@ -79,15 +87,16 @@ export async function depthchart() {
       //check for deployment changes
       //console.log(prevID + "W" + d.deployment)
 
-      if (false //prevID != d.deployment_id
+      if (prevID
       ) {
 
         dataset = [];
-        prevID = d.deployment_id;
-        times = depthdata.filter(function (d) { return d.deployment_id == prevID });
-        times = (times.map(d => d.Pressure))
-        for (var pressure in times) {
-          dataset.push(Math.ceil(times[pressure]))
+        prevID = false;
+        //times = depthdata.filter(function (d) { return d.deployment_id == prevID });
+        //var times;
+        // = (depthdata.map(d => d.Pressure))
+        for (var id in depthdata) {
+          dataset.push([Math.ceil(depthdata[id].pressure),depthdata[id].time])
         }
         changePoints = detectChangePoints(dataset);
         counter = 0;
@@ -162,13 +171,14 @@ async function createdepthchart(data) {
       .append("class", "vertical")
       .attr("y", -5)
       .attr("x", 0)
-      .text(function (d) {return "No valid Data"      
-      })  
-      
+      .text(function (d) {
+        return "No valid Data"
+      })
+
   }
   else {
     d3.select("#my_dataviz2")
-    .selectAll("text").remove();
+      .selectAll("text").remove();
   }
 
 
@@ -213,9 +223,17 @@ async function createdepthchart(data) {
   // draw the first id on loading page but only the axis so on select a chart does not pop off out of nowhere
 
   var dataFilter = data.filter(function (d) { return d.depl == data[0].depl })
-  console.log(dataFilter)
-  console.log(sumstat)
+  //console.log(dataFilter)
+  //console.log(sumstat)
   // Add X axis
+
+  const view = svg.append("rect")
+    .attr("id", "viewdepth")
+    .attr("x", 0.5)
+    .attr("y", 0.5)
+    .attr("width", width - 1)
+    .attr("height", height - 1)
+    .style("fill", "white");
 
   var xAxis = svg
     .append("g")
@@ -291,36 +309,40 @@ async function createdepthchart(data) {
 
     })
 
+  try {
+    //update yAxis
+    yAxis
+      .transition()
+      .duration(1000)
+      .each(function (d, i) {
+        //console.log(d)
+        var value = d[1][1].x;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.y; })
+        var max = d3.max(dataFilter2, function (d) { return +d.y; })
+        var y2 = d3.scaleLinear()
+          .domain([max, min])
+          .range([height, 0]);
+        var svg1 = d3.select(this);
 
-  //update yAxis
-  yAxis
-    .transition()
-    .duration(1000)
-    .each(function (d, i) {
-      //console.log(d)
-      var value = d[1][1].x;
-      var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
-      var min = d3.min(dataFilter2, function (d) { return +d.y; })
-      var max = d3.max(dataFilter2, function (d) { return +d.y; })
-      var y2 = d3.scaleLinear()
-        .domain([max, min])
-        .range([height, 0]);
-      var svg1 = d3.select(this);
-
-      svg1
-        .transition()
-        .duration(1000)
-        .call(d3.axisLeft(y2).ticks(6));
+        svg1
+          .transition()
+          .duration(1000)
+          .call(d3.axisLeft(y2).ticks(6));
 
 
-    })
+      })
+  } catch (error) {
+
+  }
+
   // leaving this in since its another easy up and downcast detector based on time
   /*
   var minutesToAdd=15;
   //console.log(dataFilter[0].time.getTime() -dataFilter[dataFilter.length-1].time.getTime())
   var downcasttime = new Date(dataFilter[0].time.getTime() + minutesToAdd*60000);
   var upcasttime = new Date(dataFilter[dataFilter.length-1].time.getTime() - minutesToAdd*60000);
-  line
+  lines
     .datum(dataFilter)
     .attr("fill", "none")
     .attr("stroke", "#69b3a2")
@@ -479,14 +501,43 @@ async function createdepthchart(data) {
     .attr("y", -5)
     .attr("x", 0)
     .text(function (d) {
-      if (config.thresholdUnits[config.thresholdProp.indexOf(d[0])] != undefined) {
-        return (d[0] + "(" + config.thresholdUnits[config.thresholdProp.indexOf(d[0])]) + ")"
-      }
-      else {
-        return d[0]
-      }
+
+      return d[0]
+
     })
     .style("fill", function (d) { return config.chartcolor(d[0]) })
+
+
+  // Add units
+  svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -35)
+    .attr("x", 0)
+    .attr("font-size", 12)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text(function (d) { //console.log(units)
+      return "m"
+    })
+
+  svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("y", height + 27)
+    .attr("x", width / 2)
+    .attr("font-size", 12)
+    .attr("dx", ".75em")
+    //.attr("transform", "rotate(-90)")
+    .text(function (d) { //console.log(units)
+      for (let i = 0; i < units.length; i++) { //console.log(units[i][1] +"+"+d[0])
+        if (units[i][1] === d[0]) {
+          return units[i][0];
+        }
+      }
+      // Return a default value or handle the case when the target is not found
+      return null; // You can adjust this based on your specific needs})
+    })
 
 
   //---------------------------------------------- PART 3 ----------------------------------------------------
@@ -702,7 +753,74 @@ async function createdepthchart(data) {
 
   }
 
+  ////-------------------------------- zoom ---------------------
 
+
+
+  svg.call(d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([1, 10])
+    .on("zoom", zoomed));
+
+
+  function zoomed({ transform }) {
+    linedownC.attr("transform", transform);
+    linemidC.attr("transform", transform);
+    lineupC.attr("transform", transform);
+
+    // Get the current zoom scale
+    const currentScale = transform.k;
+
+    // Calculate the scaled stroke width
+    const scaledStrokeWidth = 1.9 / currentScale;
+
+    // Set the new stroke width for the line
+    lineupC.attr("stroke-width", scaledStrokeWidth);
+    linemidC.attr("stroke-width", scaledStrokeWidth);
+    linedownC.attr("stroke-width", scaledStrokeWidth);
+
+    // Get scaled x and y scales
+
+
+    xAxis
+      .each(function (d, i) {
+        var value = d[1][1].x;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.value; })
+        var max = d3.max(dataFilter2, function (d) { return +d.value; })
+        var y2 = d3.scaleLinear()
+          .domain([min, max])
+          .range([0, width]);
+        var svg1 = d3.select(this);
+        const newXScale = transform.rescaleX(y2);
+        svg1
+          .call(d3.axisBottom(newXScale).ticks(6));
+
+
+      })
+
+
+    //update yAxis
+    yAxis
+      .each(function (d, i) {
+        //console.log(d)
+        var value = d[1][1].x;
+        var dataFilter2 = dataFilter.filter(function (d) { return d.x == value })
+        var min = d3.min(dataFilter2, function (d) { return +d.y; })
+        var max = d3.max(dataFilter2, function (d) { return +d.y; })
+        var y2 = d3.scaleLinear()
+          .domain([max, min])
+          .range([height, 0]);
+        var svg1 = d3.select(this);
+        const newYScale = transform.rescaleY(y2);
+        svg1
+          .call(d3.axisLeft(newYScale).ticks(6));
+
+
+      })
+
+
+  }
 
   // When the list is changed, run the updateChart function
   d3.select("#list").on("click.bar", function (event, d) {
@@ -965,20 +1083,53 @@ function detectChangePoints(profile) {
     return changePoints;
     */
 
-    // this should work, but dont know if the threshholds are finetuned enough 
+    // this should work, but dont know if the threshholds are enough finetuned  
     // does not work for very small cast
-    let downcastStartId = -1;
 
-    for (let index = 5; index < profile.length - 5; index++) {
-      let row = profile[index];
-      //console.log(row - profile[index + 5] +" + "+ Math.abs(row - profile[index - 5]))
+    console.log(profile)
+    let downcastStartId = -1;
+    let index = 5;
+    let counter = 0;
+    for (index = 5; index < profile.length - 5; index++) {
+      let row = profile[index][0];
+      //console.log(profile[index])
+      //console.log(row - profile[index + 5] + Math.abs(row - profile[index - 5]))
       //console.log(row - profile[index + 5] < -50 && Math.abs(row - profile[index - 5]) < 30)
-      if (row - profile[index + 5] < -50 && Math.abs(row - profile[index - 5]) < 30) {
-        downcastStartId = index;
-        break;
+      //console.log(counter)
+      if (row - profile[index + 5][0] + Math.abs(row - profile[index - 5][0]) < 4) {
+        counter++;
+        if (counter > 30) {
+          downcastStartId = index;
+          break;
+        }
+
+      }
+
+
+    }
+    counter = 0;
+    let upcastStartId = -1;
+
+    for (index = downcastStartId; index < profile.length - 5; index++) {
+      let row = profile[index][0];
+      //console.log(row - profile[index + 5] + Math.abs(row - profile[index - 5]))
+
+
+      if (row - profile[index + 5][0] + Math.abs(row - profile[index - 5][0]) > 200) {
+        counter++;
+        if (counter > 15) {
+          upcastStartId = index;
+          break;
+        }
+      }
+      else {
+        if (counter > 0) {
+          counter--;
+        }
+
       }
     }
-
+    /*
     let maxPress = -Infinity;
     let downcastStopId = -1;
 
@@ -988,8 +1139,9 @@ function detectChangePoints(profile) {
         downcastStopId = i;
       }
     }
-    //console.log([downcastStartId, downcastStopId + 1])
-    return [downcastStartId, downcastStopId + 1];
+    */
+    //console.log([downcastStartId, upcastStartId + 1])
+    return [downcastStartId, upcastStartId + 1];
 
 
   } catch (error) {
