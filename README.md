@@ -1,5 +1,10 @@
 # Wep Applikation of Hyfive
 
+## Installation
+
+### 1. Download and extract Archive
+### 2. Run Bash File
+
 
 
 ## Configuration and Modification of Hyfive WebApp
