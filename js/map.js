@@ -108,7 +108,7 @@ var datamap;
 
 // format the data
 var data_longmap = [];
-var rows = ["latitude", "longitude", "deployment_id", "time"]
+var rows = ["latitude", "longitude", "deployment_id", "time", "pressure"]
 var line
 var formatTime2 = d3.utcFormat("%Y-%m-%d %H:%M");
 var parseTime2 = d3.timeParse("%Y-%m-%dT%H:%M:%SZ");
@@ -136,6 +136,7 @@ export async function mapfnc() {
           time: d.time,
           Latitude: d.latitude,
           Longitude: d.longitude,
+          pressure: d.pressure
           //depl: d.deployment_id
         });
 
@@ -175,6 +176,30 @@ export async function mapfnc() {
         var pointA = new L.LatLng(lat1, lon1);
         var pointB = new L.LatLng(lat2, lon2);
         var pointList = [pointA, pointB];
+
+        /*
+        switch (datamap[i].pressure) {
+          case datamap[i].pressure <= 10:
+            
+            break;
+          case datamap[i].pressure >= 20:
+            
+            break;
+          case datamap[i].pressure >= 30:
+            
+            break;
+          case datamap[i].pressure >= 40:
+            
+            break;
+          case datamap[i].pressure >= 50:
+            
+            break;
+          default:
+           
+        }
+        
+        }
+        */
         line = new L.Polyline(pointList, {
           color: "rgb(0,0,0)", // set color 
           weight: 5,
