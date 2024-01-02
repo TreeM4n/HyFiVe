@@ -4,7 +4,7 @@
 
 >Created between 2022 and 2023 as part of the Hyfive project.\
 >Web application for the visualisation of data sets within an influx database.\
->Problems and contact:\ 
+>Problems and contact:
 
 >https://github.com/TreeM4n/HyFiVe/issues 
 
@@ -42,15 +42,19 @@ wget "https://github.com/TreeM4n/HyFiVe/archive/master.zip"
 #### 2. Extract (after or before transfering to remote machine)
 
 >Locally or \
->Linux:  ```sudo apt-get install unzip``` \
-       ``` unzip HyFiVe-main.zip ```
+>Linux: 
+ ```
+ sudo apt-get install unzip```
+```
+        unzip HyFiVe-main.zip 
+        ```
 
 #### 3. Run Shell File
 
 >Linux:  
 ```
 chmod +x setup.sh 
-```\
+```
 ```
 ./setup.sh
 
