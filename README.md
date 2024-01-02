@@ -4,11 +4,11 @@
 
 >Created between 2022 and 2023 as part of the Hyfive project.\
 >Web application for the visualisation of data sets within an influx database.\
->Problems and contact: \
+>Problems and contact:\ 
 
->https://github.com/TreeM4n/HyFiVe/issues \
+>https://github.com/TreeM4n/HyFiVe/issues 
 
->or\
+>or
 
 >baum.tree.tm@gmail.com
 
@@ -16,7 +16,11 @@
 
 ### (Optional) For updating older Installations
 
->Linux: ```sudo rm -r /var/www/html``` \
+>Linux: 
+```
+sudo rm -r /var/www/html
+```
+
 >Yes, this is just removes the entire folder.
 
 ### Via Quick Setup Script
@@ -31,7 +35,8 @@ wget -O quick-setup.sh "https://raw.githubusercontent.com/TreeM4n/HyFiVe/main/qu
 >URl:    https://github.com/TreeM4n/HyFiVe/archive/master.zip
 
 >Linux: 
-``` wget "https://github.com/TreeM4n/HyFiVe/archive/master.zip"
+``` 
+wget "https://github.com/TreeM4n/HyFiVe/archive/master.zip"
 ```
 
 #### 2. Extract (after or before transfering to remote machine)
@@ -42,8 +47,14 @@ wget -O quick-setup.sh "https://raw.githubusercontent.com/TreeM4n/HyFiVe/main/qu
 
 #### 3. Run Shell File
 
->Linux:  ```chmod +x setup.sh ```\
-        ```./setup.sh```
+>Linux:  
+```
+chmod +x setup.sh 
+```\
+```
+./setup.sh
+
+```
 
 #### 4. (optional) Check in var/www/html 
 
