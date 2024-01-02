@@ -43,11 +43,12 @@ wget "https://github.com/TreeM4n/HyFiVe/archive/master.zip"
 
 >Locally or \
 >Linux: 
- ```
- sudo apt-get install unzip```
 ```
-        unzip HyFiVe-main.zip 
-        ```
+sudo apt-get install unzip
+```
+```
+unzip HyFiVe-main.zip 
+```
 
 #### 3. Run Shell File
 
@@ -57,7 +58,6 @@ chmod +x setup.sh
 ```
 ```
 ./setup.sh
-
 ```
 
 #### 4. (optional) Check in var/www/html 
