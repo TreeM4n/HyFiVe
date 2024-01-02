@@ -176,32 +176,35 @@ export async function mapfnc() {
         var pointA = new L.LatLng(lat1, lon1);
         var pointB = new L.LatLng(lat2, lon2);
         var pointList = [pointA, pointB];
+        var color = "rgb(0,0,0)"
+        //console.log(datamap[i].pressure)
 
-        /*
-        switch (datamap[i].pressure) {
-          case datamap[i].pressure <= 10:
-            
+        //partialpressure not in m
+        var pressureswitch = (datamap[i].pressure-1030)/100
+        console.log(pressureswitch)
+        switch (true) {
+          
+          case pressureswitch <= 10:
+            color = "rgb(255,193,0)"
             break;
-          case datamap[i].pressure >= 20:
-            
+          case pressureswitch <= 20:
+            color = "rgb(255,154,0)"
             break;
-          case datamap[i].pressure >= 30:
-            
+          case pressureswitch <= 40:
+            color = "rgb(255,116,0)"
             break;
-          case datamap[i].pressure >= 40:
-            
+          case pressureswitch <= 60:
+            color = "rgb(255,77,0)"
             break;
-          case datamap[i].pressure >= 50:
-            
+          case pressureswitch <= 100:
+            color = "rgb(255,0,0)"
             break;
           default:
-           
+            console.log("Impossible Pressure:" + pressureswitch);
         }
         
-        }
-        */
         line = new L.Polyline(pointList, {
-          color: "rgb(0,0,0)", // set color 
+          color: color, // set color 
           weight: 5,
           smoothFactor: 1
         })
