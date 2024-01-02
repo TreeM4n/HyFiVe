@@ -1085,8 +1085,12 @@ function detectChangePoints(profile) {
 
     // this should work, but dont know if the threshholds are enough finetuned  
     // does not work for very small cast
+    // copied from Mathis and mirrowed for downcast
 
-    console.log(profile)
+    // added a small heat-buffer "counter", Casts have to satisfy the if-statement multiply times for points to be marked as Up- or Downcast
+    // this helps for strong fluctuations not to be flagged as either
+
+    // console.log(profile)
     let downcastStartId = -1;
     let index = 5;
     let counter = 0;

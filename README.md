@@ -62,5 +62,11 @@ chmod +x setup.sh
 
 #### 4. (optional) Check in var/www/html 
 
+## Downcast Function
+
+> /js/depthchart.js between lines 1040 - 1152
+> called during Chart init in line 101
+> has depth[0] and time[1] in profile[index][0/1] 
+
 
 
