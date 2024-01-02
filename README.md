@@ -25,7 +25,7 @@ sudo rm -r /var/www/html
 
 ### Via Quick Setup Script
 ```
-wget -O quick-setup.sh "https://raw.githubusercontent.com/TreeM4n/HyFiVe/main/quick-setup.sh" && chmod +x quick-setup.sh && bash quick-setup.sh \
+wget -O quick-setup.sh "https://raw.githubusercontent.com/TreeM4n/HyFiVe/main/quick-setup.sh" && chmod +x quick-setup.sh && bash quick-setup.sh
  ```
 >Thats it.
 
